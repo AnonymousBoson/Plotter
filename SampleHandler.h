@@ -13,8 +13,12 @@ class Sample
 		int type; // negatives for signal, positives for background, 0 for data
 		double xSection; // in pb
 		double kFactor;
+		int initialNumberOfEvents;
+		string files;
+		
+
 	public:
-		Sample(string name_, string displayName_, int type_, double xSection_, double kFactor_);
+		Sample(string name_, string displayName_, int type_, double xSection_, int initialNumberOfEvents_, double kFactor_);
 		Sample(const Sample &);
 
 		string getName() const;
@@ -27,18 +31,24 @@ class Sample
 		void setXSection(double xSection_);
 		double getKFactor() const;
 		void setKFactor(double kFactor_);
+		int getInitialNumberOfEvents() const;
+		void setInitialNumberOfEvents(int initialNumberOfEvents_);
+		string getFiles() const;
+		void setFiles(string files_);
 
 		void print() const;
 };
 
 
-Sample::Sample(string name_, string displayName_, int type_ = 0, double xSection_ = 1.0, double kFactor_ = 1.0)
+Sample::Sample(string name_, string displayName_, int type_ = 0, double xSection_ = 1.0, int initialNumberOfEvents_ = 1, double kFactor_ = 1.0)
 {
 	name = name_;
 	displayName = displayName_;
 	type = type_;
 	xSection = xSection_;
 	kFactor = kFactor_;
+	initialNumberOfEvents = initialNumberOfEvents_;
+	files = "";
 }
 
 Sample::Sample(const Sample & s)
@@ -48,6 +58,8 @@ Sample::Sample(const Sample & s)
 	type = s.getType();
 	xSection = s.getXSection();
 	kFactor = s.getKFactor();
+	initialNumberOfEvents = s.getInitialNumberOfEvents();
+	files = s.getFiles();
 }
 
 string Sample::getName() const{ return name; }
@@ -60,6 +72,11 @@ double Sample::getXSection() const{ return xSection; }
 void Sample::setXSection(double xSection_){ xSection = xSection_; }
 double Sample::getKFactor() const{ return kFactor; }
 void Sample::setKFactor(double kFactor_){ kFactor = kFactor_; }
+int Sample::getInitialNumberOfEvents() const{ return initialNumberOfEvents; }
+void Sample::setInitialNumberOfEvents(int initialNumberOfEvents_){ initialNumberOfEvents = initialNumberOfEvents_; }
+string Sample::getFiles() const{ return files; }
+void Sample::setFiles(string files_){ files = files_; }
+
 
 void Sample::print() const
 {
@@ -69,6 +86,8 @@ void Sample::print() const
 	<< "\ttype= " << type
 	<< "\txSection= " << xSection
 	<< "\tkFactor= " << kFactor
+	<< "\tinitialNumberOfEvents= " << initialNumberOfEvents
+	<< "\tfiles= " << files
 	<< endl;
 }
 

@@ -30,11 +30,20 @@ int main()
 	gROOT->ProcessLine(".x setTDRStyle.C");
 	vector<Sample> sample_list;
 	Sample sig_vbf("vbf_m125_8TeV", "VBF, m_{H}=125 GeV", -1, 1.0);
+	sig_vbf.setFiles("datastore/histograms_CMS-HGG_ALL.root");
 	Sample bkg_diphojet("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
-	
+	bkg_diphojet.setFiles("datastore/histograms_CMS-HGG_ALL.root");
+
+	sample_list.push_back(sig_vbf);
+	sample_list.push_back(bkg_diphojet);
 
 	TClonesArray chain_sample("TChain", sample_list.size() - 1);
-	
+	for(unsigned int isample = 0; isample < sample_list.size() - 1 ; isample++)
+	{
+		new (chain_sample[isample])	TChain(sample_list[isample].getName().c_str());
+		((TChain*)chain_sample.At(isample))->Add(sample_list[isample].getFiles().c_str());
+	}
+
 	TChain *chain_signal = new TChain("vbf_m125_8TeV");
 	TChain *chain_background = new TChain("diphojet_8TeV");
 	TCanvas *canvas = new TCanvas();
