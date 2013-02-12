@@ -31,8 +31,8 @@ int main()
 	TCanvas *canvas = new TCanvas();
 	double integratedLumi = 5000.0;
 
-	chain_signal->Add("/afs/cern.ch/work/o/obondu/Higgs/CMSSW_5_3_4_v2/src/h2gglobe/AnalysisScripts/joboutput_trees_kin_v02/histograms_CMS-HGG_ALL.root");	
-	chain_background->Add("/afs/cern.ch/work/o/obondu/Higgs/CMSSW_5_3_4_v2/src/h2gglobe/AnalysisScripts/joboutput_trees_kin_v02/histograms_CMS-HGG_ALL.root");	
+	chain_signal->Add("datastore/histograms_CMS-HGG_ALL.root");	
+	chain_background->Add("datastore/histograms_CMS-HGG_ALL.root");	
 
 	DrawMCPlot(chain_signal, chain_background, "mass", "mass", "(160, 100, 180)", "100 < mass && mass < 180 && category < 4", "100_mass_180", "m_{#gamma#gamma}", 0, canvas, integratedLumi);
 	

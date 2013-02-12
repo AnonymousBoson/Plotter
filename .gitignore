@@ -1,6 +1,6 @@
 DrawMC.exe
 datastore
-pdf
 pdf/*
-root
 root/*
+gif/*
+*.swp
