@@ -5,3 +5,4 @@ root/*
 gif/*
 *.swp
 .DS_Store
+dump.pdf

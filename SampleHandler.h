@@ -15,7 +15,9 @@ class Sample
 		double kFactor;
 		int initialNumberOfEvents;
 		string files;
-		
+// color
+// specific cuts
+// spectific weights
 
 	public:
 		Sample(string name_, string displayName_, int type_, double xSection_, int initialNumberOfEvents_, double kFactor_);
