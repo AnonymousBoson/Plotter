@@ -4,3 +4,4 @@ pdf/*
 root/*
 gif/*
 *.swp
+.DS_Store
