@@ -1,5 +1,10 @@
 // to handle somewhat more cleanly metadata
 // Olivier Bondu, February 2013
+// C++ headers
+#include <string>
+// namespaces
+using namespace std;
+
 class Sample
 {
 	private:
@@ -9,42 +14,61 @@ class Sample
 		double xSection; // in pb
 		double kFactor;
 	public:
-		Sample(string name_, string displayName_);
+		Sample(string name_, string displayName_, int type_, double xSection_, double kFactor_);
+		Sample(const Sample &);
 
-		string getName();
+		string getName() const;
 		void setName(string name_);
-		string getDisplayName();
+		string getDisplayName() const;
 		void setDisplayName(string displayName_);
-		int getType();
+		int getType() const;
 		void setType(int type_);
-		double getXSesction();
+		double getXSection() const;
 		void setXSection(double xSection_);
-		double getKFactor();
+		double getKFactor() const;
 		void setKFactor(double kFactor_);
 
-		~Sample();
-}
+		void print() const;
+};
 
-Sample::Sample(string name_, string displayName_)
+
+Sample::Sample(string name_, string displayName_, int type_ = 0, double xSection_ = 1.0, double kFactor_ = 1.0)
 {
 	name = name_;
 	displayName = displayName_;
-	type = 0;
-	xSection = 1.0;
-	kFactor = 1.0;
-	
+	type = type_;
+	xSection = xSection_;
+	kFactor = kFactor_;
 }
 
-string Sample::getName();
-void Sample::setName(string name_);
-string Sample::getDisplayName();
-void Sample::setDisplayName(string displayName_);
-int Sample::getType();
-void Sample::setType(int type_);
-double Sample::getXSesction();
-void Sample::setXSection(double xSection_);
-double Sample::getKFactor();
-void Sample::setKFactor(double kFactor_);
+Sample::Sample(const Sample & s)
+{
+	name = s.getName();
+	displayName = s.getDisplayName();
+	type = s.getType();
+	xSection = s.getXSection();
+	kFactor = s.getKFactor();
+}
 
-Sample::~Sample();
+string Sample::getName() const{ return name; }
+void Sample::setName(string name_){ name = name_; }
+string Sample::getDisplayName() const{ return displayName; }
+void Sample::setDisplayName(string displayName_){ displayName = displayName_;}
+int Sample::getType() const{ return type; }
+void Sample::setType(int type_){ type = type_; }
+double Sample::getXSection() const{ return xSection; }
+void Sample::setXSection(double xSection_){ xSection = xSection_; }
+double Sample::getKFactor() const{ return kFactor; }
+void Sample::setKFactor(double kFactor_){ kFactor = kFactor_; }
+
+void Sample::print() const
+{
+	cout
+	<< "name= " << name
+	<< "\tdisplayName= " << displayName
+	<< "\ttype= " << type
+	<< "\txSection= " << xSection
+	<< "\tkFactor= " << kFactor
+	<< endl;
+}
 

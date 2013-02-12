@@ -4,7 +4,7 @@
 #include <string>
 #include <sstream>
 #include <math.h>
-
+#include <vector>
 // ROOT headers
 #include "TROOT.h"
 #include <TChain.h>
@@ -13,8 +13,10 @@
 #include <TH1F.h>
 #include <TLegend.h>
 #include <TLatex.h>
+#include <TClonesArray.h>
 // local files
 #include "CMSStyle.C"
+#include "SampleHandler.h"
 // defines
 #define DEBUG 0
 
@@ -26,6 +28,13 @@ void DrawMCPlot(TChain * chain_signal, TChain * chain_background, string variabl
 int main()
 {
 	gROOT->ProcessLine(".x setTDRStyle.C");
+	vector<Sample> sample_list;
+	Sample sig_vbf("vbf_m125_8TeV", "VBF, m_{H}=125 GeV", -1, 1.0);
+	Sample bkg_diphojet("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
+	
+
+	TClonesArray chain_sample("TChain", sample_list.size() - 1);
+	
 	TChain *chain_signal = new TChain("vbf_m125_8TeV");
 	TChain *chain_background = new TChain("diphojet_8TeV");
 	TCanvas *canvas = new TCanvas();
