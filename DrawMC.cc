@@ -31,10 +31,17 @@ int main()
 	gROOT->ProcessLine(".x setTDRStyle.C");
 	TGaxis::SetMaxDigits(3);
 	vector<Sample> sample_list;
-	Sample sig_vbf("vbf_m125_8TeV", "VBF, m_{H}=125 GeV", -1, 1.0);
+
+	Sample sig_vbf("vbf_m125_8TeV", "VBF (125 GeV)", -1, 1.0);
 	sig_vbf.setFiles("datastore/histograms_CMS-HGG_ALL.root");
+	sig_vbf.setStyle(kRed, 3, 3004, "");
+
 	Sample bkg_diphojet("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
 	bkg_diphojet.setFiles("datastore/histograms_CMS-HGG_ALL.root");
+	bkg_diphojet.setStyle(kAzure+1, 1, 3001, "");
+	bkg_diphojet.setSpecificWeights("xsec_weight");
+
+{'vbf_m120_8TeV': 79376.0, 'diphojet_8TeV': 639312.0, 'vbf_m125_8TeV': 79784.0, 'ggh_m125_8TeV': 69036.0}
 
 	sample_list.push_back(sig_vbf);
 	sample_list.push_back(bkg_diphojet);
@@ -50,7 +57,7 @@ int main()
 	double integratedLumi = 5000.0;
 
 
-	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "mass", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
 
 	delete canvas;
 	canvas = 0;
@@ -77,7 +84,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		string tmp_histname = "histo_" + sample_list[isample].getName() + "_temp";
 		string var = variable + ">>" + tmp_histname + range;
 //		string cut = "(" + cuts + ") * xsec_weight";
-		string cut = "(" + cuts + ") * 1.0";
+		string cut = "(" + cuts + ") * pu_weight * " + sample_list[isample].getSpecificWeights();
 		((TChain*)chain_sample->At(isample))->Draw(var.c_str(), cut.c_str());
 		if(DEBUG) canvas->Print("dump.pdf");
 		((*histos)[isample]) = (TH1F*)gDirectory->Get(tmp_histname.c_str());
@@ -91,7 +98,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	vector<double> integrals;
 	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
 	{
-		string cut = "(" + cuts + ") * xsec_weight";
+		string cut = "(" + cuts + ") * pu_weight * " + sample_list[isample].getSpecificWeights();
 		integrals.push_back(
 			((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str())
 		);
@@ -160,20 +167,16 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	gPad->Update();
 	((TH1F*)histos->At(0))->GetXaxis()->SetTitle(xAxisTitle.c_str());
 	((TH1F*)histos->At(0))->GetYaxis()->SetTitle(yAxisTitle.c_str());
-	((TH1F*)histos->At(0))->SetLineColor(kRed);
-	((TH1F*)histos->At(0))->SetLineWidth(3);
-	((TH1F*)histos->At(0))->SetFillColor(kRed);
-	((TH1F*)histos->At(0))->SetFillStyle(3004);
-
-	((TH1F*)histos->At(1))->SetLineColor(kAzure+1);
-	((TH1F*)histos->At(1))->SetFillColor(kAzure+1);
-	((TH1F*)histos->At(1))->SetFillStyle(3001);
 
 	for(int isample=0 ; isample < chain_sample->GetEntriesFast() ; isample ++)
 	{
+		((TH1F*)histos->At(isample))->SetLineColor(sample_list[isample].getColor());
+		((TH1F*)histos->At(isample))->SetFillColor(sample_list[isample].getColor());
+		((TH1F*)histos->At(isample))->SetLineWidth(sample_list[isample].getLineWidth());
+		((TH1F*)histos->At(isample))->SetFillStyle(sample_list[isample].getFillStyle());
 		((TH1F*)histos->At(isample))->SetMaximum(YMax_lin);
 		((TH1F*)histos->At(isample))->SetMinimum(YMin_lin);
-		((TH1F*)histos->At(isample))->Draw(isample==0 ? "": "same");
+		((TH1F*)histos->At(isample))->Draw((sample_list[isample].getDrawStyle() + (isample==0 ? "": "same")).c_str());
 		legend->AddEntry(((TH1F*)histos->At(isample))->GetName(), sample_list[isample].getDisplayName().c_str(), "f");
 	}
 
