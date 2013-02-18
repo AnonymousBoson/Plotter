@@ -38,8 +38,8 @@ int main()
 	sig_vbf.setXSection((1.578 * 2.28 * 0.001));
 	sig_vbf.setInitialNumberOfEvents(79784.0);
 	sig_vbf.setSpecificWeights("manual");
-	sig_vbf.setKFactor(100.0);
-	sig_vbf.setStackGroup("signal");
+	sig_vbf.setKFactor(1000.0);
+	sig_vbf.setStackGroup("SM Higgs (125 GeV)");
 
 	Sample sig_ggh("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
 	sig_ggh.setFiles("datastore/histograms_CMS-HGG_ALL.root");
@@ -47,8 +47,7 @@ int main()
 	sig_ggh.setXSection((19.52 * 2.28 * 0.001));
 	sig_ggh.setInitialNumberOfEvents(69036.0);
 	sig_ggh.setSpecificWeights("manual");
-	sig_ggh.setKFactor(100.0);
-	sig_ggh.setStackGroup("signal");
+	sig_ggh.setStackGroup("SM Higgs (125GeV)");
 
 	Sample bkg_diphojet("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
 	bkg_diphojet.setFiles("datastore/histograms_CMS-HGG_ALL.root");
@@ -76,7 +75,7 @@ int main()
 
 
 	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
+//	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
 
 	delete canvas;
 	canvas = 0;
