@@ -74,6 +74,7 @@ int main()
 
 
 	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
 
 	delete canvas;
 	canvas = 0;
@@ -113,8 +114,8 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			string cutString = cutOSS.str();
 			cut += " * pu_weight * " + sample_list[isample].getSpecificWeights() + " * " + cutString;
 		}
-		sample_list[isample].print();
-		cout << cut << endl;
+		if(DEBUG) sample_list[isample].print();
+		if(DEBUG) cout << cut << endl;
 		((TChain*)chain_sample->At(isample))->Draw(var.c_str(), cut.c_str());
 		if(DEBUG) canvas->Print("dump.pdf");
 		((*histos)[isample]) = (TH1F*)gDirectory->Get(tmp_histname.c_str());
@@ -212,14 +213,23 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	((TH1F*)histos->At(0))->GetXaxis()->SetTitle(xAxisTitle.c_str());
 	((TH1F*)histos->At(0))->GetYaxis()->SetTitle(yAxisTitle.c_str());
 
+	if( inLogScale ) canvas->SetLogy(1);
+
 	for(int isample=0 ; isample < chain_sample->GetEntriesFast() ; isample ++)
 	{
 		((TH1F*)histos->At(isample))->SetLineColor(sample_list[isample].getColor());
 		((TH1F*)histos->At(isample))->SetFillColor(sample_list[isample].getColor());
 		((TH1F*)histos->At(isample))->SetLineWidth(sample_list[isample].getLineWidth());
 		((TH1F*)histos->At(isample))->SetFillStyle(sample_list[isample].getFillStyle());
-		((TH1F*)histos->At(isample))->SetMaximum(YMax_lin);
-		((TH1F*)histos->At(isample))->SetMinimum(YMin_lin);
+		if( !inLogScale )
+		{
+			((TH1F*)histos->At(isample))->SetMaximum(YMax_lin);
+			((TH1F*)histos->At(isample))->SetMinimum(YMin_lin);
+		} else {
+			((TH1F*)histos->At(isample))->SetMaximum(YMax_log);
+			((TH1F*)histos->At(isample))->SetMinimum(YMin_log);
+			((TH1F*)histos->At(isample))->GetYaxis()->SetRangeUser(YMin_log, YMax_log);
+		}
 		((TH1F*)histos->At(isample))->Draw((sample_list[isample].getDrawStyle() + (isample==0 ? "": "same")).c_str());
 		if( sample_list[isample].getKFactor() == 1.0 )
 		{
@@ -271,7 +281,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	canvas->Draw();
 
 	string PicName = "";
-	PicName="gif/" + canvas_name + ".gif";
+	PicName="gif/" + canvas_name + (inLogScale?"_log":"_lin") + ".gif";
 	canvas->Print(PicName.c_str());
 	PicName="root/" + canvas_name + ".root";
 	canvas->Print(PicName.c_str());
