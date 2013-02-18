@@ -13,7 +13,7 @@ class Sample
 		int type; // negatives for signal, positives for background, 0 for data
 		double xSection; // in pb
 		double kFactor;
-		int initialNumberOfEvents;
+		double initialNumberOfEvents;
 		string files;
 		Color_t color;
 		int lineWidth;
@@ -22,7 +22,7 @@ class Sample
 		string specificCuts;
 		string specificWeights;
 	public:
-		Sample(string name_, string displayName_, int type_, double xSection_, int initialNumberOfEvents_, double kFactor_);
+		Sample(string name_, string displayName_, int type_, double xSection_, double initialNumberOfEvents_, double kFactor_);
 		Sample(const Sample &);
 
 		string getName() const;
@@ -35,8 +35,8 @@ class Sample
 		void setXSection(double xSection_);
 		double getKFactor() const;
 		void setKFactor(double kFactor_);
-		int getInitialNumberOfEvents() const;
-		void setInitialNumberOfEvents(int initialNumberOfEvents_);
+		double getInitialNumberOfEvents() const;
+		void setInitialNumberOfEvents(double initialNumberOfEvents_);
 		string getFiles() const;
 		void setFiles(string files_);
 		Color_t getColor() const;
@@ -57,7 +57,7 @@ class Sample
 };
 
 
-Sample::Sample(string name_, string displayName_, int type_ = 0, double xSection_ = 1.0, int initialNumberOfEvents_ = 1, double kFactor_ = 1.0)
+Sample::Sample(string name_, string displayName_, int type_ = 0, double xSection_ = 1.0, double initialNumberOfEvents_ = 1, double kFactor_ = 1.0)
 {
 	name = name_;
 	displayName = displayName_;
@@ -70,7 +70,7 @@ Sample::Sample(string name_, string displayName_, int type_ = 0, double xSection
 	lineWidth = 1;
 	fillStyle = 3001;
 	drawStyle = "";
-	specificCuts = "";
+	specificCuts = "1.0";
 	specificWeights = "1.0";
 }
 
@@ -101,8 +101,8 @@ double Sample::getXSection() const{ return xSection; }
 void Sample::setXSection(double xSection_){ xSection = xSection_; }
 double Sample::getKFactor() const{ return kFactor; }
 void Sample::setKFactor(double kFactor_){ kFactor = kFactor_; }
-int Sample::getInitialNumberOfEvents() const{ return initialNumberOfEvents; }
-void Sample::setInitialNumberOfEvents(int initialNumberOfEvents_){ initialNumberOfEvents = initialNumberOfEvents_; }
+double Sample::getInitialNumberOfEvents() const{ return initialNumberOfEvents; }
+void Sample::setInitialNumberOfEvents(double initialNumberOfEvents_){ initialNumberOfEvents = initialNumberOfEvents_; }
 string Sample::getFiles() const{ return files; }
 void Sample::setFiles(string files_){ files = files_; }
 Color_t Sample::getColor() const{ return color; }

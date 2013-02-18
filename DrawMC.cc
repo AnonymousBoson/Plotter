@@ -35,15 +35,31 @@ int main()
 	Sample sig_vbf("vbf_m125_8TeV", "VBF (125 GeV)", -1, 1.0);
 	sig_vbf.setFiles("datastore/histograms_CMS-HGG_ALL.root");
 	sig_vbf.setStyle(kRed, 3, 3004, "");
+	sig_vbf.setXSection((1.578 * 2.28 * 0.001));
+	sig_vbf.setInitialNumberOfEvents(79784.0);
+	sig_vbf.setSpecificWeights("manual");
+	sig_vbf.setKFactor(100.0);
+
+	Sample sig_ggh("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
+	sig_ggh.setFiles("datastore/histograms_CMS-HGG_ALL.root");
+	sig_ggh.setStyle(kGreen, 3, 3004, "");
+	sig_ggh.setXSection((19.52 * 2.28 * 0.001));
+	sig_ggh.setInitialNumberOfEvents(69036.0);
+	sig_ggh.setSpecificWeights("manual");
+	sig_ggh.setKFactor(100.0);
 
 	Sample bkg_diphojet("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
 	bkg_diphojet.setFiles("datastore/histograms_CMS-HGG_ALL.root");
 	bkg_diphojet.setStyle(kAzure+1, 1, 3001, "");
 	bkg_diphojet.setSpecificWeights("xsec_weight");
 
-{'vbf_m120_8TeV': 79376.0, 'diphojet_8TeV': 639312.0, 'vbf_m125_8TeV': 79784.0, 'ggh_m125_8TeV': 69036.0}
+// prodXsection@125GeV
+//{'vbf_m120_8TeV': 1.649 * 2.23 10-3, 'vbf_m125_8TeV': 1.578 * 2.28 10-3, 'ggh_m125_8TeV': 19.52 * 2.28 10-3}
+// number of initial events
+//{'vbf_m120_8TeV': 79376.0, 'diphojet_8TeV': 639312.0, 'vbf_m125_8TeV': 79784.0, 'ggh_m125_8TeV': 69036.0}
 
 	sample_list.push_back(sig_vbf);
+	sample_list.push_back(sig_ggh);
 	sample_list.push_back(bkg_diphojet);
 
 	TClonesArray * chain_sample = new TClonesArray("TChain", sample_list.size() - 1);
@@ -84,7 +100,21 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		string tmp_histname = "histo_" + sample_list[isample].getName() + "_temp";
 		string var = variable + ">>" + tmp_histname + range;
 //		string cut = "(" + cuts + ") * xsec_weight";
-		string cut = "(" + cuts + ") * pu_weight * " + sample_list[isample].getSpecificWeights();
+		string cut = "(" + cuts + " && " + sample_list[isample].getSpecificCuts() + ")";
+		if( (sample_list[isample].getSpecificWeights()).find("manual") != std::string::npos )
+		{
+			std::ostringstream cutOSS;
+			cutOSS << (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * (double)integratedLumi * (double)sample_list[isample].getKFactor();
+			string cutString = cutOSS.str();
+			cut += " * pu_weight * " + cutString;
+		} else {
+			std::ostringstream cutOSS;
+			cutOSS << (double) sample_list[isample].getKFactor();
+			string cutString = cutOSS.str();
+			cut += " * pu_weight * " + sample_list[isample].getSpecificWeights() + " * " + cutString;
+		}
+		sample_list[isample].print();
+		cout << cut << endl;
 		((TChain*)chain_sample->At(isample))->Draw(var.c_str(), cut.c_str());
 		if(DEBUG) canvas->Print("dump.pdf");
 		((*histos)[isample]) = (TH1F*)gDirectory->Get(tmp_histname.c_str());
@@ -98,10 +128,24 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	vector<double> integrals;
 	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
 	{
-		string cut = "(" + cuts + ") * pu_weight * " + sample_list[isample].getSpecificWeights();
-		integrals.push_back(
-			((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str())
+		string cut = "(" + cuts + " && " + sample_list[isample].getSpecificCuts() + ")";
+		((TChain*)chain_sample->At(isample))->Draw("pu_weight>>temp_pu(100,0,10)", cut.c_str());
+		double pu_mean = (((TH1F*)gDirectory->Get("temp_pu"))->GetMean());
+		if( (sample_list[isample].getSpecificWeights()).find("manual") != std::string::npos )
+		{
+			integrals.push_back(
+				((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * (double)integratedLumi * sample_list[isample].getKFactor()
+			);
+//			cut += " * pu_weight * " + cutString;
+		} else {
+//			cut += " * pu_weight * " + sample_list[isample].getSpecificWeights();
+			((TChain*)chain_sample->At(isample))->Draw("xsec_weight>>temp_xsec(100,0,10)", cut.c_str());
+			double xsec_mean = (((TH1F*)gDirectory->Get("temp_xsec"))->GetMean());
+			integrals.push_back(
+			((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * xsec_mean * sample_list[isample].getKFactor()
 		);
+		}
+//string cut = "(" + cuts + ") * pu_weight * " + sample_list[isample].getSpecificWeights();
 		canvas->Clear();
 	}
 
@@ -177,7 +221,16 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		((TH1F*)histos->At(isample))->SetMaximum(YMax_lin);
 		((TH1F*)histos->At(isample))->SetMinimum(YMin_lin);
 		((TH1F*)histos->At(isample))->Draw((sample_list[isample].getDrawStyle() + (isample==0 ? "": "same")).c_str());
-		legend->AddEntry(((TH1F*)histos->At(isample))->GetName(), sample_list[isample].getDisplayName().c_str(), "f");
+		if( sample_list[isample].getKFactor() == 1.0 )
+		{
+			legend->AddEntry(((TH1F*)histos->At(isample))->GetName(), sample_list[isample].getDisplayName().c_str(), "f");
+		} else {
+			ostringstream displayOSS;
+			displayOSS << (double)sample_list[isample].getKFactor();
+			string displayString = displayOSS.str();
+			string display = sample_list[isample].getDisplayName() + " #times" + displayString;
+			legend->AddEntry(((TH1F*)histos->At(isample))->GetName(), display.c_str(), "f");
+		}
 	}
 
 	// Redraw signal on top
