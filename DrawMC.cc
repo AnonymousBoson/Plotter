@@ -39,6 +39,7 @@ int main()
 	sig_vbf.setInitialNumberOfEvents(79784.0);
 	sig_vbf.setSpecificWeights("manual");
 	sig_vbf.setKFactor(100.0);
+	sig_vbf.setStackGroup("signal");
 
 	Sample sig_ggh("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
 	sig_ggh.setFiles("datastore/histograms_CMS-HGG_ALL.root");
@@ -47,6 +48,7 @@ int main()
 	sig_ggh.setInitialNumberOfEvents(69036.0);
 	sig_ggh.setSpecificWeights("manual");
 	sig_ggh.setKFactor(100.0);
+	sig_ggh.setStackGroup("signal");
 
 	Sample bkg_diphojet("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
 	bkg_diphojet.setFiles("datastore/histograms_CMS-HGG_ALL.root");
@@ -120,6 +122,62 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		if(DEBUG) canvas->Print("dump.pdf");
 		((*histos)[isample]) = (TH1F*)gDirectory->Get(tmp_histname.c_str());
 		canvas->Clear();
+	}
+
+	if(DEBUG) cout << "##### SETUP STACK GROUPS #####" << endl;
+	// ##### SETUP STACK GROUPS #####
+	vector<string> stackGroups;
+	vector<vector<int> > stackSamples;
+	stackGroups.clear();
+	stackSamples.clear();
+	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
+	{
+		string stack = sample_list[isample].getStackGroup();
+		bool stackAlreadyProcessed = false;
+		for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
+		{ // check if this stack group has already been processed
+			if( stack == stackGroups[istack] )
+			{
+				stackAlreadyProcessed = true;
+				continue;
+			}
+		}
+		if( (sample_list[isample].getStackGroup() != "") && !stackAlreadyProcessed )
+		{ // if the sample is to be stack, look for similar samples it is to be stacked with
+			stackGroups.push_back(sample_list[isample].getStackGroup());
+			vector<int> samples;
+			samples.push_back(isample);
+			for(int jsample = isample+1 ; jsample < chain_sample->GetEntriesFast() ; jsample++)
+			{
+				if( sample_list[isample].getStackGroup() == sample_list[jsample].getStackGroup() )
+					samples.push_back(jsample);
+			}
+			stackSamples.push_back(samples);
+		}
+	}
+
+	for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
+	{
+		cout << "stackGroups[" << istack << "]= " << stackGroups[istack] << endl;
+	}
+
+	for(int istack = 0 ; istack < (int)stackSamples.size() ; istack++)
+	{
+		cout << "stackSamples[" << istack << "]= ";
+		for(int isample = 0 ; isample < (int)stackSamples[istack].size() ; isample++)
+		{
+			cout << stackSamples[istack][isample] << "(" << sample_list[ stackSamples[istack][isample] ].getName() << "), ";
+		}
+		cout << endl;
+	}
+	// effective stack
+	for( int istack = 0 ; istack < (int)stackSamples.size() ; istack++ )
+	{
+		for( int isample = 1 ; isample < (int)stackSamples[istack].size() ; isample++ )
+		{
+			((TH1F*)histos->At( stackSamples[istack][isample]) )->Add(   ((TH1F*)histos->At( stackSamples[istack][isample-1 ]))   );
+//			((TH1F*)histos->At(stackSamples[istack][isample]));
+		}
 	}
 
 	if(DEBUG) cout << "##### GET INTEGRALS #####" << endl;
