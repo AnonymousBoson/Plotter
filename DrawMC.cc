@@ -34,19 +34,20 @@ int main()
 
 	Sample sig_vbf("vbf_m125_8TeV", "VBF (125 GeV)", -1, 1.0);
 	sig_vbf.setFiles("datastore/histograms_CMS-HGG_ALL.root");
-	sig_vbf.setStyle(kRed, 3, 3004, "");
+	sig_vbf.setStyle(kGreen, 3, 3004, "");
 	sig_vbf.setXSection((1.578 * 2.28 * 0.001));
 	sig_vbf.setInitialNumberOfEvents(79784.0);
 	sig_vbf.setSpecificWeights("manual");
-	sig_vbf.setKFactor(1000.0);
+	sig_vbf.setKFactor(200.0);
 	sig_vbf.setStackGroup("SM Higgs (125GeV)");
 
 	Sample sig_ggh("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
 	sig_ggh.setFiles("datastore/histograms_CMS-HGG_ALL.root");
-	sig_ggh.setStyle(kGreen, 3, 3004, "");
+	sig_ggh.setStyle(kRed, 3, 3004, "");
 	sig_ggh.setXSection((19.52 * 2.28 * 0.001));
 	sig_ggh.setInitialNumberOfEvents(69036.0);
 	sig_ggh.setSpecificWeights("manual");
+	sig_ggh.setKFactor(200.0);
 	sig_ggh.setStackGroup("SM Higgs (125GeV)");
 
 	Sample bkg_diphojet("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
@@ -71,11 +72,22 @@ int main()
 	}
 
 	TCanvas *canvas = new TCanvas();
-	double integratedLumi = 5000.0;
-
+//	double integratedLumi = 5000.0;
+	double integratedLumi = -1.0;
 
 	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
-//	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar_altDef", "diphoCosThetaStar_altDef", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|tanh(Y^{*})|", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar_altDef", "diphoCosThetaStar_altDef", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|tanh(Y^{*})|", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar", "diphoCosThetaStar", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|cos(#theta^{*})|", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar", "diphoCosThetaStar", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|cos(#theta^{*})|", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "diphoRapidity", "diphoRapidity", "(200, -3.0, 3.0)", "100 < mass && mass < 180 && category == 0", "cat0", "Y_{#gamma#gamma}", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "diphoRapidity", "diphoRapidity", "(200, -3.0, 3.0)", "100 < mass && mass < 180 && category == 0", "cat0", "Y_{#gamma#gamma}", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "diphoPt", "diphoPt", "(200, 0.0, 500.0)", "100 < mass && mass < 180 && category == 0", "cat0", "p_{T}^{#gamma#gamma}", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "diphoPt", "diphoPt", "(200, 0.0, 500.0)", "100 < mass && mass < 180 && category == 0", "cat0", "p_{T}^{#gamma#gamma}", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "diphoEta", "diphoEta", "(200, -10.0, 10.0)", "100 < mass && mass < 180 && category == 0", "cat0", "#eta^{#gamma#gamma}", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "diphoEta", "diphoEta", "(200, -10.0, 10.0)", "100 < mass && mass < 180 && category == 0", "cat0", "#eta^{#gamma#gamma}", 0, canvas, integratedLumi);
+
 
 	delete canvas;
 	canvas = 0;
@@ -145,6 +157,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		{ // if the sample is to be stack, look for similar samples it is to be stacked with
 			stackGroups.push_back(sample_list[isample].getStackGroup());
 			vector<int> samples;
+			samples.clear();
 			samples.push_back(isample);
 			for(int jsample = isample+1 ; jsample < chain_sample->GetEntriesFast() ; jsample++)
 			{
@@ -155,25 +168,28 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		} else if(sample_list[isample].getStackGroup() == "") {
 			stackGroups.push_back(sample_list[isample].getDisplayName());
 			vector<int> samples;
+			samples.clear();
 			samples.push_back(isample);
 			stackSamples.push_back(samples);
 //			cout << "##### WARNING: THE SAMPLE " << sample_list[isample].getName() << " WILL NOT BE DRAWN, PLEASE ASSOCIATE A STACK GROUP TO IT" << endl;
 		}
 	}
-
-	for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
+	if(DEBUG)
 	{
-		cout << "stackGroups[" << istack << "]= " << stackGroups[istack] << endl;
-	}
-
-	for(int istack = 0 ; istack < (int)stackSamples.size() ; istack++)
-	{
-		cout << "stackSamples[" << istack << "]= ";
-		for(int isample = 0 ; isample < (int)stackSamples[istack].size() ; isample++)
+		for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
 		{
-			cout << stackSamples[istack][isample] << "(" << sample_list[ stackSamples[istack][isample] ].getName() << "), ";
+			cout << "stackGroups[" << istack << "]= " << stackGroups[istack] << endl;
 		}
-		cout << endl;
+	
+		for(int istack = 0 ; istack < (int)stackSamples.size() ; istack++)
+		{
+			cout << "stackSamples[" << istack << "]= ";
+			for(int isample = 0 ; isample < (int)stackSamples[istack].size() ; isample++)
+			{
+				cout << stackSamples[istack][isample] << "(" << sample_list[ stackSamples[istack][isample] ].getName() << "), ";
+			}
+			cout << endl;
+		}
 	}
 	// effective stack
 	for( int istack = 0 ; istack < (int)stackSamples.size() ; istack++ )
@@ -189,16 +205,20 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	// ##### GET INTEGRALS #####
 	// to cope with under and overflow
 	// do it only for the latest one in the stack
-
 	vector<double> integrals;
 	for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
 	{
 		integrals.push_back(0.0);
-		for(int isample=0 ; isample < (int)stackSamples[istack].size() ; isample++)
+		for(int jsample=0 ; jsample < (int)stackSamples[istack].size() ; jsample++)
 		{
+			int isample = stackSamples[istack][jsample];
 			string cut = "(" + cuts + " && " + sample_list[isample].getSpecificCuts() + ")";
 			((TChain*)chain_sample->At(isample))->Draw("pu_weight>>temp_pu(100,0,10)", cut.c_str());
 			double pu_mean = (((TH1F*)gDirectory->Get("temp_pu"))->GetMean());
+			canvas->Clear();
+			if(DEBUG) cout << "stack = " << stackGroups[istack] << "\tsample= " << sample_list[isample].getName() << endl;
+			if(DEBUG) cout << "specific weight= " << (sample_list[isample].getSpecificWeights()) << endl;
+			if(DEBUG) cout << "isMatching= " << (sample_list[isample].getSpecificWeights()).find("manual") << endl;
 			if( (sample_list[isample].getSpecificWeights()).find("manual") != std::string::npos )
 			{
 				integrals[istack] += ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * (double)integratedLumi * sample_list[isample].getKFactor();
@@ -208,8 +228,23 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 				integrals[istack] += ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * xsec_mean * sample_list[isample].getKFactor();
 			}
 			canvas->Clear();
+			if(DEBUG) cout << "integrals[" << istack << "]= " << integrals[istack] << endl;
 		}
 	}
+	// If normalisation to unity asked for, divide histo by integral
+	if(integratedLumi < 0.0)
+	{
+		for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
+		{
+			int isample = stackSamples[istack].back();
+			if(DEBUG) cout << "integral histogram= " << ((TH1F*)histos->At(isample))->Integral() << endl;
+			if(DEBUG) cout << "max,min= " << ((TH1F*)histos->At(isample))->GetMaximum() << " , " << ((TH1F*)histos->At(isample))->GetMinimum() << endl;
+			((TH1F*)histos->At(isample))->Scale((double)1.0/(double)integrals[istack]);
+			if(DEBUG) cout << "integral stored= " << integrals[istack] << endl;
+			if(DEBUG) cout << "max,min= " << ((TH1F*)histos->At(isample))->GetMaximum() << " , " << ((TH1F*)histos->At(isample))->GetMinimum(0.0) << endl;
+		}
+	}
+
 /*
 	vector<double> integrals;
 	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
@@ -235,25 +270,29 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	if(DEBUG) cout << "##### SET THE Y RANGE #####" << endl;
 	// ##### SET THE Y RANGE #####
 	// to keep some space for the legend
-	double YMax = -1.0;
+	double YMax = -INFINITY;
 	double YMin = INFINITY;
 	if(DEBUG) cout << "YMax= " << YMax << "\tYMin= " << YMin << endl;
 
-	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
+	//for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
+	for(int istack = 0 ; istack < (int)stackSamples.size() ; istack++)
 	{
+		int isample = stackSamples[istack].back();
 		double max_sample = ((TH1F*)histos->At(isample))->GetMaximum();
 		YMax = max(max_sample, YMax);
-		double min_sample = INFINITY;
+		double min_sample = ((TH1F*)histos->At(isample))->GetMinimum(0.0);
+		YMin = min(min_sample, YMin);
+/*		double min_sample = INFINITY;
 		for(int ibin=1 ; ibin < ((TH1F*)histos->At(isample))->GetNbinsX() ; ibin++)
 		{
 			unsigned int bincontent = ((TH1F*)histos->At(isample))->GetBinContent(ibin);
-			if( (bincontent != 0) && (bincontent < min_sample) )
+			if( (bincontent > 0.0) && (bincontent < min_sample) )
 				min_sample = bincontent;
 		}
-		YMin = min(min_sample, YMin);
+		YMin = min(min_sample, YMin);*/
 	}
 
-
+	if(DEBUG) cout <<"YMin= " << YMin << "\tYMax= " << YMax << endl;
 	double YMin_lin = (double)YMin / (double)10.0;
 	double Range_lin = ((double)(YMax - YMin_lin)) / ((double)(1.0));
 	double YMax_lin = 0.2*Range_lin + YMax;
@@ -273,9 +312,9 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	if( (xAxisTitle.rfind("[") < xAxisTitle.size()) && (xAxisTitle.rfind("]") < xAxisTitle.size()) )
 	{
 		string unit = xAxisTitle.substr(xAxisTitle.rfind("[")+1, xAxisTitle.rfind("]")-xAxisTitle.rfind("[")-1);
-		yAxisTitle = "Events / " + binWidth + " " + unit;
+		yAxisTitle = (integratedLumi<0.0?"Normalized to unity / ":"Events / ") + binWidth + " " + unit;
 	} else {
-		yAxisTitle = "Events / " + binWidth;
+		yAxisTitle = (integratedLumi<0.0?"Normalized to unity / ":"Events / ") + binWidth;
 	}
 
 
@@ -292,10 +331,11 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	if(DEBUG) cout << "##### DRAW #####" << endl;
 	// ##### DRAW #####
 	gPad->Update();
-	((TH1F*)histos->At(0))->GetXaxis()->SetTitle(xAxisTitle.c_str());
-	((TH1F*)histos->At(0))->GetYaxis()->SetTitle(yAxisTitle.c_str());
+	((TH1F*)histos->At(stackSamples[0].back()))->GetXaxis()->SetTitle(xAxisTitle.c_str());
+	((TH1F*)histos->At(stackSamples[0].back()))->GetYaxis()->SetTitle(yAxisTitle.c_str());
 
 	if( inLogScale ) canvas->SetLogy(1);
+	else canvas->SetLogy(0);
 
 //	for(int isample=0 ; isample < chain_sample->GetEntriesFast() ; isample ++)
 	for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
@@ -314,23 +354,26 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			((TH1F*)histos->At(isample))->SetMinimum(YMin_log);
 			((TH1F*)histos->At(isample))->GetYaxis()->SetRangeUser(YMin_log, YMax_log);
 		}
-		((TH1F*)histos->At(isample))->Draw((sample_list[isample].getDrawStyle() + (isample==0 ? "": "same")).c_str());
+		((TH1F*)histos->At(isample))->Draw((sample_list[isample].getDrawStyle() + (istack==0 ? "": "same")).c_str());
 // FIXME
 //		if( sample_list[isample].getKFactor() == 1.0 )
 //		{
 //			legend->AddEntry(((TH1F*)histos->At(isample))->GetName(), sample_list[isample].getDisplayName().c_str(), "f");
 //		} else {
-			ostringstream displayOSS;
-			displayOSS << (double)sample_list[isample].getKFactor();
-			string displayString = displayOSS.str();
-			string display = sample_list[isample].getDisplayName() + " #times" + displayString;
-			legend->AddEntry(((TH1F*)histos->At(isample))->GetName(), display.c_str(), "f");
+//			ostringstream displayOSS;
+//			displayOSS << (double)sample_list[isample].getKFactor();
+//			string displayString = displayOSS.str();
+//			string display = sample_list[isample].getDisplayName() + " #times" + displayString;
+//			legend->AddEntry(((TH1F*)histos->At(isample))->GetName(), display.c_str(), "f");
 //		}
+				legend->AddEntry(((TH1F*)histos->At(isample))->GetName(), stackGroups[istack].c_str(), "f");
 	}
 
 	// Redraw signal on top
-	for(int isample=0 ; isample < chain_sample->GetEntriesFast() ; isample ++)
+//	for(int isample=0 ; isample < chain_sample->GetEntriesFast() ; isample ++)
+	for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
 	{
+		int isample = stackSamples[istack].back();
 		if( sample_list[isample].getType() < 0 )
 			((TH1F*)histos->At(isample))->Draw("same");
 	}
@@ -348,19 +391,22 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	latexLabel->SetNDC();
 	latexLabel->DrawLatex(0.25, 0.96, "CMS Private 2013");
 	latexLabel->DrawLatex(0.50, 0.96, "#sqrt{s} = 8 TeV");
-	latexLabel->DrawLatex(0.67, 0.96, intLumiText.c_str());
+	if(integratedLumi > 0.0) latexLabel->DrawLatex(0.67, 0.96, intLumiText.c_str());
 
 	TLatex *latexYields = new TLatex();
-	latexYields->SetTextSize(0.03);
-	latexYields->SetNDC();
-	double yCoordinate = 0.90;
-	double yStep = .04;
-	for(int istack = 0 ; istack < (int)integrals.size() ; istack++ )
+	if( integratedLumi > 0.0 )
 	{
-		std::ostringstream tempString;
-		tempString << setprecision(2) << fixed << integrals[istack];
-		string tempText = "N_{" + stackGroups[istack] + "}= " + tempString.str();
-		latexYields->DrawLatex(0.18, yCoordinate, tempText.c_str());
+		latexYields->SetTextSize(0.03);
+		latexYields->SetNDC();
+		double yCoordinate = 0.90;
+		double yStep = .04;
+		for(int istack = 0 ; istack < (int)integrals.size() ; istack++, yCoordinate-=yStep )
+		{
+			std::ostringstream tempString;
+			tempString << setprecision(2) << fixed << integrals[istack];
+			string tempText = "N_{" + stackGroups[istack] + "}= " + tempString.str();
+			latexYields->DrawLatex(0.18, yCoordinate, tempText.c_str());
+		}
 	}
 /*
 	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++, yCoordinate-=yStep)
