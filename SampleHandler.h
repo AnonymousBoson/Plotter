@@ -22,6 +22,7 @@ class Sample
 		string specificCuts;
 		string specificWeights;
 		string stackGroup;
+		string subStackGroup;
 	public:
 		Sample(string name_, string displayName_, int type_, double xSection_, double initialNumberOfEvents_, double kFactor_);
 		Sample(const Sample &);
@@ -54,6 +55,8 @@ class Sample
 		void setSpecificWeights(string specificWeights_);
 		string getStackGroup() const;
 		void setStackGroup(string stackGroup_);
+		string getSubStackGroup() const;
+		void setSubStackGroup(string subStackGroup_);
 		void setStyle(Color_t color_, int lineWidth_, int fillStyle_, string drawStyle_);
 
 		void print() const;
@@ -76,6 +79,7 @@ Sample::Sample(string name_, string displayName_, int type_ = 0, double xSection
 	specificCuts = "1.0";
 	specificWeights = "1.0";
 	stackGroup = "";
+	subStackGroup = "";
 }
 
 Sample::Sample(const Sample & s)
@@ -94,6 +98,7 @@ Sample::Sample(const Sample & s)
 	specificCuts = s.getSpecificCuts();
 	specificWeights = s.getSpecificWeights();
 	stackGroup = s.getStackGroup();
+	subStackGroup = s.getSubStackGroup();
 }
 
 string Sample::getName() const{ return name; }
@@ -124,6 +129,8 @@ string Sample::getSpecificWeights() const{ return specificWeights; }
 void Sample::setSpecificWeights(string specificWeights_){ specificWeights = specificWeights_; }
 string Sample::getStackGroup() const{ return stackGroup; }
 void Sample::setStackGroup(string stackGroup_){ stackGroup = stackGroup_; }
+string Sample::getSubStackGroup() const{ return subStackGroup; }
+void Sample::setSubStackGroup(string subStackGroup_){ subStackGroup = subStackGroup_; }
 void Sample::setStyle(Color_t color_, int lineWidth_, int fillStyle_, string drawStyle_)
 {
 	color = color_;
@@ -150,6 +157,7 @@ void Sample::print() const
 	<< "\tspecificCuts= " << specificCuts
 	<< "\tspecificWeights= " << specificWeights
 	<< "\tstackGroup= " << stackGroup
+	<< "\tsubStackGroup= " << subStackGroup
 	<< endl;
 }
 

@@ -15,19 +15,24 @@
 #include <TLatex.h>
 #include <TClonesArray.h>
 #include <TGaxis.h>
+#include <TError.h>
 // local files
 #include "CMSStyle.C"
 #include "SampleHandler.h"
-// defines
+// Verbosity
 #define DEBUG 0
-
 // namespaces
 using namespace std;
 
+// **************************************************************************************************************************
 void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string variable, string variableFileName, string range, string cuts, string cutsFileName, string xAxisTitle, bool inLogScale, TCanvas *canvas, double integratedLumi);
 
+// **************************************************************************************************************************
 int main()
 {
+	cout << "##### Drawing macro #####" << endl;
+	cout << "##### Initialization #####" << endl;
+	gErrorIgnoreLevel = kWarning;
 	gROOT->ProcessLine(".x setTDRStyle.C");
 	TGaxis::SetMaxDigits(3);
 	vector<Sample> sample_list;
@@ -38,8 +43,8 @@ int main()
 	sig_vbf.setXSection((1.578 * 2.28 * 0.001));
 	sig_vbf.setInitialNumberOfEvents(79784.0);
 	sig_vbf.setSpecificWeights("manual");
-	sig_vbf.setKFactor(200.0);
 	sig_vbf.setStackGroup("SM Higgs (125GeV)");
+	sig_vbf.setSubStackGroup("VBF");
 
 	Sample sig_ggh("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
 	sig_ggh.setFiles("datastore/histograms_CMS-HGG_ALL.root");
@@ -47,8 +52,8 @@ int main()
 	sig_ggh.setXSection((19.52 * 2.28 * 0.001));
 	sig_ggh.setInitialNumberOfEvents(69036.0);
 	sig_ggh.setSpecificWeights("manual");
-	sig_ggh.setKFactor(200.0);
 	sig_ggh.setStackGroup("SM Higgs (125GeV)");
+	sig_ggh.setSubStackGroup("GGF");
 
 	Sample bkg_diphojet("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
 	bkg_diphojet.setFiles("datastore/histograms_CMS-HGG_ALL.root");
@@ -75,6 +80,7 @@ int main()
 //	double integratedLumi = 5000.0;
 	double integratedLumi = -1.0;
 
+	cout << "##### DRAW #####" << endl;
 	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar_altDef", "diphoCosThetaStar_altDef", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|tanh(Y^{*})|", 0, canvas, integratedLumi);
@@ -97,6 +103,7 @@ int main()
 	return 0;
 }
 
+// **************************************************************************************************************************
 void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string variable, string variableFileName, string range, string cuts, string cutsFileName, string xAxisTitle, bool inLogScale, TCanvas *canvas, double integratedLumi)
 {
 	if(DEBUG) cout << "##### INITIALIZATION #####" << endl;
@@ -137,9 +144,13 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	if(DEBUG) cout << "##### SETUP STACK GROUPS #####" << endl;
 	// ##### SETUP STACK GROUPS #####
 	vector<string> stackGroups;
+	vector<string> substackGroups;
 	vector<vector<int> > stackSamples;
+	vector<vector<int> > substackSamples;
 	stackGroups.clear();
+	substackGroups.clear();
 	stackSamples.clear();
+	substackSamples.clear();
 	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
 	{
 		string stack = sample_list[isample].getStackGroup();
