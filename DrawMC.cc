@@ -39,7 +39,7 @@ int main()
 	sig_vbf.setInitialNumberOfEvents(79784.0);
 	sig_vbf.setSpecificWeights("manual");
 	sig_vbf.setKFactor(1000.0);
-	sig_vbf.setStackGroup("SM Higgs (125 GeV)");
+	sig_vbf.setStackGroup("SM Higgs (125GeV)");
 
 	Sample sig_ggh("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
 	sig_ggh.setFiles("datastore/histograms_CMS-HGG_ALL.root");
@@ -135,7 +135,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		bool stackAlreadyProcessed = false;
 		for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
 		{ // check if this stack group has already been processed
-			if( stack == stackGroups[istack] )
+			if( (stack == stackGroups[istack])  && (stack != "") )
 			{
 				stackAlreadyProcessed = true;
 				continue;
@@ -152,6 +152,12 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 					samples.push_back(jsample);
 			}
 			stackSamples.push_back(samples);
+		} else if(sample_list[isample].getStackGroup() == "") {
+			stackGroups.push_back(sample_list[isample].getDisplayName());
+			vector<int> samples;
+			samples.push_back(isample);
+			stackSamples.push_back(samples);
+//			cout << "##### WARNING: THE SAMPLE " << sample_list[isample].getName() << " WILL NOT BE DRAWN, PLEASE ASSOCIATE A STACK GROUP TO IT" << endl;
 		}
 	}
 
@@ -182,7 +188,29 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	if(DEBUG) cout << "##### GET INTEGRALS #####" << endl;
 	// ##### GET INTEGRALS #####
 	// to cope with under and overflow
+	// do it only for the latest one in the stack
 
+	vector<double> integrals;
+	for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
+	{
+		integrals.push_back(0.0);
+		for(int isample=0 ; isample < (int)stackSamples[istack].size() ; isample++)
+		{
+			string cut = "(" + cuts + " && " + sample_list[isample].getSpecificCuts() + ")";
+			((TChain*)chain_sample->At(isample))->Draw("pu_weight>>temp_pu(100,0,10)", cut.c_str());
+			double pu_mean = (((TH1F*)gDirectory->Get("temp_pu"))->GetMean());
+			if( (sample_list[isample].getSpecificWeights()).find("manual") != std::string::npos )
+			{
+				integrals[istack] += ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * (double)integratedLumi * sample_list[isample].getKFactor();
+			} else {
+				((TChain*)chain_sample->At(isample))->Draw("xsec_weight>>temp_xsec(100,0,10)", cut.c_str());
+				double xsec_mean = (((TH1F*)gDirectory->Get("temp_xsec"))->GetMean());
+				integrals[istack] += ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * xsec_mean * sample_list[isample].getKFactor();
+			}
+			canvas->Clear();
+		}
+	}
+/*
 	vector<double> integrals;
 	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
 	{
@@ -194,19 +222,16 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			integrals.push_back(
 				((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * (double)integratedLumi * sample_list[isample].getKFactor()
 			);
-//			cut += " * pu_weight * " + cutString;
 		} else {
-//			cut += " * pu_weight * " + sample_list[isample].getSpecificWeights();
 			((TChain*)chain_sample->At(isample))->Draw("xsec_weight>>temp_xsec(100,0,10)", cut.c_str());
 			double xsec_mean = (((TH1F*)gDirectory->Get("temp_xsec"))->GetMean());
 			integrals.push_back(
 			((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * xsec_mean * sample_list[isample].getKFactor()
-		);
+			);
 		}
-//string cut = "(" + cuts + ") * pu_weight * " + sample_list[isample].getSpecificWeights();
 		canvas->Clear();
 	}
-
+*/
 	if(DEBUG) cout << "##### SET THE Y RANGE #####" << endl;
 	// ##### SET THE Y RANGE #####
 	// to keep some space for the legend
@@ -272,8 +297,10 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 
 	if( inLogScale ) canvas->SetLogy(1);
 
-	for(int isample=0 ; isample < chain_sample->GetEntriesFast() ; isample ++)
+//	for(int isample=0 ; isample < chain_sample->GetEntriesFast() ; isample ++)
+	for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
 	{
+		int isample = stackSamples[istack].back();
 		((TH1F*)histos->At(isample))->SetLineColor(sample_list[isample].getColor());
 		((TH1F*)histos->At(isample))->SetFillColor(sample_list[isample].getColor());
 		((TH1F*)histos->At(isample))->SetLineWidth(sample_list[isample].getLineWidth());
@@ -288,16 +315,17 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			((TH1F*)histos->At(isample))->GetYaxis()->SetRangeUser(YMin_log, YMax_log);
 		}
 		((TH1F*)histos->At(isample))->Draw((sample_list[isample].getDrawStyle() + (isample==0 ? "": "same")).c_str());
-		if( sample_list[isample].getKFactor() == 1.0 )
-		{
-			legend->AddEntry(((TH1F*)histos->At(isample))->GetName(), sample_list[isample].getDisplayName().c_str(), "f");
-		} else {
+// FIXME
+//		if( sample_list[isample].getKFactor() == 1.0 )
+//		{
+//			legend->AddEntry(((TH1F*)histos->At(isample))->GetName(), sample_list[isample].getDisplayName().c_str(), "f");
+//		} else {
 			ostringstream displayOSS;
 			displayOSS << (double)sample_list[isample].getKFactor();
 			string displayString = displayOSS.str();
 			string display = sample_list[isample].getDisplayName() + " #times" + displayString;
 			legend->AddEntry(((TH1F*)histos->At(isample))->GetName(), display.c_str(), "f");
-		}
+//		}
 	}
 
 	// Redraw signal on top
@@ -327,6 +355,14 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	latexYields->SetNDC();
 	double yCoordinate = 0.90;
 	double yStep = .04;
+	for(int istack = 0 ; istack < (int)integrals.size() ; istack++ )
+	{
+		std::ostringstream tempString;
+		tempString << setprecision(2) << fixed << integrals[istack];
+		string tempText = "N_{" + stackGroups[istack] + "}= " + tempString.str();
+		latexYields->DrawLatex(0.18, yCoordinate, tempText.c_str());
+	}
+/*
 	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++, yCoordinate-=yStep)
 	{
 		std::ostringstream tempString;
@@ -334,6 +370,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		string tempText = "N_{" + sample_list[isample].getDisplayName() + "}= " + tempString.str();
 		latexYields->DrawLatex(0.18, yCoordinate, tempText.c_str());
 	}
+*/
 	canvas->Update();
 	canvas->Draw();
 
