@@ -44,7 +44,7 @@ int main()
 	sig_vbf.setInitialNumberOfEvents(79784.0);
 	sig_vbf.setSpecificWeights("manual");
 	sig_vbf.setStackGroup("SM Higgs (125GeV)");
-	sig_vbf.setSubStackGroup("VBF");
+//	sig_vbf.setSuperStackGroup("s+b");
 
 	Sample sig_ggh("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
 	sig_ggh.setFiles("datastore/histograms_CMS-HGG_ALL.root");
@@ -53,21 +53,22 @@ int main()
 	sig_ggh.setInitialNumberOfEvents(69036.0);
 	sig_ggh.setSpecificWeights("manual");
 	sig_ggh.setStackGroup("SM Higgs (125GeV)");
-	sig_ggh.setSubStackGroup("GGF");
+//	sig_ggh.setSuperStackGroup("s+b");
 
 	Sample bkg_diphojet("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
 	bkg_diphojet.setFiles("datastore/histograms_CMS-HGG_ALL.root");
 	bkg_diphojet.setStyle(kAzure+1, 1, 3001, "");
 	bkg_diphojet.setSpecificWeights("xsec_weight");
+//	bkg_diphojet.setSuperStackGroup("s+b");
 
 // prodXsection@125GeV
 //{'vbf_m120_8TeV': 1.649 * 2.23 10-3, 'vbf_m125_8TeV': 1.578 * 2.28 10-3, 'ggh_m125_8TeV': 19.52 * 2.28 10-3}
 // number of initial events
 //{'vbf_m120_8TeV': 79376.0, 'diphojet_8TeV': 639312.0, 'vbf_m125_8TeV': 79784.0, 'ggh_m125_8TeV': 69036.0}
 
+	sample_list.push_back(bkg_diphojet);
 	sample_list.push_back(sig_vbf);
 	sample_list.push_back(sig_ggh);
-	sample_list.push_back(bkg_diphojet);
 
 	TClonesArray * chain_sample = new TClonesArray("TChain", sample_list.size() - 1);
 	for(unsigned int isample = 0; isample < sample_list.size() ; isample++)
@@ -82,6 +83,7 @@ int main()
 
 	cout << "##### DRAW #####" << endl;
 	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
+
 	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar_altDef", "diphoCosThetaStar_altDef", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|tanh(Y^{*})|", 0, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar_altDef", "diphoCosThetaStar_altDef", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|tanh(Y^{*})|", 1, canvas, integratedLumi);
@@ -115,6 +117,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	// Get histos, set cuts
 	TClonesArray * histos_temp = new TClonesArray("TH1F", sample_list.size() - 1);
 	TClonesArray * histos = new TClonesArray("TH1F", sample_list.size() - 1);
+	TClonesArray * superHistos = new TClonesArray("TH1F", sample_list.size() - 1);
 	for(unsigned int isample = 0 ; isample < sample_list.size() ; isample++)
 	{
 		new ((*histos_temp)[isample]) TH1F();
@@ -138,19 +141,16 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		((TChain*)chain_sample->At(isample))->Draw(var.c_str(), cut.c_str());
 		if(DEBUG) canvas->Print("dump.pdf");
 		((*histos)[isample]) = (TH1F*)gDirectory->Get(tmp_histname.c_str());
+		((*superHistos)[isample]) = (TH1F*)gDirectory->Get(tmp_histname.c_str());
 		canvas->Clear();
 	}
 
 	if(DEBUG) cout << "##### SETUP STACK GROUPS #####" << endl;
 	// ##### SETUP STACK GROUPS #####
 	vector<string> stackGroups;
-	vector<string> substackGroups;
 	vector<vector<int> > stackSamples;
-	vector<vector<int> > substackSamples;
 	stackGroups.clear();
-	substackGroups.clear();
 	stackSamples.clear();
-	substackSamples.clear();
 	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
 	{
 		string stack = sample_list[isample].getStackGroup();
@@ -183,7 +183,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			stackSamples.push_back(samples);
 		}
 	}
-	if(DEBUG)
+	if(true)
 	{
 		for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
 		{
@@ -200,15 +200,6 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			cout << endl;
 		}
 	}
-	// effective stack
-	for( int istack = 0 ; istack < (int)stackSamples.size() ; istack++ )
-	{
-		for( int isample = 1 ; isample < (int)stackSamples[istack].size() ; isample++ )
-		{
-			((TH1F*)histos->At( stackSamples[istack][isample]) )->Add(   ((TH1F*)histos->At( stackSamples[istack][isample-1 ]))   );
-		}
-	}
-
 	if(DEBUG) cout << "##### GET INTEGRALS #####" << endl;
 	// ##### GET INTEGRALS #####
 	// to cope with under and overflow
@@ -252,6 +243,77 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			if(DEBUG) cout << "max,min= " << ((TH1F*)histos->At(isample))->GetMaximum() << " , " << ((TH1F*)histos->At(isample))->GetMinimum(0.0) << endl;
 		}
 	}
+	// effective stack, applied after correcting the event count if normalization to unity
+	for( int istack = 0 ; istack < (int)stackSamples.size() ; istack++ )
+	{
+		for( int isample = 1 ; isample < (int)stackSamples[istack].size() ; isample++ )
+		{
+			((TH1F*)histos->At( stackSamples[istack][isample]) )->Add(   ((TH1F*)histos->At( stackSamples[istack][isample-1 ]))   );
+		}
+	}
+	// superStack
+	vector<string> superStackGroups;
+	vector<vector<int> > superStackSamples;
+	for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
+	{
+		int isample = stackSamples[istack].back();
+		string superStack = sample_list[isample].getSuperStackGroup();
+		bool superStackAlreadyProcessed = false;
+		for(int isuperStack=0 ; isuperStack<(int)superStackGroups.size() ; isuperStack++)
+		{
+			if( (superStack == superStackGroups[isuperStack]) && (superStack != "") )
+			{
+				superStackAlreadyProcessed = true;
+				continue;
+			}
+		}
+		if( (sample_list[isample].getSuperStackGroup() != "") && !superStackAlreadyProcessed )
+		{ // if the sample is to be superStack, look for similar samples it is to be superStacked with
+			superStackGroups.push_back(sample_list[isample].getSuperStackGroup());
+			vector<int> samples;
+			samples.clear();
+			samples.push_back(isample);
+			for(int jstack = istack+1 ; jstack < (int)stackSamples.size() ; jstack++)
+			{
+				int jsample = stackSamples[jstack].back();
+				if( sample_list[isample].getSuperStackGroup() == sample_list[jsample].getSuperStackGroup() )
+					samples.push_back(jsample);
+			}
+			superStackSamples.push_back(samples);
+		} else if(sample_list[isample].getSuperStackGroup() == "") {
+			superStackGroups.push_back(sample_list[isample].getDisplayName());
+			vector<int> samples;
+			samples.clear();
+			samples.push_back(isample);
+			superStackSamples.push_back(samples);
+		}
+	}
+	if(true)
+	{
+		for(int isuperStack = 0 ; isuperStack < (int)superStackGroups.size() ; isuperStack++)
+		{
+			cout << "superStackGroups[" << isuperStack << "]= " << superStackGroups[isuperStack] << endl;
+		}
+	
+		for(int isuperStack = 0 ; isuperStack < (int)superStackSamples.size() ; isuperStack++)
+		{
+			cout << "superStackSamples[" << isuperStack << "]= ";
+			for(int isample = 0 ; isample < (int)superStackSamples[isuperStack].size() ; isample++)
+			{
+				cout << superStackSamples[isuperStack][isample] << "(" << sample_list[ superStackSamples[isuperStack][isample] ].getName() << "), ";
+			}
+			cout << endl;
+		}
+	}
+	// effective superStack
+	for( int isuperStack = 0 ; isuperStack < (int)superStackSamples.size() ; isuperStack++ )
+	{
+		for( int isample = 1 ; isample < (int)superStackSamples[isuperStack].size() ; isample++ )
+		{
+			((TH1F*)superHistos->At( superStackSamples[isuperStack][isample]) )->Add(   ((TH1F*)histos->At( superStackSamples[isuperStack][isample-1 ]))   );
+		}
+	}
+
 
 	if(DEBUG) cout << "##### SET THE Y RANGE #####" << endl;
 	// ##### SET THE Y RANGE #####
@@ -260,6 +322,15 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	double YMin = INFINITY;
 	if(DEBUG) cout << "YMax= " << YMax << "\tYMin= " << YMin << endl;
 
+	for(int isuperStack = 0 ; isuperStack < (int)superStackSamples.size() ; isuperStack++)
+	{
+		int isample = superStackSamples[isuperStack].back();
+		double max_sample = ((TH1F*)superHistos->At(isample))->GetMaximum();
+		YMax = max(max_sample, YMax);
+		double min_sample = ((TH1F*)superHistos->At(isample))->GetMinimum(0.0);
+		YMin = min(min_sample, YMin);
+	}
+/*
 	for(int istack = 0 ; istack < (int)stackSamples.size() ; istack++)
 	{
 		int isample = stackSamples[istack].back();
@@ -268,7 +339,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		double min_sample = ((TH1F*)histos->At(isample))->GetMinimum(0.0);
 		YMin = min(min_sample, YMin);
 	}
-
+*/
 	if(DEBUG) cout <<"YMin= " << YMin << "\tYMax= " << YMax << endl;
 	double YMin_lin = (double)YMin / (double)10.0;
 	double Range_lin = ((double)(YMax - YMin_lin)) / ((double)(1.0));
@@ -308,12 +379,43 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	if(DEBUG) cout << "##### DRAW #####" << endl;
 	// ##### DRAW #####
 	gPad->Update();
-	((TH1F*)histos->At(stackSamples[0].back()))->GetXaxis()->SetTitle(xAxisTitle.c_str());
-	((TH1F*)histos->At(stackSamples[0].back()))->GetYaxis()->SetTitle(yAxisTitle.c_str());
+//	((TH1F*)histos->At(stackSamples[0].back()))->GetXaxis()->SetTitle(xAxisTitle.c_str());
+//	((TH1F*)histos->At(stackSamples[0].back()))->GetYaxis()->SetTitle(yAxisTitle.c_str());
+	((TH1F*)histos->At(superStackSamples[0].back()))->GetXaxis()->SetTitle(xAxisTitle.c_str());
+	((TH1F*)histos->At(superStackSamples[0].back()))->GetYaxis()->SetTitle(yAxisTitle.c_str());
 
 	if( inLogScale ) canvas->SetLogy(1);
 	else canvas->SetLogy(0);
 
+	for(int isuperStack = 0 ; isuperStack < (int)superStackSamples.size() ; isuperStack++)
+	{
+		for(int jsample = ((int)superStackSamples[isuperStack].size()-1) ; jsample >= 0 ; jsample--){
+		int isample = superStackSamples[isuperStack][jsample];
+		cout << "isuperStack= " << isuperStack << endl;
+		cout << "isample= " << isample << endl;
+		((TH1F*)superHistos->At(isample))->SetLineColor(sample_list[isample].getColor());
+		((TH1F*)superHistos->At(isample))->SetFillColor(sample_list[isample].getColor());
+		((TH1F*)superHistos->At(isample))->SetLineWidth(sample_list[isample].getLineWidth());
+		((TH1F*)superHistos->At(isample))->SetFillStyle(sample_list[isample].getFillStyle());
+		if( !inLogScale )
+		{
+			((TH1F*)superHistos->At(isample))->SetMaximum(YMax_lin);
+			((TH1F*)superHistos->At(isample))->SetMinimum(YMin_lin);
+		} else {
+			((TH1F*)superHistos->At(isample))->SetMaximum(YMax_log);
+			((TH1F*)superHistos->At(isample))->SetMinimum(YMin_log);
+			((TH1F*)superHistos->At(isample))->GetYaxis()->SetRangeUser(YMin_log, YMax_log);
+		}
+		((TH1F*)superHistos->At(isample))->Draw((sample_list[isample].getDrawStyle() + ((isuperStack==0 && jsample == ((int)superStackSamples[isuperStack].size()-1)) ? "": "same")).c_str());
+		string legendText = "";
+		if( sample_list[isample].getStackGroup() != "" )
+			legendText = sample_list[isample].getStackGroup();
+		else
+			legendText = sample_list[isample].getDisplayName();
+		legend->AddEntry(((TH1F*)superHistos->At(isample))->GetName(), legendText.c_str(), "f");
+	}
+	}
+/*
 	for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
 	{
 		int isample = stackSamples[istack].back();
@@ -333,15 +435,23 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		((TH1F*)histos->At(isample))->Draw((sample_list[isample].getDrawStyle() + (istack==0 ? "": "same")).c_str());
 				legend->AddEntry(((TH1F*)histos->At(isample))->GetName(), stackGroups[istack].c_str(), "f");
 	}
-
+*/
 	// Redraw signal on top
+	for(int isuperStack=0 ; isuperStack < (int)superStackSamples.size() ; isuperStack++)
+	{
+		int isample = superStackSamples[isuperStack].back();
+		if( sample_list[isample].getType() < 0 )
+			if( sample_list[isample].getSuperStackGroup() == "" )
+				((TH1F*)superHistos->At(isample))->Draw("same");
+	}
+/*
 	for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
 	{
 		int isample = stackSamples[istack].back();
 		if( sample_list[isample].getType() < 0 )
 			((TH1F*)histos->At(isample))->Draw("same");
 	}
-
+*/
 
 	gPad->RedrawAxis();
 	legend->Draw();
