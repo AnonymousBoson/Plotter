@@ -183,7 +183,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			stackSamples.push_back(samples);
 		}
 	}
-	if(true)
+	if(DEBUG)
 	{
 		for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
 		{
@@ -288,7 +288,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			superStackSamples.push_back(samples);
 		}
 	}
-	if(true)
+	if(DEBUG)
 	{
 		for(int isuperStack = 0 ; isuperStack < (int)superStackGroups.size() ; isuperStack++)
 		{
@@ -391,8 +391,8 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	{
 		for(int jsample = ((int)superStackSamples[isuperStack].size()-1) ; jsample >= 0 ; jsample--){
 		int isample = superStackSamples[isuperStack][jsample];
-		cout << "isuperStack= " << isuperStack << endl;
-		cout << "isample= " << isample << endl;
+		if(DEBUG) cout << "isuperStack= " << isuperStack << endl;
+		if(DEBUG) cout << "isample= " << isample << endl;
 		((TH1F*)superHistos->At(isample))->SetLineColor(sample_list[isample].getColor());
 		((TH1F*)superHistos->At(isample))->SetFillColor(sample_list[isample].getColor());
 		((TH1F*)superHistos->At(isample))->SetLineWidth(sample_list[isample].getLineWidth());
