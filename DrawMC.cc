@@ -33,6 +33,7 @@ int main()
 	cout << "##### Drawing macro #####" << endl;
 	cout << "##### Initialization #####" << endl;
 	gErrorIgnoreLevel = kWarning;
+	gROOT->Reset();
 	gROOT->ProcessLine(".x setTDRStyle.C");
 	TGaxis::SetMaxDigits(3);
 	vector<Sample> sample_list;
