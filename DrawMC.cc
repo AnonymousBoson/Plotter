@@ -38,36 +38,143 @@ int main()
 	TGaxis::SetMaxDigits(3);
 	vector<Sample> sample_list;
 
-	Sample sig_vbf("vbf_m125_8TeV", "VBF (125 GeV)", -1, 1.0);
-	sig_vbf.setFiles("datastore/histograms_CMS-HGG_ALL.root");
-	sig_vbf.setStyle(kGreen, 3, 3004, "");
-	sig_vbf.setXSection((1.578 * 2.28 * 0.001));
-	sig_vbf.setInitialNumberOfEvents(79784.0);
-	sig_vbf.setSpecificWeights("manual");
-	sig_vbf.setStackGroup("SM Higgs (125GeV)");
-//	sig_vbf.setSuperStackGroup("s+b");
-
 	Sample sig_ggh("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
-	sig_ggh.setFiles("datastore/histograms_CMS-HGG_ALL.root");
+	sig_ggh.setFiles("datastore/tree_v11.root");
 	sig_ggh.setStyle(kRed, 3, 3004, "");
 	sig_ggh.setXSection((19.52 * 2.28 * 0.001));
 	sig_ggh.setInitialNumberOfEvents(69036.0);
 	sig_ggh.setSpecificWeights("manual");
 	sig_ggh.setStackGroup("SM Higgs (125GeV)");
-//	sig_ggh.setSuperStackGroup("s+b");
 
-	Sample bkg_diphojet("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
-	bkg_diphojet.setFiles("datastore/histograms_CMS-HGG_ALL.root");
-	bkg_diphojet.setStyle(kAzure+1, 1, 3001, "");
-	bkg_diphojet.setSpecificWeights("xsec_weight");
-//	bkg_diphojet.setSuperStackGroup("s+b");
+	Sample sig_vbf("vbf_m125_8TeV", "VBF (125 GeV)", -1, 1.0);
+	sig_vbf.setFiles("datastore/tree_v11.root");
+	sig_vbf.setStyle(kRed+1, 3, 3004, "");
+	sig_vbf.setXSection((1.578 * 2.28 * 0.001));
+	sig_vbf.setInitialNumberOfEvents(79784.0);
+	sig_vbf.setSpecificWeights("manual");
+	sig_vbf.setStackGroup("SM Higgs (125GeV)");
+
+	Sample sig_wzh("wzh_m125_8TeV", "WZH (125 GeV)", -1, 1.0);
+	sig_wzh.setFiles("datastore/tree_v11.root");
+	sig_wzh.setStyle(kRed+2, 3, 3004, "");
+	sig_wzh.setXSection((19.52 * 2.28 * 0.001));
+	sig_wzh.setInitialNumberOfEvents(69036.0);
+	sig_wzh.setSpecificWeights("manual");
+	sig_wzh.setStackGroup("SM Higgs (125GeV)");
+
+	Sample sig_tth("tth_m125_8TeV", "WZH (125 GeV)", -1, 1.0);
+	sig_tth.setFiles("datastore/tree_v11.root");
+	sig_tth.setStyle(kRed+2, 3, 3004, "");
+	sig_tth.setXSection((19.52 * 2.28 * 0.001));
+	sig_tth.setInitialNumberOfEvents(69036.0);
+	sig_tth.setSpecificWeights("manual");
+	sig_tth.setStackGroup("SM Higgs (125GeV)");
+
+
+	Sample bkg_qcd_30_8TeV_ff("qcd_30_8TeV_ff", "QCD", 1, 1.0);
+	bkg_qcd_30_8TeV_ff.setFiles("datastore/tree_v13.root");
+	bkg_qcd_30_8TeV_ff.setStyle(kSpring-9, 1, 3001, "");
+	bkg_qcd_30_8TeV_ff.setSpecificWeights("evweight");
+	bkg_qcd_30_8TeV_ff.setStackGroup("ff");
+	bkg_qcd_30_8TeV_ff.setSuperStackGroup("Background");
+
+	Sample bkg_qcd_40_8TeV_ff("qcd_40_8TeV_ff", "QCD", 1, 1.0);
+	bkg_qcd_40_8TeV_ff.setFiles("datastore/tree_v13.root");
+	bkg_qcd_40_8TeV_ff.setStyle(kSpring-9, 1, 3001, "");
+	bkg_qcd_40_8TeV_ff.setSpecificWeights("evweight");
+	bkg_qcd_40_8TeV_ff.setStackGroup("ff");
+	bkg_qcd_40_8TeV_ff.setSuperStackGroup("Background");
+
+	Sample bkg_qcd_30_8TeV_pf("qcd_30_8TeV_pf", "QCD", 1, 1.0);
+	bkg_qcd_30_8TeV_pf.setFiles("datastore/tree_v13.root");
+	bkg_qcd_30_8TeV_pf.setStyle(kAzure+1, 1, 3001, "");
+	bkg_qcd_30_8TeV_pf.setSpecificWeights("evweight");
+	bkg_qcd_30_8TeV_pf.setStackGroup("pf");
+	bkg_qcd_30_8TeV_pf.setSuperStackGroup("Background");
+
+	Sample bkg_qcd_40_8TeV_pf("qcd_40_8TeV_pf", "QCD", 1, 1.0);
+	bkg_qcd_40_8TeV_pf.setFiles("datastore/tree_v13.root");
+	bkg_qcd_40_8TeV_pf.setStyle(kAzure+1, 1, 3001, "");
+	bkg_qcd_40_8TeV_pf.setSpecificWeights("evweight");
+	bkg_qcd_40_8TeV_pf.setStackGroup("pf");
+	bkg_qcd_40_8TeV_pf.setSuperStackGroup("Background");
+
+	Sample bkg_gjet_20_8TeV_pf("gjet_20_8TeV_pf", "#gamma + jets", 1, 1.0);
+	bkg_gjet_20_8TeV_pf.setFiles("datastore/tree_v14.root");
+	bkg_gjet_20_8TeV_pf.setStyle(kAzure+1, 1, 3001, "");
+	bkg_gjet_20_8TeV_pf.setSpecificWeights("evweight");
+	bkg_gjet_20_8TeV_pf.setStackGroup("pf");
+	bkg_gjet_20_8TeV_pf.setSuperStackGroup("Background");
+
+	Sample bkg_gjet_40_8TeV_pf("gjet_40_8TeV_pf", "#gamma + jets", 1, 1.0);
+	bkg_gjet_40_8TeV_pf.setFiles("datastore/tree_v14.root");
+	bkg_gjet_40_8TeV_pf.setStyle(kAzure+1, 1, 3001, "");
+	bkg_gjet_40_8TeV_pf.setSpecificWeights("evweight");
+	bkg_gjet_40_8TeV_pf.setStackGroup("pf");
+	bkg_gjet_40_8TeV_pf.setSuperStackGroup("Background");
+
+	Sample bkg_gjet_20_8TeV_pp("gjet_20_8TeV_pp", "#gamma + jets", 1, 1.0);
+	bkg_gjet_20_8TeV_pp.setFiles("datastore/tree_v14.root");
+	bkg_gjet_20_8TeV_pp.setStyle(kGreen+2, 1, 3001, "");
+	bkg_gjet_20_8TeV_pp.setSpecificWeights("evweight");
+	bkg_gjet_20_8TeV_pp.setStackGroup("pp");
+	bkg_gjet_20_8TeV_pp.setSuperStackGroup("Background");
+
+	Sample bkg_gjet_40_8TeV_pp("gjet_40_8TeV_pp", "#gamma + jets", 1, 1.0);
+	bkg_gjet_40_8TeV_pp.setFiles("datastore/tree_v14.root");
+	bkg_gjet_40_8TeV_pp.setStyle(kGreen+2, 1, 3001, "");
+	bkg_gjet_40_8TeV_pp.setSpecificWeights("evweight");
+	bkg_gjet_40_8TeV_pp.setStackGroup("pp");
+	bkg_gjet_40_8TeV_pp.setSuperStackGroup("Background");
+
+	Sample bkg_diphojet_8TeV("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
+	bkg_diphojet_8TeV.setFiles("datastore/tree_v15.root");
+	bkg_diphojet_8TeV.setStyle(kGreen+2, 1, 3001, "");
+	bkg_diphojet_8TeV.setSpecificWeights("evweight");
+	bkg_diphojet_8TeV.setStackGroup("pp");
+	bkg_diphojet_8TeV.setSuperStackGroup("Background");
+
+	Sample bkg_dipho_Box_25_8TeV("dipho_Box_25_8TeV", "#gamma#gamma + jets (Box)", 1, 1.0);
+	bkg_dipho_Box_25_8TeV.setFiles("datastore/tree_v15.root");
+	bkg_dipho_Box_25_8TeV.setStyle(kGreen+2, 1, 3001, "");
+	bkg_dipho_Box_25_8TeV.setSpecificWeights("evweight");
+	bkg_dipho_Box_25_8TeV.setStackGroup("pp");
+	bkg_dipho_Box_25_8TeV.setSuperStackGroup("Background");
+
+	Sample bkg_dipho_Box_250_8TeV("dipho_Box_250_8TeV", "#gamma + jets", 1, 1.0);
+	bkg_dipho_Box_250_8TeV.setFiles("datastore/tree_v15.root");
+	bkg_dipho_Box_250_8TeV.setStyle(kGreen+2, 1, 3001, "");
+	bkg_dipho_Box_250_8TeV.setSpecificWeights("evweight");
+	bkg_dipho_Box_250_8TeV.setStackGroup("pp");
+	bkg_dipho_Box_250_8TeV.setSuperStackGroup("Background");
+
+	Sample bkg_DYJetsToLL("DYJetsToLL", "Drell-Yan", 1, 1.0);
+	bkg_DYJetsToLL.setFiles("datastore/tree_v15.root");
+	bkg_DYJetsToLL.setStyle(kViolet+1, 1, 3001, "");
+	bkg_DYJetsToLL.setSpecificWeights("evweight");
+	bkg_DYJetsToLL.setStackGroup("DY");
+	bkg_DYJetsToLL.setSuperStackGroup("Background");
+
 
 // prodXsection@125GeV
 //{'vbf_m120_8TeV': 1.649 * 2.23 10-3, 'vbf_m125_8TeV': 1.578 * 2.28 10-3, 'ggh_m125_8TeV': 19.52 * 2.28 10-3}
 // number of initial events
 //{'vbf_m120_8TeV': 79376.0, 'diphojet_8TeV': 639312.0, 'vbf_m125_8TeV': 79784.0, 'ggh_m125_8TeV': 69036.0}
 
-	sample_list.push_back(bkg_diphojet);
+	sample_list.push_back(bkg_DYJetsToLL);
+	sample_list.push_back(bkg_qcd_30_8TeV_ff);
+	sample_list.push_back(bkg_qcd_40_8TeV_ff);
+	sample_list.push_back(bkg_qcd_30_8TeV_pf);
+	sample_list.push_back(bkg_qcd_40_8TeV_pf);
+	sample_list.push_back(bkg_gjet_20_8TeV_pf);
+	sample_list.push_back(bkg_gjet_40_8TeV_pf);
+	sample_list.push_back(bkg_gjet_20_8TeV_pp);
+	sample_list.push_back(bkg_gjet_40_8TeV_pp);
+	sample_list.push_back(bkg_diphojet_8TeV);
+	sample_list.push_back(bkg_dipho_Box_25_8TeV);
+	sample_list.push_back(bkg_dipho_Box_250_8TeV);
+	sample_list.push_back(sig_tth);
+	sample_list.push_back(sig_wzh);
 	sample_list.push_back(sig_vbf);
 	sample_list.push_back(sig_ggh);
 
@@ -79,23 +186,24 @@ int main()
 	}
 
 	TCanvas *canvas = new TCanvas();
-//	double integratedLumi = 5000.0;
-	double integratedLumi = -1.0;
+	double integratedLumi = 5000.0;
+//	double integratedLumi = -1.0;
 
 	cout << "##### DRAW #####" << endl;
-	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
+	string generic_cut = "PhotonsMass < 180 && PhotonsMass > 100 && category == 0";
+	DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", generic_cut.c_str(), "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
 
-	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar_altDef", "diphoCosThetaStar_altDef", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|tanh(Y^{*})|", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar_altDef", "diphoCosThetaStar_altDef", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|tanh(Y^{*})|", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar", "diphoCosThetaStar", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|cos(#theta^{*})|", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar", "diphoCosThetaStar", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|cos(#theta^{*})|", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoRapidity", "diphoRapidity", "(200, -3.0, 3.0)", "100 < mass && mass < 180 && category == 0", "cat0", "Y_{#gamma#gamma}", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoRapidity", "diphoRapidity", "(200, -3.0, 3.0)", "100 < mass && mass < 180 && category == 0", "cat0", "Y_{#gamma#gamma}", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoPt", "diphoPt", "(200, 0.0, 500.0)", "100 < mass && mass < 180 && category == 0", "cat0", "p_{T}^{#gamma#gamma}", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoPt", "diphoPt", "(200, 0.0, 500.0)", "100 < mass && mass < 180 && category == 0", "cat0", "p_{T}^{#gamma#gamma}", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoEta", "diphoEta", "(200, -10.0, 10.0)", "100 < mass && mass < 180 && category == 0", "cat0", "#eta^{#gamma#gamma}", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoEta", "diphoEta", "(200, -10.0, 10.0)", "100 < mass && mass < 180 && category == 0", "cat0", "#eta^{#gamma#gamma}", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", generic_cut.c_str(), "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "dipho_tanhYStar", "dipho_tanhYStar", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|tanh(Y^{*})|", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "dipho_tanhYStar", "dipho_tanhYStar", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|tanh(Y^{*})|", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "dipho_cosThetaStar_CS", "dipho_cosThetaStar_CS", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|cos(#theta^{*})|", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "dipho_cosThetaStar_CS", "dipho_cosThetaStar_CS", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|cos(#theta^{*})|", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "dipho_Y", "dipho_Y", "(200, -3.0, 3.0)", generic_cut.c_str(), "cat0", "Y_{#gamma#gamma}", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "dipho_Y", "dipho_Y", "(200, -3.0, 3.0)", generic_cut.c_str(), "cat0", "Y_{#gamma#gamma}", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "dipho_pt", "dipho_pt", "(200, 0.0, 500.0)", generic_cut.c_str(), "cat0", "p_{T}^{#gamma#gamma}", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "dipho_pt", "dipho_pt", "(200, 0.0, 500.0)", generic_cut.c_str(), "cat0", "p_{T}^{#gamma#gamma}", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "dipho_eta", "dipho_eta", "(200, -10.0, 10.0)", generic_cut.c_str(), "cat0", "#eta^{#gamma#gamma}", 1, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "dipho_eta", "dipho_eta", "(200, -10.0, 10.0)", generic_cut.c_str(), "cat0", "#eta^{#gamma#gamma}", 0, canvas, integratedLumi);
 
 
 	delete canvas;
@@ -223,7 +331,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			{
 				integrals[istack] += ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * (double)integratedLumi * sample_list[isample].getKFactor();
 			} else {
-				((TChain*)chain_sample->At(isample))->Draw("xsec_weight>>temp_xsec(100,0,10)", cut.c_str());
+				((TChain*)chain_sample->At(isample))->Draw("evweight>>temp_xsec(100,0,10)", cut.c_str());
 				double xsec_mean = (((TH1F*)gDirectory->Get("temp_xsec"))->GetMean());
 				integrals[istack] += ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * xsec_mean * sample_list[isample].getKFactor();
 			}
