@@ -1,9 +1,10 @@
 *.exe
+*.exe.dSYM/*
 datastore
 pdf/*
 root/*
 gif/*
 *.swp
 .DS_Store
-dump.pdf
+dump*
 13.*

@@ -20,7 +20,7 @@
 #include "CMSStyle.C"
 #include "SampleHandler.h"
 // Verbosity
-#define DEBUG 0
+#define DEBUG 1
 // namespaces
 using namespace std;
 
@@ -75,6 +75,7 @@ int main()
 	bkg_qcd_30_8TeV_ff.setFiles("datastore/tree_v13.root");
 	bkg_qcd_30_8TeV_ff.setStyle(kSpring-9, 1, 3001, "");
 	bkg_qcd_30_8TeV_ff.setSpecificWeights("evweight");
+	bkg_qcd_30_8TeV_ff.setSpecificCuts("evweight < 100");
 	bkg_qcd_30_8TeV_ff.setStackGroup("ff");
 	bkg_qcd_30_8TeV_ff.setSuperStackGroup("Background");
 
@@ -82,6 +83,7 @@ int main()
 	bkg_qcd_40_8TeV_ff.setFiles("datastore/tree_v13.root");
 	bkg_qcd_40_8TeV_ff.setStyle(kSpring-9, 1, 3001, "");
 	bkg_qcd_40_8TeV_ff.setSpecificWeights("evweight");
+	bkg_qcd_40_8TeV_ff.setSpecificCuts("evweight < 100");
 	bkg_qcd_40_8TeV_ff.setStackGroup("ff");
 	bkg_qcd_40_8TeV_ff.setSuperStackGroup("Background");
 
@@ -89,6 +91,7 @@ int main()
 	bkg_qcd_30_8TeV_pf.setFiles("datastore/tree_v13.root");
 	bkg_qcd_30_8TeV_pf.setStyle(kAzure+1, 1, 3001, "");
 	bkg_qcd_30_8TeV_pf.setSpecificWeights("evweight");
+	bkg_qcd_30_8TeV_pf.setSpecificCuts("evweight < 100");
 	bkg_qcd_30_8TeV_pf.setStackGroup("pf");
 	bkg_qcd_30_8TeV_pf.setSuperStackGroup("Background");
 
@@ -96,6 +99,7 @@ int main()
 	bkg_qcd_40_8TeV_pf.setFiles("datastore/tree_v13.root");
 	bkg_qcd_40_8TeV_pf.setStyle(kAzure+1, 1, 3001, "");
 	bkg_qcd_40_8TeV_pf.setSpecificWeights("evweight");
+	bkg_qcd_40_8TeV_pf.setSpecificCuts("evweight < 100");
 	bkg_qcd_40_8TeV_pf.setStackGroup("pf");
 	bkg_qcd_40_8TeV_pf.setSuperStackGroup("Background");
 
@@ -186,14 +190,14 @@ int main()
 	}
 
 	TCanvas *canvas = new TCanvas();
-	double integratedLumi = 5000.0;
-//	double integratedLumi = -1.0;
+//	double integratedLumi = 5000.0;
+	double integratedLumi = -1.0;
 
 	cout << "##### DRAW #####" << endl;
 	string generic_cut = "PhotonsMass < 180 && PhotonsMass > 100 && category == 0";
 	DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", generic_cut.c_str(), "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
-
 	DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", generic_cut.c_str(), "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
+/*
 	DrawMCPlot(chain_sample, sample_list, "dipho_tanhYStar", "dipho_tanhYStar", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|tanh(Y^{*})|", 0, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "dipho_tanhYStar", "dipho_tanhYStar", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|tanh(Y^{*})|", 1, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "dipho_cosThetaStar_CS", "dipho_cosThetaStar_CS", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|cos(#theta^{*})|", 0, canvas, integratedLumi);
@@ -204,7 +208,7 @@ int main()
 	DrawMCPlot(chain_sample, sample_list, "dipho_pt", "dipho_pt", "(200, 0.0, 500.0)", generic_cut.c_str(), "cat0", "p_{T}^{#gamma#gamma}", 0, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "dipho_eta", "dipho_eta", "(200, -10.0, 10.0)", generic_cut.c_str(), "cat0", "#eta^{#gamma#gamma}", 1, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "dipho_eta", "dipho_eta", "(200, -10.0, 10.0)", generic_cut.c_str(), "cat0", "#eta^{#gamma#gamma}", 0, canvas, integratedLumi);
-
+*/
 
 	delete canvas;
 	canvas = 0;
@@ -321,35 +325,38 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		{
 			int isample = stackSamples[istack][jsample];
 			string cut = "(" + cuts + " && " + sample_list[isample].getSpecificCuts() + ")";
-			((TChain*)chain_sample->At(isample))->Draw("pu_weight>>temp_pu(100,0,10)", cut.c_str());
+			((TChain*)chain_sample->At(isample))->Draw("pu_weight>>temp_pu(100,0,10000)", cut.c_str());
 			double pu_mean = (((TH1F*)gDirectory->Get("temp_pu"))->GetMean());
 			canvas->Clear();
-			if(DEBUG) cout << "stack = " << stackGroups[istack] << "\tsample= " << sample_list[isample].getName() << endl;
-			if(DEBUG) cout << "specific weight= " << (sample_list[isample].getSpecificWeights()) << endl;
-			if(DEBUG) cout << "isMatching= " << (sample_list[isample].getSpecificWeights()).find("manual") << endl;
+			if(DEBUG) cout << "### stack = " << stackGroups[istack] << "\tsample= " << sample_list[isample].getName() << endl;
+			if(DEBUG) cout << "\tspecific weight= " << (sample_list[isample].getSpecificWeights()) << endl;
+			if(DEBUG) cout << "\tisMatching= " << (sample_list[isample].getSpecificWeights()).find("manual") << endl;
 			if( (sample_list[isample].getSpecificWeights()).find("manual") != std::string::npos )
 			{
 				integrals[istack] += ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * (double)integratedLumi * sample_list[isample].getKFactor();
 			} else {
-				((TChain*)chain_sample->At(isample))->Draw("evweight>>temp_xsec(100,0,10)", cut.c_str());
+				((TChain*)chain_sample->At(isample))->Draw("evweight>>temp_xsec(100,0,10000)", cut.c_str());
 				double xsec_mean = (((TH1F*)gDirectory->Get("temp_xsec"))->GetMean());
+				if(DEBUG) cout << "\tintegral = " << integrals[istack] << " + " << ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * xsec_mean * sample_list[isample].getKFactor()<< endl;
 				integrals[istack] += ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * xsec_mean * sample_list[isample].getKFactor();
 			}
 			canvas->Clear();
-			if(DEBUG) cout << "integrals[" << istack << "]= " << integrals[istack] << endl;
+			if(DEBUG) cout << "\tintegrals[" << istack << "]= " << integrals[istack] << endl;
 		}
 	}
 	// If normalisation to unity asked for, divide histo by integral
 	if(integratedLumi < 0.0)
 	{
+		if(DEBUG) cout << "##### NORMALIZATION TO UNITY, DIVIDE HISTO BY INTEGRAL #####" << endl;
 		for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
 		{
 			int isample = stackSamples[istack].back();
-			if(DEBUG) cout << "integral histogram= " << ((TH1F*)histos->At(isample))->Integral() << endl;
-			if(DEBUG) cout << "max,min= " << ((TH1F*)histos->At(isample))->GetMaximum() << " , " << ((TH1F*)histos->At(isample))->GetMinimum() << endl;
+			if(DEBUG) cout << "### sample= " << isample << "\t" << sample_list[isample].getName() << endl;
+			if(DEBUG) cout << "\tintegral histogram= " << ((TH1F*)histos->At(isample))->Integral() << endl;
+			if(DEBUG) cout << "\tmax,min= " << ((TH1F*)histos->At(isample))->GetMaximum() << " , " << ((TH1F*)histos->At(isample))->GetMinimum() << endl;
 			((TH1F*)histos->At(isample))->Scale((double)1.0/(double)integrals[istack]);
-			if(DEBUG) cout << "integral stored= " << integrals[istack] << endl;
-			if(DEBUG) cout << "max,min= " << ((TH1F*)histos->At(isample))->GetMaximum() << " , " << ((TH1F*)histos->At(isample))->GetMinimum(0.0) << endl;
+			if(DEBUG) cout << "\tintegral stored= " << integrals[istack] << endl;
+			if(DEBUG) cout << "\tmax,min= " << ((TH1F*)histos->At(isample))->GetMaximum() << " , " << ((TH1F*)histos->At(isample))->GetMinimum(0.0) << endl;
 		}
 	}
 	// effective stack, applied after correcting the event count if normalization to unity
@@ -420,6 +427,14 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		for( int isample = 1 ; isample < (int)superStackSamples[isuperStack].size() ; isample++ )
 		{
 			((TH1F*)superHistos->At( superStackSamples[isuperStack][isample]) )->Add(   ((TH1F*)histos->At( superStackSamples[isuperStack][isample-1 ]))   );
+		}
+	}
+	if(DEBUG)
+	{
+		cout << "##### CHECKING INTEGRALS AND SUPERSTACKS #####" << endl;
+		for(int iint=0 ; iint < (int)integrals.size() ; iint++)
+		{
+			cout << "integrals[" << iint << "]= " << integrals[iint] << endl;
 		}
 	}
 
@@ -598,9 +613,9 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	string PicName = "";
 	PicName="gif/" + canvas_name + (inLogScale?"_log":"_lin") + ".gif";
 	canvas->Print(PicName.c_str());
-	PicName="root/" + canvas_name + ".root";
+	PicName="root/" + canvas_name + (inLogScale?"_log":"_lin") + ".root";
 	canvas->Print(PicName.c_str());
-	PicName="pdf/" + canvas_name + ".pdf";
+	PicName="pdf/" + canvas_name + (inLogScale?"_log":"_lin") + ".pdf";
 	canvas->Print(PicName.c_str());
 
 	delete legend;
