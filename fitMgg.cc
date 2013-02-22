@@ -54,8 +54,12 @@ int main(int argc, char *argv[])
 	Sample sig_ggf("ggh_m125_8TeV", "GGF (125 GeV)", -1, 1.0);
   sig_ggf.setFiles("datastore/../kinematics_v01/tree_v11.root");
 
+	Sample bkg_diphojet_8TeV("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
+	bkg_diphojet_8TeV.setFiles("datastore/tree_v15.root");
+
 	vector<Sample> sample_list;
 	sample_list.push_back(sig_ggf);
+	sample_list.push_back(bkg_diphojet_8TeV);
 
 	TClonesArray * chain_sample = new TClonesArray("TChain", sample_list.size() - 1);
 	for(int isample = 0 ; isample < (int)sample_list.size() ; isample++)
@@ -82,41 +86,81 @@ int main(int argc, char *argv[])
 	TClonesArray signal_model("RooExtendPdf", n);
 	TClonesArray n_signal("RooRealVar", n);
 	TClonesArray signal_dataset("RooDataSet", n);
+	// ### BACKGROUND ###
+	TClonesArray pol0("RooRealVar", n);
+	TClonesArray pol1("RooRealVar", n);
+	TClonesArray pol2("RooRealVar", n);
+	TClonesArray pol3("RooRealVar", n);
+	TClonesArray pol4("RooRealVar", n);
+	TClonesArray pol5("RooRealVar", n);
+	TClonesArray background_model_bernstein("RooBernstein", n);
+	TClonesArray background_model("RooExtendPdf", n);
+	TClonesArray n_background("RooRealVar", n);
+	TClonesArray background_dataset("RooDataSet", n);	
 
-	// ### SETUP VARIABLES ###
-	RooRealVar CMS_hgg_mass("PhotonsMass", "m_{#gamma#gamma}", 100., 160., "GeV");
+	// ### SETUP VARIABLES AND INITIALIZE FIT PARAMETERS ###
+	RooRealVar CMS_hgg_mass("PhotonsMass", "m_{#gamma#gamma}", 100., 180., "GeV");
+	CMS_hgg_mass.setBins(160);
+
+	RooRealVar category("category", "category", -1, 20);
 	int iclass=0;
 	new (mu_signal_0[iclass])	RooRealVar(Form("mu_signal_0_cat%i", iclass), "#mu_{0}", 125., 120., 130., "GeV");
-    new (sigma_signal_0[iclass])    RooRealVar(Form("sigma_signal_0_cat%i", iclass), "#sigma_{0}", 2.5, 0.1, 4., "GeV");
-    new (gauss_signal_0[iclass])    RooGaussian(Form("gauss_signal_0_cat%i", iclass), Form("gauss_signal_0_cat%i", iclass), CMS_hgg_mass, *(RooAbsReal*)mu_signal_0.At(iclass), *(RooAbsReal*)sigma_signal_0.At(iclass));
-    new (mu_signal_1[iclass])       RooRealVar(Form("mu_signal_1_cat%i", iclass), "#mu_{1}", 124., 120., 130., "GeV");
-    new (sigma_signal_1[iclass])    RooRealVar(Form("sigma_signal_1_cat%i", iclass), "#sigma_{1}", 4., 1.0, 7., "GeV");
-    new (gauss_signal_1[iclass])    RooGaussian(Form("gauss_signal_1_cat%i", iclass), Form("gauss_signal_1_cat%i", iclass), CMS_hgg_mass, *(RooAbsReal*)mu_signal_1.At(iclass), *(RooAbsReal*)sigma_signal_1.At(iclass));
-    new (mu_signal_2[iclass])       RooRealVar(Form("mu_signal_2_cat%i", iclass), "#mu_{2}", 120., 100., 160., "GeV");
-    new (sigma_signal_2[iclass])    RooRealVar(Form("sigma_signal_2_cat%i", iclass), "#sigma_{2}", 20., 5., 50., "GeV");
-    new (gauss_signal_2[iclass])    RooGaussian(Form("gauss_signal_2_cat%i", iclass), Form("gauss_signal_2_cat%i", iclass), CMS_hgg_mass, *(RooAbsReal*)mu_signal_2.At(iclass), *(RooAbsReal*)sigma_signal_2.At(iclass));
-    new (frac_0[iclass])            RooRealVar(Form("frac_0_cat%i", iclass), "frac_{0}", .5, 0.001, 0.999);
-    new (frac_1[iclass])            RooRealVar(Form("frac_1_cat%i", iclass), "frac_{1}", .3, 0.001, 0.999);
-    new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass), *(RooGaussian*)gauss_signal_2.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass), *(RooRealVar*)frac_1.At(iclass)), kFALSE);
-//    new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass)), kFALSE);
-    new(n_signal[iclass])           RooRealVar(Form("hggpdf_cat%i_signal_norm", iclass), "N_{0}", 20., 0., 200., "events");
-    new(signal_model[iclass])       RooExtendPdf(Form("model_signal_class_cat%i", iclass), Form("model_signal_class_cat%i", iclass), *(RooAddPdf*)signal_model_gauss.At(iclass), *(RooRealVar*)n_signal.At(iclass));
+	new (sigma_signal_0[iclass])    RooRealVar(Form("sigma_signal_0_cat%i", iclass), "#sigma_{0}", 2.5, 0.1, 4., "GeV");
+	new (gauss_signal_0[iclass])    RooGaussian(Form("gauss_signal_0_cat%i", iclass), Form("gauss_signal_0_cat%i", iclass), CMS_hgg_mass, *(RooAbsReal*)mu_signal_0.At(iclass), *(RooAbsReal*)sigma_signal_0.At(iclass));
+	new (mu_signal_1[iclass])       RooRealVar(Form("mu_signal_1_cat%i", iclass), "#mu_{1}", 124., 120., 130., "GeV");
+	new (sigma_signal_1[iclass])    RooRealVar(Form("sigma_signal_1_cat%i", iclass), "#sigma_{1}", 4., 1.0, 7., "GeV");
+	new (gauss_signal_1[iclass])    RooGaussian(Form("gauss_signal_1_cat%i", iclass), Form("gauss_signal_1_cat%i", iclass), CMS_hgg_mass, *(RooAbsReal*)mu_signal_1.At(iclass), *(RooAbsReal*)sigma_signal_1.At(iclass));
+	new (mu_signal_2[iclass])       RooRealVar(Form("mu_signal_2_cat%i", iclass), "#mu_{2}", 120., 100., 160., "GeV");
+	new (sigma_signal_2[iclass])    RooRealVar(Form("sigma_signal_2_cat%i", iclass), "#sigma_{2}", 20., 5., 50., "GeV");
+	new (gauss_signal_2[iclass])    RooGaussian(Form("gauss_signal_2_cat%i", iclass), Form("gauss_signal_2_cat%i", iclass), CMS_hgg_mass, *(RooAbsReal*)mu_signal_2.At(iclass), *(RooAbsReal*)sigma_signal_2.At(iclass));
+	new (frac_0[iclass])            RooRealVar(Form("frac_0_cat%i", iclass), "frac_{0}", .5, 0.001, 0.999);
+	new (frac_1[iclass])            RooRealVar(Form("frac_1_cat%i", iclass), "frac_{1}", .3, 0.001, 0.999);
+	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass), *(RooGaussian*)gauss_signal_2.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass), *(RooRealVar*)frac_1.At(iclass)), kFALSE);
+//	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass)), kFALSE);
+	new(n_signal[iclass])           RooRealVar(Form("hggpdf_cat%i_signal_norm", iclass), "N_{0}", 20., 0., 400., "events");
+	new(signal_model[iclass])       RooExtendPdf(Form("model_signal_class_cat%i", iclass), Form("model_signal_class_cat%i", iclass), *(RooAddPdf*)signal_model_gauss.At(iclass), *(RooRealVar*)n_signal.At(iclass));
+	new (pol0[iclass])              RooRealVar(Form("pol0_cat%i", iclass), "b_{0}", 0.0001, 0., 1.);
+	new (pol1[iclass])              RooRealVar(Form("pol1_cat%i", iclass), "b_{1}", 0.0001, 0., 1.);
+	new (pol2[iclass])              RooRealVar(Form("pol2_cat%i", iclass), "b_{2}", 0.0001, 0., 1.);
+	new (pol3[iclass])              RooRealVar(Form("pol3_cat%i", iclass), "b_{3}", 0.0001, 0., 1.);
+	new (pol4[iclass])              RooRealVar(Form("pol4_cat%i", iclass), "b_{4}", 0.0001, 0., 1.);
+	new (pol5[iclass])              RooRealVar(Form("pol5_cat%i", iclass), "b_{5}", 0.0001, 0., 1.);
+	new (n_background[iclass])      RooRealVar(Form("hggpdf_cat%i_background_norm", iclass), "N_{0}", 1000., 0., 1000000000., "events");
+	new (background_model_bernstein[iclass])  RooBernstein(Form("model_background_bernstein_class_%i", iclass), Form("model_background_bernstein_class_%i", iclass), CMS_hgg_mass, RooArgList(*(RooRealVar*)pol0.At(iclass), *(RooRealVar*)pol1.At(iclass), *(RooRealVar*)pol2.At(iclass), *(RooRealVar*)pol3.At(iclass), *(RooRealVar*)pol4.At(iclass)));
+	new (background_model[iclass])  RooExtendPdf(Form("model_background_class_cat%i", iclass), Form("model_background_class_cat%i", iclass), *(RooBernstein*)background_model_bernstein.At(iclass), *(RooRealVar*)n_background.At(iclass));
 
-	RooDataSet *signal = new RooDataSet("signal", "signal", ((TChain*)chain_sample->At(0)), RooArgList(CMS_hgg_mass));
+	RooDataSet *signal = new RooDataSet("signal", "signal", ((TChain*)chain_sample->At(0)), RooArgList(CMS_hgg_mass, category));
+	RooDataSet *background = new RooDataSet("background", "background", ((TChain*)chain_sample->At(1)), RooArgList(CMS_hgg_mass, category));
 
-	new (signal_dataset[iclass])		RooDataSet(Form("signal_dataset_cat%i", iclass), Form("signal_dataset_cat%i", iclass), signal, RooArgSet(CMS_hgg_mass));
+	new (signal_dataset[iclass])		RooDataSet(Form("signal_dataset_cat%i", iclass), Form("signal_dataset_cat%i", iclass), signal, RooArgSet(CMS_hgg_mass, category), Form("category == %i", iclass));
+	new (background_dataset[iclass])		RooDataSet(Form("background_dataset_cat%i", iclass), Form("background_dataset_cat%i", iclass), background, RooArgSet(CMS_hgg_mass, category), Form("category == %i", iclass));
 	((RooDataSet*)signal_dataset.At(iclass))->SetName(Form("signal_dataset_cat%i", iclass));
-	RooFitResult *result_signal = ((RooAbsPdf*)signal_model.At(iclass))->fitTo(*(RooDataSet*)signal_dataset.At(iclass), Save(), SumW2Error(kTRUE));
-	RooPlot *mgg_frame_signal = CMS_hgg_mass.frame(Title("signal"));
-    ((RooDataSet*)signal_dataset.At(iclass))->plotOn(mgg_frame_signal, DataError(RooAbsData::SumW2));
-    ((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, Components(Form("gauss_signal_0_cat%i", iclass)), LineStyle(kDashed), LineColor(kGreen), LineWidth(2));
-    ((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, Components(Form("gauss_signal_1_cat%i", iclass)), LineStyle(kDashed), LineColor(kBlue)), LineWidth(2);
-    ((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, Components(Form("gauss_signal_2_cat%i", iclass)), LineStyle(kDashed), LineColor(kCyan), LineWidth(2));
-    ((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, LineColor(kRed), LineWidth(2));
-    mgg_frame_signal->Draw();
-    RooArgList param_signal = result_signal->floatParsFinal();
+	((RooDataSet*)background_dataset.At(iclass))->SetName(Form("background_dataset_cat%i", iclass));
 
-	canvas->Print("dump.pdf");
+	// ##### FIT #####
+	RooFitResult *result_signal = ((RooAbsPdf*)signal_model.At(iclass))->fitTo(*(RooDataSet*)signal_dataset.At(iclass), Save(), SumW2Error(kTRUE));
+	RooFitResult *result_background = ((RooAbsPdf*)background_model.At(iclass))->fitTo(*(RooDataSet*)background_dataset.At(iclass), Save(), SumW2Error(kTRUE));
+
+	// ##### PLOT THE FIT #####
+	// ### SIGNAL
+	RooPlot *mgg_frame_signal = CMS_hgg_mass.frame(Title("signal"));
+	((RooDataSet*)signal_dataset.At(iclass))->plotOn(mgg_frame_signal, DataError(RooAbsData::SumW2));
+	((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, Components(Form("gauss_signal_0_cat%i", iclass)), LineStyle(kDashed), LineColor(kGreen), LineWidth(2));
+	((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, Components(Form("gauss_signal_1_cat%i", iclass)), LineStyle(kDashed), LineColor(kBlue)), LineWidth(2);
+	((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, Components(Form("gauss_signal_2_cat%i", iclass)), LineStyle(kDashed), LineColor(kCyan), LineWidth(2));
+	((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, LineColor(kRed), LineWidth(2));
+	mgg_frame_signal->Draw();
+	RooArgList param_signal = result_signal->floatParsFinal();
+	canvas->Print("dump_signal.pdf");
+	canvas->Clear();
+	// ### BACKGROUND
+	RooPlot *mgg_frame_background = CMS_hgg_mass.frame(Title("background"));
+	((RooDataSet*)background_dataset.At(iclass))->plotOn(mgg_frame_background, DataError(RooAbsData::SumW2));
+	((RooAbsPdf*)background_model.At(iclass))->plotOn(mgg_frame_background, LineColor(kRed), LineWidth(2));
+	mgg_frame_background->Draw();
+	RooArgList param_background = result_background->floatParsFinal();
+	canvas->Print("dump_background.pdf");
+	canvas->Clear();
 
 	return 0;
 }
