@@ -20,7 +20,7 @@
 #include "CMSStyle.C"
 #include "SampleHandler.h"
 // Verbosity
-#define DEBUG 1
+#define DEBUG 0
 // namespaces
 using namespace std;
 
@@ -345,7 +345,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		}
 	}
 	// If normalisation to unity asked for, divide histo by integral
-	if(integratedLumi < 0.0)
+/*	if(integratedLumi < 0.0)
 	{
 		if(DEBUG) cout << "##### NORMALIZATION TO UNITY, DIVIDE HISTO BY INTEGRAL #####" << endl;
 		for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
@@ -359,6 +359,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			if(DEBUG) cout << "\tmax,min= " << ((TH1F*)histos->At(isample))->GetMaximum() << " , " << ((TH1F*)histos->At(isample))->GetMinimum(0.0) << endl;
 		}
 	}
+*/
 	// effective stack, applied after correcting the event count if normalization to unity
 	for( int istack = 0 ; istack < (int)stackSamples.size() ; istack++ )
 	{
@@ -370,6 +371,10 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	// superStack
 	vector<string> superStackGroups;
 	vector<vector<int> > superStackSamples;
+	vector<double> superIntegrals;
+	superStackGroups.clear();
+	superStackSamples.clear();
+	superIntegrals.clear();
 	for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
 	{
 		int isample = stackSamples[istack].back();
@@ -429,12 +434,41 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			((TH1F*)superHistos->At( superStackSamples[isuperStack][isample]) )->Add(   ((TH1F*)histos->At( superStackSamples[isuperStack][isample-1 ]))   );
 		}
 	}
+	// renormalise superhistos if normalisation to unity
+	if(integratedLumi < 0.0)
+	{
+		// step 1: compute superIntegral
+		int iint = 0;
+		for(int isuperStack = 0 ; isuperStack < (int)superStackSamples.size() ; isuperStack++)
+		{
+			superIntegrals.push_back(0.0);
+			for(int isample=0 ; isample < (int)superStackSamples[isuperStack].size() ; isample++)
+			{
+				if(DEBUG) cout << "\tiint= " << iint << "\tsuperIntegrals[" << isuperStack << "]+= " << integrals[iint] << "\t(= " << superIntegrals[isuperStack] + integrals[iint] << ")" << endl;
+				superIntegrals[isuperStack] += integrals[iint];
+				iint++;
+			}
+		}
+		// step 2: normalisation
+		for(int isuperStack = 0 ; isuperStack < (int)superStackSamples.size() ; isuperStack++ )
+		{
+			for(int isample = 0 ; isample < (int)superStackSamples[isuperStack].size() ; isample++)
+			{
+				((TH1F*)superHistos->At( superStackSamples[isuperStack][isample]) )->Scale((double)1.0/(double)superIntegrals[isuperStack]);
+//				((TH1F*)superHistos->At( superStackSamples[isuperStack][isample]) )->Scale((double)1.0/(double)integrals[0]);
+			}
+		}
+	}
 	if(DEBUG)
 	{
 		cout << "##### CHECKING INTEGRALS AND SUPERSTACKS #####" << endl;
 		for(int iint=0 ; iint < (int)integrals.size() ; iint++)
 		{
 			cout << "integrals[" << iint << "]= " << integrals[iint] << endl;
+		}
+		for(int iint=0 ; iint < (int)superIntegrals.size() ; iint++)
+		{
+			cout << "superIntegrals[" << iint << "]= " << superIntegrals[iint] << endl;
 		}
 	}
 
