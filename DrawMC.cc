@@ -38,39 +38,106 @@ int main()
 	TGaxis::SetMaxDigits(3);
 	vector<Sample> sample_list;
 
-	Sample sig_ggh("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
-	sig_ggh.setFiles("datastore/tree_v11.root");
-	sig_ggh.setStyle(kRed, 3, 3004, "");
-	sig_ggh.setXSection((19.52 * 2.28 * 0.001));
-	sig_ggh.setInitialNumberOfEvents(69036.0);
-	sig_ggh.setSpecificWeights("manual");
-	sig_ggh.setStackGroup("SM Higgs (125GeV)");
+// mh= 120GeV
+	Sample sig_ggh_120("ggh_m120_8TeV", "ggH (120 GeV)", -1, 1.0);
+	sig_ggh_120.setFiles("datastore/tree_v12.root");
+	sig_ggh_120.setStyle(kMagenta, 3, 3004, "");
+	sig_ggh_120.setXSection((21.13 * 2.28 * 0.001));
+	sig_ggh_120.setInitialNumberOfEvents(69036.0);
+	sig_ggh_120.setSpecificWeights("manual");
+	sig_ggh_120.setStackGroup("SM Higgs (120GeV)");
 
-	Sample sig_vbf("vbf_m125_8TeV", "VBF (125 GeV)", -1, 1.0);
-	sig_vbf.setFiles("datastore/tree_v11.root");
-	sig_vbf.setStyle(kRed+1, 3, 3004, "");
-	sig_vbf.setXSection((1.578 * 2.28 * 0.001));
-	sig_vbf.setInitialNumberOfEvents(79784.0);
-	sig_vbf.setSpecificWeights("manual");
-	sig_vbf.setStackGroup("SM Higgs (125GeV)");
+	Sample sig_vbf_120("vbf_m120_8TeV", "VBF (120 GeV)", -1, 1.0);
+	sig_vbf_120.setFiles("datastore/tree_v12.root");
+	sig_vbf_120.setStyle(kRed+1, 3, 3004, "");
+	sig_vbf_120.setXSection((1.649 * 2.28 * 0.001));
+	sig_vbf_120.setInitialNumberOfEvents(79784.0);
+	sig_vbf_120.setSpecificWeights("manual");
+	sig_vbf_120.setStackGroup("SM Higgs (120GeV)");
 
-	Sample sig_wzh("wzh_m125_8TeV", "WZH (125 GeV)", -1, 1.0);
-	sig_wzh.setFiles("datastore/tree_v11.root");
-	sig_wzh.setStyle(kRed+2, 3, 3004, "");
-	sig_wzh.setXSection((19.52 * 2.28 * 0.001));
-	sig_wzh.setInitialNumberOfEvents(69036.0);
-	sig_wzh.setSpecificWeights("manual");
-	sig_wzh.setStackGroup("SM Higgs (125GeV)");
+	Sample sig_wzh_120("wzh_m120_8TeV", "WZH (120 GeV)", -1, 1.0);
+	sig_wzh_120.setFiles("datastore/tree_v12.root");
+	sig_wzh_120.setStyle(kRed+2, 3, 3004, "");
+	sig_wzh_120.setXSection(((0.7966 + 0.4483) * 2.28 * 0.001));
+	sig_wzh_120.setInitialNumberOfEvents(69036.0);
+	sig_wzh_120.setSpecificWeights("manual");
+	sig_wzh_120.setStackGroup("SM Higgs (120GeV)");
 
-	Sample sig_tth("tth_m125_8TeV", "WZH (125 GeV)", -1, 1.0);
-	sig_tth.setFiles("datastore/tree_v11.root");
-	sig_tth.setStyle(kRed+2, 3, 3004, "");
-	sig_tth.setXSection((19.52 * 2.28 * 0.001));
-	sig_tth.setInitialNumberOfEvents(69036.0);
-	sig_tth.setSpecificWeights("manual");
-	sig_tth.setStackGroup("SM Higgs (125GeV)");
+	Sample sig_tth_120("tth_m120_8TeV", "WZH (120 GeV)", -1, 1.0);
+	sig_tth_120.setFiles("datastore/tree_v12.root");
+	sig_tth_120.setStyle(kRed+2, 3, 3004, "");
+	sig_tth_120.setXSection((0.1470 * 2.28 * 0.001));
+	sig_tth_120.setInitialNumberOfEvents(69036.0);
+	sig_tth_120.setSpecificWeights("manual");
+	sig_tth_120.setStackGroup("SM Higgs (120GeV)");
 
+// mh= 125GeV
+	Sample sig_ggh_125("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
+	sig_ggh_125.setFiles("datastore/tree_v11.root");
+	sig_ggh_125.setStyle(kRed, 3, 3005, "");
+	sig_ggh_125.setXSection((19.52 * 2.28 * 0.001));
+	sig_ggh_125.setInitialNumberOfEvents(69036.0);
+	sig_ggh_125.setSpecificWeights("manual");
+	sig_ggh_125.setStackGroup("SM Higgs (125GeV)");
 
+	Sample sig_vbf_125("vbf_m125_8TeV", "VBF (125 GeV)", -1, 1.0);
+	sig_vbf_125.setFiles("datastore/tree_v11.root");
+	sig_vbf_125.setStyle(kRed+1, 3, 3004, "");
+	sig_vbf_125.setXSection((1.578 * 2.28 * 0.001));
+	sig_vbf_125.setInitialNumberOfEvents(79784.0);
+	sig_vbf_125.setSpecificWeights("manual");
+	sig_vbf_125.setStackGroup("SM Higgs (125GeV)");
+
+	Sample sig_wzh_125("wzh_m125_8TeV", "WZH (125 GeV)", -1, 1.0);
+	sig_wzh_125.setFiles("datastore/tree_v11.root");
+	sig_wzh_125.setStyle(kRed+2, 3, 3004, "");
+	sig_wzh_125.setXSection(((0.6966 + 0.3943) * 2.28 * 0.001));
+	sig_wzh_125.setInitialNumberOfEvents(69036.0);
+	sig_wzh_125.setSpecificWeights("manual");
+	sig_wzh_125.setStackGroup("SM Higgs (125GeV)");
+
+	Sample sig_tth_125("tth_m125_8TeV", "WZH (125 GeV)", -1, 1.0);
+	sig_tth_125.setFiles("datastore/tree_v11.root");
+	sig_tth_125.setStyle(kRed+2, 3, 3004, "");
+	sig_tth_125.setXSection((0.1302 * 2.28 * 0.001));
+	sig_tth_125.setInitialNumberOfEvents(69036.0);
+	sig_tth_125.setSpecificWeights("manual");
+	sig_tth_125.setStackGroup("SM Higgs (125GeV)");
+
+// mh= 130GeV
+	Sample sig_ggh_130("ggh_m130_8TeV", "ggH (130 GeV)", -1, 1.0);
+	sig_ggh_130.setFiles("datastore/tree_v10.root");
+	sig_ggh_130.setStyle(kBlue, 3, 3006, "");
+	sig_ggh_130.setXSection((18.07 * 2.28 * 0.001));
+	sig_ggh_130.setInitialNumberOfEvents(69036.0);
+	sig_ggh_130.setSpecificWeights("manual");
+	sig_ggh_130.setStackGroup("SM Higgs (130GeV)");
+
+	Sample sig_vbf_130("vbf_m130_8TeV", "VBF (130 GeV)", -1, 1.0);
+	sig_vbf_130.setFiles("datastore/tree_v10.root");
+	sig_vbf_130.setStyle(kRed+1, 3, 3004, "");
+	sig_vbf_130.setXSection((1.511 * 2.28 * 0.001));
+	sig_vbf_130.setInitialNumberOfEvents(79784.0);
+	sig_vbf_130.setSpecificWeights("manual");
+	sig_vbf_130.setStackGroup("SM Higgs (130GeV)");
+
+	Sample sig_wzh_130("wzh_m130_8TeV", "WZH (130 GeV)", -1, 1.0);
+	sig_wzh_130.setFiles("datastore/tree_v10.root");
+	sig_wzh_130.setStyle(kRed+2, 3, 3004, "");
+	sig_wzh_130.setXSection(((0.6095 + 0.3473) * 2.28 * 0.001));
+	sig_wzh_130.setInitialNumberOfEvents(69036.0);
+	sig_wzh_130.setSpecificWeights("manual");
+	sig_wzh_130.setStackGroup("SM Higgs (130GeV)");
+
+	Sample sig_tth_130("tth_m130_8TeV", "WZH (130 GeV)", -1, 1.0);
+	sig_tth_130.setFiles("datastore/tree_v10.root");
+	sig_tth_130.setStyle(kRed+2, 3, 3004, "");
+	sig_tth_130.setXSection((0.1157 * 2.28 * 0.001));
+	sig_tth_130.setInitialNumberOfEvents(69036.0);
+	sig_tth_130.setSpecificWeights("manual");
+	sig_tth_130.setStackGroup("SM Higgs (130GeV)");
+
+	// backgrounds
 	Sample bkg_qcd_30_8TeV_ff("qcd_30_8TeV_ff", "QCD", 1, 1.0);
 	bkg_qcd_30_8TeV_ff.setFiles("datastore/tree_v13.root");
 	bkg_qcd_30_8TeV_ff.setStyle(kSpring-9, 1, 3001, "");
@@ -177,10 +244,22 @@ int main()
 	sample_list.push_back(bkg_diphojet_8TeV);
 	sample_list.push_back(bkg_dipho_Box_25_8TeV);
 	sample_list.push_back(bkg_dipho_Box_250_8TeV);
-	sample_list.push_back(sig_tth);
-	sample_list.push_back(sig_wzh);
-	sample_list.push_back(sig_vbf);
-	sample_list.push_back(sig_ggh);
+/*
+	sample_list.push_back(sig_tth_120);
+	sample_list.push_back(sig_wzh_120);
+	sample_list.push_back(sig_vbf_120);
+	sample_list.push_back(sig_ggh_120);
+*/
+	sample_list.push_back(sig_tth_125);
+	sample_list.push_back(sig_wzh_125);
+	sample_list.push_back(sig_vbf_125);
+	sample_list.push_back(sig_ggh_125);
+/*
+	sample_list.push_back(sig_tth_130);
+	sample_list.push_back(sig_wzh_130);
+	sample_list.push_back(sig_vbf_130);
+	sample_list.push_back(sig_ggh_130);
+*/
 
 	TClonesArray * chain_sample = new TClonesArray("TChain", sample_list.size() - 1);
 	for(unsigned int isample = 0; isample < sample_list.size() ; isample++)
@@ -197,7 +276,7 @@ int main()
 	string generic_cut = "PhotonsMass < 180 && PhotonsMass > 100 && category == 0";
 	DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", generic_cut.c_str(), "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", generic_cut.c_str(), "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
-/*
+
 	DrawMCPlot(chain_sample, sample_list, "dipho_tanhYStar", "dipho_tanhYStar", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|tanh(Y^{*})|", 0, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "dipho_tanhYStar", "dipho_tanhYStar", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|tanh(Y^{*})|", 1, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "dipho_cosThetaStar_CS", "dipho_cosThetaStar_CS", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|cos(#theta^{*})|", 0, canvas, integratedLumi);
@@ -208,7 +287,7 @@ int main()
 	DrawMCPlot(chain_sample, sample_list, "dipho_pt", "dipho_pt", "(200, 0.0, 500.0)", generic_cut.c_str(), "cat0", "p_{T}^{#gamma#gamma}", 0, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "dipho_eta", "dipho_eta", "(200, -10.0, 10.0)", generic_cut.c_str(), "cat0", "#eta^{#gamma#gamma}", 1, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "dipho_eta", "dipho_eta", "(200, -10.0, 10.0)", generic_cut.c_str(), "cat0", "#eta^{#gamma#gamma}", 0, canvas, integratedLumi);
-*/
+
 
 	delete canvas;
 	canvas = 0;
