@@ -250,9 +250,9 @@ int main()
 	sample_list.push_back(sig_vbf_120);
 	sample_list.push_back(sig_ggh_120);
 */
-	sample_list.push_back(sig_tth_125);
-	sample_list.push_back(sig_wzh_125);
-	sample_list.push_back(sig_vbf_125);
+//	sample_list.push_back(sig_tth_125);
+//	sample_list.push_back(sig_wzh_125);
+//	sample_list.push_back(sig_vbf_125);
 	sample_list.push_back(sig_ggh_125);
 /*
 	sample_list.push_back(sig_tth_130);
@@ -269,25 +269,68 @@ int main()
 	}
 
 	TCanvas *canvas = new TCanvas();
-//	double integratedLumi = 5000.0;
-	double integratedLumi = -1.0;
 
 	cout << "##### DRAW #####" << endl;
-	string generic_cut = "PhotonsMass < 180 && PhotonsMass > 100 && category == 0";
-	DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", generic_cut.c_str(), "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", generic_cut.c_str(), "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
+	double integratedLumi = 19620.0;
+//	double integratedLumi = -1.0;
+	vector<double> lumi;
+	lumi.clear();
+	lumi.push_back(-1.0);
+	lumi.push_back(19620.0);
+	vector<string> cuts;
+	cuts.clear();
+	vector<string> cutName;
+	cutName.clear();
+	vector<string> cutflow;
+	cutflow.clear();
+	vector<string> cutflowName;
+	cutflowName.clear();
+	string generic_cut = "PhotonsMass < 180 && PhotonsMass > 100";
+	string tempString;
+	cutflow.push_back("1.0");
+	cutflowName.push_back("");
+	cutflow.push_back("dipho_pt < 20.");
+	cutflowName.push_back("-diphoPtLT20");
+	cutflow.push_back("dipho_pt < 20. && dipho_cosThetaStar_CS > .8");
+	cutflowName.push_back("-diphoPtLT20-cosThetaStarGTp8");
+	cutflow.push_back("dipho_pt < 20. && dipho_cosThetaStar_CS > .8 && (dipho_Y > 2 || dipho_Y < 2)");
+	cutflowName.push_back("-diphoPtLT20-cosThetaStarGTp8-diphoYGT2");
 
-	DrawMCPlot(chain_sample, sample_list, "dipho_tanhYStar", "dipho_tanhYStar", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|tanh(Y^{*})|", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "dipho_tanhYStar", "dipho_tanhYStar", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|tanh(Y^{*})|", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "dipho_cosThetaStar_CS", "dipho_cosThetaStar_CS", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|cos(#theta^{*})|", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "dipho_cosThetaStar_CS", "dipho_cosThetaStar_CS", "(20, 0.0, 1.0)", generic_cut.c_str(), "cat0", "|cos(#theta^{*})|", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "dipho_Y", "dipho_Y", "(200, -3.0, 3.0)", generic_cut.c_str(), "cat0", "Y_{#gamma#gamma}", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "dipho_Y", "dipho_Y", "(200, -3.0, 3.0)", generic_cut.c_str(), "cat0", "Y_{#gamma#gamma}", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "dipho_pt", "dipho_pt", "(200, 0.0, 500.0)", generic_cut.c_str(), "cat0", "p_{T}^{#gamma#gamma}", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "dipho_pt", "dipho_pt", "(200, 0.0, 500.0)", generic_cut.c_str(), "cat0", "p_{T}^{#gamma#gamma}", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "dipho_eta", "dipho_eta", "(200, -10.0, 10.0)", generic_cut.c_str(), "cat0", "#eta^{#gamma#gamma}", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "dipho_eta", "dipho_eta", "(200, -10.0, 10.0)", generic_cut.c_str(), "cat0", "#eta^{#gamma#gamma}", 0, canvas, integratedLumi);
+	for(int iflow = 0 ; iflow < (int)cutflow.size() ; iflow++)
+	{
+		for(int iphotonID = 0 ; iphotonID < 14 ; iphotonID++)
+		{
+			for(int icat = 0 ; icat < 1 ; icat++)
+//			for(int icat = 0 ; icat < 4 ; icat++)
+			{
+				tempString = Form("category == %i && ph1_ciclevel >= %i && ph2_ciclevel >= %i", icat, iphotonID, iphotonID);
+				tempString += " && " + generic_cut + " && " + cutflow[iflow];
+				cuts.push_back(tempString);
+				tempString = Form("ciclevel%s%i-cat%i%s", iphotonID<10?"0":"", iphotonID, icat, cutflowName[iflow].c_str());
+				cutName.push_back(tempString);
+			}
+		}
+	}
 
+	for(int icut = 0 ; icut < (int)cuts.size() ; icut++ )
+	{
+		cout << "##### NOW PROCESSING CUT " << icut+1 << " / " << cuts.size() << " : " << cutName[icut] << endl;
+		DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", cuts[icut].c_str(), cutName[icut].c_str(), "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", cuts[icut].c_str(), cutName[icut].c_str(), "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
+	
+		DrawMCPlot(chain_sample, sample_list, "dipho_tanhYStar", "diphoTanhYStar", "(20, 0.0, 1.0)", cuts[icut].c_str(), cutName[icut].c_str(), "|tanh(Y^{*})|", 0, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_tanhYStar", "diphoTanhYStar", "(20, 0.0, 1.0)", cuts[icut].c_str(), cutName[icut].c_str(), "|tanh(Y^{*})|", 1, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_cosThetaStar_CS", "diphoCosThetaStarCS", "(20, 0.0, 1.0)", cuts[icut].c_str(), cutName[icut].c_str(), "|cos(#theta^{*})|", 0, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_cosThetaStar_CS", "diphoCosThetaStarCS", "(20, 0.0, 1.0)", cuts[icut].c_str(), cutName[icut].c_str(), "|cos(#theta^{*})|", 1, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_Y", "diphoY", "(200, -3.0, 3.0)", cuts[icut].c_str(), cutName[icut].c_str(), "Y_{#gamma#gamma}", 1, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_Y", "diphoY", "(200, -3.0, 3.0)", cuts[icut].c_str(), cutName[icut].c_str(), "Y_{#gamma#gamma}", 0, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_pt", "diphoPt", "(200, 0.0, 500.0)", cuts[icut].c_str(), cutName[icut].c_str(), "p_{T}^{#gamma#gamma}", 1, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_pt", "diphoPt", "(200, 0.0, 500.0)", cuts[icut].c_str(), cutName[icut].c_str(), "p_{T}^{#gamma#gamma}", 0, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_pt", "diphoPt_zoom", "(200, 0.0, 150.0)", cuts[icut].c_str(), cutName[icut].c_str(), "p_{T}^{#gamma#gamma}", 1, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_pt", "diphoPt_zoom", "(200, 0.0, 150.0)", cuts[icut].c_str(), cutName[icut].c_str(), "p_{T}^{#gamma#gamma}", 0, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_eta", "diphoEta", "(200, -10.0, 10.0)", cuts[icut].c_str(), cutName[icut].c_str(), "#eta^{#gamma#gamma}", 1, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_eta", "diphoEta", "(200, -10.0, 10.0)", cuts[icut].c_str(), cutName[icut].c_str(), "#eta^{#gamma#gamma}", 0, canvas, integratedLumi);
+	}
 
 	delete canvas;
 	canvas = 0;
@@ -724,11 +767,14 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	canvas->Draw();
 
 	string PicName = "";
-	PicName="gif/" + canvas_name + (inLogScale?"_log":"_lin") + ".gif";
+//	PicName="gif/" + canvas_name + (inLogScale?"_log":"_lin") + ".gif";
+	PicName="gif/DataMC_" + canvas_name + (inLogScale?"_log":"") + ".gif";
 	canvas->Print(PicName.c_str());
-	PicName="root/" + canvas_name + (inLogScale?"_log":"_lin") + ".root";
+//	PicName="root/" + canvas_name + (inLogScale?"_log":"_lin") + ".root";
+	PicName="root/DataMC_" + canvas_name + (inLogScale?"_log":"") + ".root";
 	canvas->Print(PicName.c_str());
-	PicName="pdf/" + canvas_name + (inLogScale?"_log":"_lin") + ".pdf";
+//	PicName="pdf/" + canvas_name + (inLogScale?"_log":"_lin") + ".pdf";
+	PicName="pdf/DataMC_" + canvas_name + (inLogScale?"_log":"") + ".pdf";
 	canvas->Print(PicName.c_str());
 
 	delete legend;

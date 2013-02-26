@@ -55,15 +55,205 @@ int main(int argc, char *argv[])
 	TCanvas *canvas = new TCanvas();
 
 	// ##### SETUP THE SAMPLES #####
+/*
 	Sample sig_ggf("ggh_m125_8TeV", "GGF (125 GeV)", -1, 1.0);
   sig_ggf.setFiles("datastore/../kinematics_v01/tree_v11.root");
 
 	Sample bkg_diphojet_8TeV("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
 	bkg_diphojet_8TeV.setFiles("datastore/tree_v15.root");
+*/
+// mh= 120GeV
+	Sample sig_ggh_120("ggh_m120_8TeV", "ggH (120 GeV)", -1, 1.0);
+	sig_ggh_120.setFiles("datastore/tree_v12.root");
+	sig_ggh_120.setStyle(kMagenta, 3, 3004, "");
+	sig_ggh_120.setXSection((21.13 * 2.28 * 0.001));
+	sig_ggh_120.setInitialNumberOfEvents(69036.0);
+	sig_ggh_120.setSpecificWeights("manual");
+	sig_ggh_120.setStackGroup("SM Higgs (120GeV)");
+
+	Sample sig_vbf_120("vbf_m120_8TeV", "VBF (120 GeV)", -1, 1.0);
+	sig_vbf_120.setFiles("datastore/tree_v12.root");
+	sig_vbf_120.setStyle(kRed+1, 3, 3004, "");
+	sig_vbf_120.setXSection((1.649 * 2.28 * 0.001));
+	sig_vbf_120.setInitialNumberOfEvents(79784.0);
+	sig_vbf_120.setSpecificWeights("manual");
+	sig_vbf_120.setStackGroup("SM Higgs (120GeV)");
+
+	Sample sig_wzh_120("wzh_m120_8TeV", "WZH (120 GeV)", -1, 1.0);
+	sig_wzh_120.setFiles("datastore/tree_v12.root");
+	sig_wzh_120.setStyle(kRed+2, 3, 3004, "");
+	sig_wzh_120.setXSection(((0.7966 + 0.4483) * 2.28 * 0.001));
+	sig_wzh_120.setInitialNumberOfEvents(69036.0);
+	sig_wzh_120.setSpecificWeights("manual");
+	sig_wzh_120.setStackGroup("SM Higgs (120GeV)");
+
+	Sample sig_tth_120("tth_m120_8TeV", "WZH (120 GeV)", -1, 1.0);
+	sig_tth_120.setFiles("datastore/tree_v12.root");
+	sig_tth_120.setStyle(kRed+2, 3, 3004, "");
+	sig_tth_120.setXSection((0.1470 * 2.28 * 0.001));
+	sig_tth_120.setInitialNumberOfEvents(69036.0);
+	sig_tth_120.setSpecificWeights("manual");
+	sig_tth_120.setStackGroup("SM Higgs (120GeV)");
+
+// mh= 125GeV
+	Sample sig_ggh_125("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
+	sig_ggh_125.setFiles("datastore/tree_v11.root");
+	sig_ggh_125.setStyle(kRed, 3, 3005, "");
+	sig_ggh_125.setXSection((19.52 * 2.28 * 0.001));
+	sig_ggh_125.setInitialNumberOfEvents(69036.0);
+	sig_ggh_125.setSpecificWeights("manual");
+	sig_ggh_125.setStackGroup("SM Higgs (125GeV)");
+
+	Sample sig_vbf_125("vbf_m125_8TeV", "VBF (125 GeV)", -1, 1.0);
+	sig_vbf_125.setFiles("datastore/tree_v11.root");
+	sig_vbf_125.setStyle(kRed+1, 3, 3004, "");
+	sig_vbf_125.setXSection((1.578 * 2.28 * 0.001));
+	sig_vbf_125.setInitialNumberOfEvents(79784.0);
+	sig_vbf_125.setSpecificWeights("manual");
+	sig_vbf_125.setStackGroup("SM Higgs (125GeV)");
+
+	Sample sig_wzh_125("wzh_m125_8TeV", "WZH (125 GeV)", -1, 1.0);
+	sig_wzh_125.setFiles("datastore/tree_v11.root");
+	sig_wzh_125.setStyle(kRed+2, 3, 3004, "");
+	sig_wzh_125.setXSection(((0.6966 + 0.3943) * 2.28 * 0.001));
+	sig_wzh_125.setInitialNumberOfEvents(69036.0);
+	sig_wzh_125.setSpecificWeights("manual");
+	sig_wzh_125.setStackGroup("SM Higgs (125GeV)");
+
+	Sample sig_tth_125("tth_m125_8TeV", "WZH (125 GeV)", -1, 1.0);
+	sig_tth_125.setFiles("datastore/tree_v11.root");
+	sig_tth_125.setStyle(kRed+2, 3, 3004, "");
+	sig_tth_125.setXSection((0.1302 * 2.28 * 0.001));
+	sig_tth_125.setInitialNumberOfEvents(69036.0);
+	sig_tth_125.setSpecificWeights("manual");
+	sig_tth_125.setStackGroup("SM Higgs (125GeV)");
+
+// mh= 130GeV
+	Sample sig_ggh_130("ggh_m130_8TeV", "ggH (130 GeV)", -1, 1.0);
+	sig_ggh_130.setFiles("datastore/tree_v10.root");
+	sig_ggh_130.setStyle(kBlue, 3, 3006, "");
+	sig_ggh_130.setXSection((18.07 * 2.28 * 0.001));
+	sig_ggh_130.setInitialNumberOfEvents(69036.0);
+	sig_ggh_130.setSpecificWeights("manual");
+	sig_ggh_130.setStackGroup("SM Higgs (130GeV)");
+
+	Sample sig_vbf_130("vbf_m130_8TeV", "VBF (130 GeV)", -1, 1.0);
+	sig_vbf_130.setFiles("datastore/tree_v10.root");
+	sig_vbf_130.setStyle(kRed+1, 3, 3004, "");
+	sig_vbf_130.setXSection((1.511 * 2.28 * 0.001));
+	sig_vbf_130.setInitialNumberOfEvents(79784.0);
+	sig_vbf_130.setSpecificWeights("manual");
+	sig_vbf_130.setStackGroup("SM Higgs (130GeV)");
+
+	Sample sig_wzh_130("wzh_m130_8TeV", "WZH (130 GeV)", -1, 1.0);
+	sig_wzh_130.setFiles("datastore/tree_v10.root");
+	sig_wzh_130.setStyle(kRed+2, 3, 3004, "");
+	sig_wzh_130.setXSection(((0.6095 + 0.3473) * 2.28 * 0.001));
+	sig_wzh_130.setInitialNumberOfEvents(69036.0);
+	sig_wzh_130.setSpecificWeights("manual");
+	sig_wzh_130.setStackGroup("SM Higgs (130GeV)");
+
+	Sample sig_tth_130("tth_m130_8TeV", "WZH (130 GeV)", -1, 1.0);
+	sig_tth_130.setFiles("datastore/tree_v10.root");
+	sig_tth_130.setStyle(kRed+2, 3, 3004, "");
+	sig_tth_130.setXSection((0.1157 * 2.28 * 0.001));
+	sig_tth_130.setInitialNumberOfEvents(69036.0);
+	sig_tth_130.setSpecificWeights("manual");
+	sig_tth_130.setStackGroup("SM Higgs (130GeV)");
+
+	// backgrounds
+	Sample bkg_qcd_30_8TeV_ff("qcd_30_8TeV_ff", "QCD", 1, 1.0);
+	bkg_qcd_30_8TeV_ff.setFiles("datastore/tree_v13.root");
+	bkg_qcd_30_8TeV_ff.setStyle(kSpring-9, 1, 3001, "");
+	bkg_qcd_30_8TeV_ff.setSpecificWeights("evweight");
+	bkg_qcd_30_8TeV_ff.setSpecificCuts("evweight < 100");
+	bkg_qcd_30_8TeV_ff.setStackGroup("ff");
+	bkg_qcd_30_8TeV_ff.setSuperStackGroup("Background");
+
+	Sample bkg_qcd_40_8TeV_ff("qcd_40_8TeV_ff", "QCD", 1, 1.0);
+	bkg_qcd_40_8TeV_ff.setFiles("datastore/tree_v13.root");
+	bkg_qcd_40_8TeV_ff.setStyle(kSpring-9, 1, 3001, "");
+	bkg_qcd_40_8TeV_ff.setSpecificWeights("evweight");
+	bkg_qcd_40_8TeV_ff.setSpecificCuts("evweight < 100");
+	bkg_qcd_40_8TeV_ff.setStackGroup("ff");
+	bkg_qcd_40_8TeV_ff.setSuperStackGroup("Background");
+
+	Sample bkg_qcd_30_8TeV_pf("qcd_30_8TeV_pf", "QCD", 1, 1.0);
+	bkg_qcd_30_8TeV_pf.setFiles("datastore/tree_v13.root");
+	bkg_qcd_30_8TeV_pf.setStyle(kAzure+1, 1, 3001, "");
+	bkg_qcd_30_8TeV_pf.setSpecificWeights("evweight");
+	bkg_qcd_30_8TeV_pf.setSpecificCuts("evweight < 100");
+	bkg_qcd_30_8TeV_pf.setStackGroup("pf");
+	bkg_qcd_30_8TeV_pf.setSuperStackGroup("Background");
+
+	Sample bkg_qcd_40_8TeV_pf("qcd_40_8TeV_pf", "QCD", 1, 1.0);
+	bkg_qcd_40_8TeV_pf.setFiles("datastore/tree_v13.root");
+	bkg_qcd_40_8TeV_pf.setStyle(kAzure+1, 1, 3001, "");
+	bkg_qcd_40_8TeV_pf.setSpecificWeights("evweight");
+	bkg_qcd_40_8TeV_pf.setSpecificCuts("evweight < 100");
+	bkg_qcd_40_8TeV_pf.setStackGroup("pf");
+	bkg_qcd_40_8TeV_pf.setSuperStackGroup("Background");
+
+	Sample bkg_gjet_20_8TeV_pf("gjet_20_8TeV_pf", "#gamma + jets", 1, 1.0);
+	bkg_gjet_20_8TeV_pf.setFiles("datastore/tree_v14.root");
+	bkg_gjet_20_8TeV_pf.setStyle(kAzure+1, 1, 3001, "");
+	bkg_gjet_20_8TeV_pf.setSpecificWeights("evweight");
+	bkg_gjet_20_8TeV_pf.setStackGroup("pf");
+	bkg_gjet_20_8TeV_pf.setSuperStackGroup("Background");
+
+	Sample bkg_gjet_40_8TeV_pf("gjet_40_8TeV_pf", "#gamma + jets", 1, 1.0);
+	bkg_gjet_40_8TeV_pf.setFiles("datastore/tree_v14.root");
+	bkg_gjet_40_8TeV_pf.setStyle(kAzure+1, 1, 3001, "");
+	bkg_gjet_40_8TeV_pf.setSpecificWeights("evweight");
+	bkg_gjet_40_8TeV_pf.setStackGroup("pf");
+	bkg_gjet_40_8TeV_pf.setSuperStackGroup("Background");
+
+	Sample bkg_gjet_20_8TeV_pp("gjet_20_8TeV_pp", "#gamma + jets", 1, 1.0);
+	bkg_gjet_20_8TeV_pp.setFiles("datastore/tree_v14.root");
+	bkg_gjet_20_8TeV_pp.setStyle(kGreen+2, 1, 3001, "");
+	bkg_gjet_20_8TeV_pp.setSpecificWeights("evweight");
+	bkg_gjet_20_8TeV_pp.setStackGroup("pp");
+	bkg_gjet_20_8TeV_pp.setSuperStackGroup("Background");
+
+	Sample bkg_gjet_40_8TeV_pp("gjet_40_8TeV_pp", "#gamma + jets", 1, 1.0);
+	bkg_gjet_40_8TeV_pp.setFiles("datastore/tree_v14.root");
+	bkg_gjet_40_8TeV_pp.setStyle(kGreen+2, 1, 3001, "");
+	bkg_gjet_40_8TeV_pp.setSpecificWeights("evweight");
+	bkg_gjet_40_8TeV_pp.setStackGroup("pp");
+	bkg_gjet_40_8TeV_pp.setSuperStackGroup("Background");
+
+	Sample bkg_diphojet_8TeV("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
+	bkg_diphojet_8TeV.setFiles("datastore/tree_v15.root");
+	bkg_diphojet_8TeV.setStyle(kGreen+2, 1, 3001, "");
+	bkg_diphojet_8TeV.setSpecificWeights("evweight");
+	bkg_diphojet_8TeV.setStackGroup("pp");
+	bkg_diphojet_8TeV.setSuperStackGroup("Background");
+
+	Sample bkg_dipho_Box_25_8TeV("dipho_Box_25_8TeV", "#gamma#gamma + jets (Box)", 1, 1.0);
+	bkg_dipho_Box_25_8TeV.setFiles("datastore/tree_v15.root");
+	bkg_dipho_Box_25_8TeV.setStyle(kGreen+2, 1, 3001, "");
+	bkg_dipho_Box_25_8TeV.setSpecificWeights("evweight");
+	bkg_dipho_Box_25_8TeV.setStackGroup("pp");
+	bkg_dipho_Box_25_8TeV.setSuperStackGroup("Background");
+
+	Sample bkg_dipho_Box_250_8TeV("dipho_Box_250_8TeV", "#gamma + jets", 1, 1.0);
+	bkg_dipho_Box_250_8TeV.setFiles("datastore/tree_v15.root");
+	bkg_dipho_Box_250_8TeV.setStyle(kGreen+2, 1, 3001, "");
+	bkg_dipho_Box_250_8TeV.setSpecificWeights("evweight");
+	bkg_dipho_Box_250_8TeV.setStackGroup("pp");
+	bkg_dipho_Box_250_8TeV.setSuperStackGroup("Background");
+
+	Sample bkg_DYJetsToLL("DYJetsToLL", "Drell-Yan", 1, 1.0);
+	bkg_DYJetsToLL.setFiles("datastore/tree_v15.root");
+	bkg_DYJetsToLL.setStyle(kViolet+1, 1, 3001, "");
+	bkg_DYJetsToLL.setSpecificWeights("evweight");
+	bkg_DYJetsToLL.setStackGroup("DY");
+	bkg_DYJetsToLL.setSuperStackGroup("Background");
 
 	vector<Sample> sample_list;
-	sample_list.push_back(sig_ggf);
+	sample_list.push_back(sig_ggh_125);
 	sample_list.push_back(bkg_diphojet_8TeV);
+
 
 	TClonesArray * chain_sample = new TClonesArray("TChain", sample_list.size() - 1);
 	for(int isample = 0 ; isample < (int)sample_list.size() ; isample++)
@@ -72,7 +262,45 @@ int main(int argc, char *argv[])
 		((TChain*)chain_sample->At(isample))->Add(sample_list[isample].getFiles().c_str());
 	}
 
+	// Creating RooDataSet per stack group
+	vector<string> stackGroups;
+	vector<vector<int> > stackSamples;
+	stackGroups.clear();
+	stackSamples.clear();
+	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
+  {
+    string stack = sample_list[isample].getStackGroup();
+    bool stackAlreadyProcessed = false;
+    for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
+    { // check if this stack group has already been processed
+      if( (stack == stackGroups[istack])  && (stack != "") )
+      {
+        stackAlreadyProcessed = true;
+        continue;
+      }
+    }
+    if( (sample_list[isample].getStackGroup() != "") && !stackAlreadyProcessed )
+    { // if the sample is to be stack, look for similar samples it is to be stacked with
+      stackGroups.push_back(sample_list[isample].getStackGroup());
+      vector<int> samples;
+      samples.clear();
+      samples.push_back(isample);
+      for(int jsample = isample+1 ; jsample < chain_sample->GetEntriesFast() ; jsample++)
+      {
+        if( sample_list[isample].getStackGroup() == sample_list[jsample].getStackGroup() )
+          samples.push_back(jsample);
+      }
+      stackSamples.push_back(samples);
+    } else if(sample_list[isample].getStackGroup() == "") {
+      stackGroups.push_back(sample_list[isample].getDisplayName());
+      vector<int> samples;
+      samples.clear();
+      samples.push_back(isample);
+      stackSamples.push_back(samples);
+    }
+  }
 	// ##### PREPARE FIT MODELS #####
+	string cuts = "category == 0";
 	// ### SIGNAL ###
 	int n = 10;
 	TClonesArray mu_signal_0("RooRealVar", n);
@@ -104,11 +332,28 @@ int main(int argc, char *argv[])
 
 	// ### SETUP VARIABLES AND INITIALIZE FIT PARAMETERS ###
 	RooRealVar CMS_hgg_mass("PhotonsMass", "m_{#gamma#gamma}", 100., 180., "GeV");
-	CMS_hgg_mass.setBins(160);
+	RooRealVar dipho_E("dipho_E", "E^{#gammagamma}", 0., 200., "GeV");
+	RooRealVar dipho_pt("dipho_pt", "p_{T}^{#gammagamma}", 0., 200., "GeV");
+	RooRealVar dipho_eta("dipho_eta", "#eta^{#gammagamma}", -5., 5., "GeV");
+	RooRealVar dipho_phi("dipho_phi", "#phi^{#gammagamma}", -3.16, 3.16, "GeV");
+	RooRealVar dipho_cosThetaStar_CS("dipho_cosThetaStar_CS", "|cos(#theta^{*})|", 0., 1., "GeV");
+	RooRealVar dipho_tanhYStar("dipho_tanhYStar", "|tanh(Y^{*})|", 0., 1., "GeV");
+	RooRealVar dipho_Y("dipho_Y", "Y^{#gammagamma}", -10., 10., "GeV");
 	RooRealVar category("category", "category", 0, 20);
 	RooRealVar evweight("evweight", "evweight", 0, 100);
 	RooRealVar pu_weight("pu_weight", "pu_weight", 0, 100);
-
+	RooArgSet *allVariables = new RooArgSet();
+	allVariables->add(CMS_hgg_mass);
+	allVariables->add(dipho_E);
+	allVariables->add(dipho_pt);
+	allVariables->add(dipho_eta);
+	allVariables->add(dipho_phi);
+	allVariables->add(dipho_cosThetaStar_CS);
+	allVariables->add(dipho_tanhYStar);
+	allVariables->add(dipho_Y);
+	allVariables->add(category);
+	allVariables->add(evweight);
+	allVariables->add(pu_weight);
 
 	int iclass=0;
 	new (mu_signal_0[iclass])	RooRealVar(Form("mu_signal_0_cat%i", iclass), "#mu_{0}", 125., 120., 130., "GeV");
@@ -124,7 +369,7 @@ int main(int argc, char *argv[])
 	new (frac_1[iclass])            RooRealVar(Form("frac_1_cat%i", iclass), "frac_{1}", .3, 0.001, 0.999);
 	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass), *(RooGaussian*)gauss_signal_2.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass), *(RooRealVar*)frac_1.At(iclass)), kFALSE);
 //	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass)), kFALSE);
-	new(n_signal[iclass])           RooRealVar(Form("hggpdf_cat%i_signal_norm", iclass), "N_{0}", 20., 0., 200., "events");
+	new(n_signal[iclass])           RooRealVar(Form("hggpdf_cat%i_signal_norm", iclass), "N_{0}", 20., 0., 500., "events");
 	new(signal_model[iclass])       RooExtendPdf(Form("model_signal_class_cat%i", iclass), Form("model_signal_class_cat%i", iclass), *(RooAddPdf*)signal_model_gauss.At(iclass), *(RooRealVar*)n_signal.At(iclass));
 	new (pol0[iclass])              RooRealVar(Form("pol0_cat%i", iclass), "b_{0}", 0.0001, 0., 1.);
 	new (pol1[iclass])              RooRealVar(Form("pol1_cat%i", iclass), "b_{1}", 0.0001, 0., 1.);
@@ -137,14 +382,14 @@ int main(int argc, char *argv[])
 	new (background_model[iclass])  RooExtendPdf(Form("model_background_class_cat%i", iclass), Form("model_background_class_cat%i", iclass), *(RooBernstein*)background_model_bernstein.At(iclass), *(RooRealVar*)n_background.At(iclass));
 
 	// ##### PREPARING ROODATASETS #####
-	RooDataSet *unw_signal = new RooDataSet("signal", "signal", ((TChain*)chain_sample->At(0)), RooArgList(CMS_hgg_mass, category, evweight, pu_weight), "", "");
-	RooFormulaVar wSignalFunc("wS", "event weight", "pu_weight * 19.52 * 2.28 * 0.001", pu_weight);
+	RooDataSet *unw_signal = new RooDataSet("signal", "signal", ((TChain*)chain_sample->At(0)), *allVariables);
+	RooFormulaVar wSignalFunc("wS", "event weight", "pu_weight * 19.52 * 2.28 * 0.001 * 19620.0 / 69036.0 * 1.0", pu_weight);
 	RooRealVar* wSignal = (RooRealVar*) unw_signal->addColumn(wSignalFunc);
 	RooDataSet *signal = new RooDataSet(unw_signal->GetName(), unw_signal->GetTitle(), unw_signal, *unw_signal->get(), 0, wSignal->GetName());
 	cout << "##### signal->isWeighted()= " << signal->isWeighted() << endl;
-	RooDataSet *unw_background = new RooDataSet("background", "background", ((TChain*)chain_sample->At(1)), RooArgList(CMS_hgg_mass, category, evweight, pu_weight), "", "");
-	RooFormulaVar wBackgroundFunc("wB", "event weight", "evweight * pu_weight", RooArgSet(evweight, pu_weight));
-	RooRealVar* wBackground = (RooRealVar*) unw_signal->addColumn(wBackgroundFunc);
+	RooDataSet *unw_background = new RooDataSet("background", "background", ((TChain*)chain_sample->At(1)), *allVariables);
+	RooFormulaVar wBackgroundFunc("wB", "event weight", "evweight * pu_weight", RooArgList(evweight, pu_weight));
+	RooRealVar* wBackground = (RooRealVar*) unw_background->addColumn(wBackgroundFunc);
 	RooDataSet *background = new RooDataSet(unw_background->GetName(), unw_background->GetTitle(), unw_background, *unw_background->get(), 0, wBackground->GetName());
 //		RooDataSet *background = new RooDataSet("background", "background", ((TChain*)chain_sample->At(1)), RooArgList(CMS_hgg_mass, category, evweight, pu_weight), "", "");
 	cout << "##### background->isWeighted()= " << background->isWeighted() << endl;
@@ -160,7 +405,7 @@ int main(int argc, char *argv[])
 
 
 	new (signal_dataset[iclass])		RooDataSet(Form("signal_dataset_cat%i", iclass), Form("signal_dataset_cat%i", iclass), signal, RooArgSet(CMS_hgg_mass, category, *wSignal), Form("category == %i", iclass), wSignal->GetName());
-	new (background_dataset[iclass])		RooDataSet(Form("background_dataset_cat%i", iclass), Form("background_dataset_cat%i", iclass), background, RooArgSet(CMS_hgg_mass, category), Form("category == %i", iclass), wBackground->GetName());
+	new (background_dataset[iclass])		RooDataSet(Form("background_dataset_cat%i", iclass), Form("background_dataset_cat%i", iclass), background, RooArgSet(CMS_hgg_mass, category, *wBackground), Form("category == %i", iclass), wBackground->GetName());
 	((RooDataSet*)signal_dataset.At(iclass))->SetName(Form("signal_dataset_cat%i", iclass));
 	((RooDataSet*)background_dataset.At(iclass))->SetName(Form("background_dataset_cat%i", iclass));
 
@@ -193,6 +438,18 @@ int main(int argc, char *argv[])
 
 	// ##### SAVE STUFF INTO A ROOWORKSPACE #####
 	RooWorkspace *myWS = new RooWorkspace("cms_hgg_workspace");
+	// ### SAVING SPECTATOR VARIABLES
+	myWS->import(*allVariables);
+/*
+	myWS->import(PhotonsMass);
+	myWS->import(dipho_E);
+	myWS->import(dipho_pt);
+	myWS->import(dipho_eta);
+	myWS->import(dipho_phi);
+	myWS->import(dipho_cosThetaStar_CS);
+	myWS->import(dipho_tanhYStar);
+	myWS->import(dipho_Y);
+*/
 	// ### SAVING BACKGROUND
 	myWS->import(*(RooAbsPdf*)background_model.At(iclass));
 	// ### SAVING SIGNAL
@@ -201,6 +458,9 @@ int main(int argc, char *argv[])
 	// FIXME
 	// ### WRITING FILE
 	myWS->writeToFile(wspaceName.c_str());
+
+	cout << "((RooRealVar*)n_signal.At(0))->getVal()= " << ((RooRealVar*)n_signal.At(0))->getVal() << endl;
+	cout << "((RooRealVar*)n_background.At(0))->getVal()= " << ((RooRealVar*)n_background.At(0))->getVal() << endl;
 
 	return 0;
 }
