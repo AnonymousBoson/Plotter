@@ -8,4 +8,7 @@ gif/*
 .DS_Store
 dump*
 13.*
+2013*
 WS_*
+fullModel*
+rs_*
