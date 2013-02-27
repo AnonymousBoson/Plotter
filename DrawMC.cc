@@ -312,7 +312,8 @@ int main()
 		}
 	}
 
-	for(int icut = 0 ; icut < (int)cuts.size() ; icut++ )
+//	for(int icut = 0 ; icut < (int)cuts.size() ; icut++ )
+	for(int icut = 0 ; icut < 1 ; icut++ )
 	{
 		cout << "##### NOW PROCESSING CUT " << icut+1 << " / " << cuts.size() << " : " << cutName[icut] << endl;
 		DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", cuts[icut].c_str(), cutName[icut].c_str(), "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
