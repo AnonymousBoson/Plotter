@@ -2,9 +2,9 @@
 // Olivier Bondu, February 2013
 // C++ headers
 #include <string>
+#include <iostream>
 // ROOT headers
 #include "TROOT.h"
-#include <TSystem.h>
 // namespaces
 using namespace std;
 
@@ -27,8 +27,8 @@ class Sample
 		string stackGroup;
 		string superStackGroup;
 	public:
-		Sample(string name_, string displayName_, int type_, double xSection_, double initialNumberOfEvents_, double kFactor_);
-//		Sample(string name_, string displayName_, int type_ = 0, double xSection_ = 1.0, double initialNumberOfEvents_ = 1, double kFactor_ = 1.0);
+//		Sample(string name_, string displayName_, int type_, double xSection_, double initialNumberOfEvents_, double kFactor_);
+		Sample(string name_, string displayName_, int type_ = 0, double xSection_ = 1.0, double initialNumberOfEvents_ = 1, double kFactor_ = 1.0);
 		Sample(const Sample &);
 
 		string getName() const;
@@ -67,7 +67,7 @@ class Sample
 
 };
 
-
+/*
 Sample::Sample(string name_, string displayName_, int type_ = 0, double xSection_ = 1.0, double initialNumberOfEvents_ = 1, double kFactor_ = 1.0)
 {
 	name = name_;
@@ -165,4 +165,4 @@ void Sample::print() const
 	<< "\tsuperStackGroup= " << superStackGroup
 	<< endl;
 }
-
+*/
