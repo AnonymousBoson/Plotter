@@ -2,7 +2,6 @@
 // Olivier Bondu, February 2013
 // C++ headers
 #include <string>
-#include <iostream>
 // ROOT headers
 #include "TROOT.h"
 #include <TSystem.h>

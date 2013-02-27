@@ -14,11 +14,11 @@ SampleHandler.o: SampleHandler.cc SampleHandler.h
 DrawMC.o: DrawMC.cc SampleHandler.h
 	$(CC) $(CCFLAGS) $(ROOTFLAGS) -c DrawMC.cc -o DrawMC.o
 
-#DrawMC: SampleHandler.o DrawMC.o
-#	$(CC) $(CCFLAGS) $(ROOTLIBS) DrawMC.o SampleHandler.o -o DrawMC.exe
+# DrawMC: SampleHandler.o DrawMC.o
+# 	$(CC) $(CCFLAGS) $(ROOTFLAGS) $(ROOTLIBS) DrawMC.o SampleHandler.o -o DrawMC.exe
 
-DrawMC: SampleHandler.h DrawMC.o
-	$(CC) $(CCFLAGS) $(ROOTLIBS) $(ROOTFLAGS) DrawMC.o SampleHandler.h -o DrawMC.exe
+DrawMC: DrawMC.o
+	$(CC) $(CCFLAGS) $(ROOTLIBS) $(ROOTFLAGS) DrawMC.o -o DrawMC.exe
 
 fitMgg:
 	$(CC) $(CCFLAGS) $(ROOFITFLAGS) -o fitMgg.exe $(ROOTFLAGS) fitMgg.cc

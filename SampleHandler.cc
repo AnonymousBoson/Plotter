@@ -1,6 +1,9 @@
 // to handle somewhat more cleanly metadata
 // Olivier Bondu, February 2013
 // C++ headers
+#include <iostream>
+#include <string>
+// local files
 #include "SampleHandler.h"
 // namespaces
 using namespace std;
