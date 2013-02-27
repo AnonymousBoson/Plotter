@@ -316,6 +316,11 @@ int main()
 	for(int icut = 0 ; icut < 1 ; icut++ )
 	{
 		cout << "##### NOW PROCESSING CUT " << icut+1 << " / " << cuts.size() << " : " << cutName[icut] << endl;
+		DrawMCPlot(chain_sample, sample_list, "ph1_isPrompt", "ph1IsPrompt", "(4, -2, 2)", cuts[icut].c_str(), cutName[icut].c_str(), "ph1_isprompt", 0, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "ph1_isPrompt", "ph1IsPrompt", "(4, -2, 2)", cuts[icut].c_str(), cutName[icut].c_str(), "ph1_isprompt", 1, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "ph2_isPrompt", "ph2IsPrompt", "(4, -2, 2)", cuts[icut].c_str(), cutName[icut].c_str(), "ph2_isprompt", 0, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "ph2_isPrompt", "ph2IsPrompt", "(4, -2, 2)", cuts[icut].c_str(), cutName[icut].c_str(), "ph2_isprompt", 1, canvas, integratedLumi);
+/*
 		DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", cuts[icut].c_str(), cutName[icut].c_str(), "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
 		DrawMCPlot(chain_sample, sample_list, "PhotonsMass", "PhotonsMass", "(80, 100, 180)", cuts[icut].c_str(), cutName[icut].c_str(), "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
 	
@@ -331,6 +336,7 @@ int main()
 		DrawMCPlot(chain_sample, sample_list, "dipho_pt", "diphoPt_zoom", "(200, 0.0, 150.0)", cuts[icut].c_str(), cutName[icut].c_str(), "p_{T}^{#gamma#gamma}", 0, canvas, integratedLumi);
 		DrawMCPlot(chain_sample, sample_list, "dipho_eta", "diphoEta", "(200, -10.0, 10.0)", cuts[icut].c_str(), cutName[icut].c_str(), "#eta^{#gamma#gamma}", 1, canvas, integratedLumi);
 		DrawMCPlot(chain_sample, sample_list, "dipho_eta", "diphoEta", "(200, -10.0, 10.0)", cuts[icut].c_str(), cutName[icut].c_str(), "#eta^{#gamma#gamma}", 0, canvas, integratedLumi);
+*/
 	}
 
 	delete canvas;

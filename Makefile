@@ -20,7 +20,7 @@ DrawMC.o: DrawMC.cc SampleHandler.h
 # 	$(CC) $(CCFLAGS) $(ROOTFLAGS) $(ROOTLIBS) DrawMC.o SampleHandler.o -o DrawMC.exe
 
 DrawMC: DrawMC.o
-	$(CC) $(CCFLAGS) $(ROOTLIBS) $(ROOTFLAGS) DrawMC.o -o DrawMC.exe
+	$(CC) $(CCFLAGS) $(ROOTLIBS) $(ROOTFLAGS) DrawMC.cc SampleHandler.h -o DrawMC.exe
 
 DrawMC2: DrawMC.o SampleHandler.o
 	$(CC) $(CCFLAGS) $(ROOTFLAGS) $(ROOTLIBS) SampleHandler.o DrawMC.o -o DrawMC.exe
