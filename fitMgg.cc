@@ -26,7 +26,7 @@
 #include "CMSStyle.C"
 #include "SampleHandler.h"
 // Verbosity
-#define DEBUG 0
+#define DEBUG 1
 // namespaces
 using namespace std;
 using namespace RooFit;

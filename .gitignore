@@ -11,4 +11,5 @@ dump*
 2013*
 WS_*
 fullModel*
-rs_*
+rs*
+*.o
