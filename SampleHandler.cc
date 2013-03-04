@@ -2,9 +2,9 @@
 // Olivier Bondu, February 2013
 // C++ headers
 //#include <iostream>
-//#include <string>
+#include <string>
 // local files
-//#include "SampleHandler.h"
+#include "SampleHandler.h"
 // namespaces
 using namespace std;
 
@@ -65,4 +65,47 @@ string Sample::getFiles() const{ return files; }
 void Sample::setFiles(string files_){ files = files_; }
 Color_t Sample::getColor() const{ return color; }
 void Sample::setColor(Color_t color_){ color = color_; }
+int Sample::getLineWidth() const{ return lineWidth; }
+void Sample::setLineWidth(int lineWidth_){ lineWidth = lineWidth_; }
+int Sample::getFillStyle() const{ return fillStyle; }
+void Sample::setFillStyle(int fillStyle_){ fillStyle = fillStyle_; }
+string Sample::getDrawStyle() const{ return drawStyle; }
+void Sample::setDrawStyle(string drawStyle_){ drawStyle = drawStyle_; }
+string Sample::getSpecificCuts() const{ return specificCuts; }
+void Sample::setSpecificCuts(string specificCuts_){ specificCuts = specificCuts_; }
+string Sample::getSpecificWeights() const{ return specificWeights; }
+void Sample::setSpecificWeights(string specificWeights_){ specificWeights = specificWeights_; }
+string Sample::getStackGroup() const{ return stackGroup; }
+void Sample::setStackGroup(string stackGroup_){ stackGroup = stackGroup_; }
+string Sample::getSuperStackGroup() const{ return superStackGroup; }
+void Sample::setSuperStackGroup(string superStackGroup_){ superStackGroup = superStackGroup_; }
+void Sample::setStyle(Color_t color_, int lineWidth_, int fillStyle_, string drawStyle_)
+{
+	color = color_;
+	lineWidth = lineWidth_;
+	fillStyle = fillStyle_;
+	drawStyle = drawStyle_;
+}
+
+
+void Sample::print() const
+{
+	cout
+	<< "name= " << name
+	<< "\tdisplayName= " << displayName
+	<< "\ttype= " << type
+	<< "\txSection= " << xSection
+	<< "\tkFactor= " << kFactor
+	<< "\tinitialNumberOfEvents= " << initialNumberOfEvents
+	<< "\tfiles= " << files
+	<< "\tcolor= " << color
+	<< "\tlineWidth= " << lineWidth
+	<< "\tfillStyle= " << fillStyle
+	<< "\tdrawStyle= " << drawStyle
+	<< "\tspecificCuts= " << specificCuts
+	<< "\tspecificWeights= " << specificWeights
+	<< "\tstackGroup= " << stackGroup
+	<< "\tsuperStackGroup= " << superStackGroup
+	<< endl;
+}
 
