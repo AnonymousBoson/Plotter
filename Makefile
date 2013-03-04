@@ -2,11 +2,12 @@ CC				= g++
 CCFLAGS		=	-Wall -g
 SOURCES 	= 
 ROOTFLAGS	= `root-config --cflags`
-ROOTLIBS	= `root-config --libs`
-ROOFITFLAGS = -lRooFit -lRooFitCore
+ROOTLIBS	= `root-config --libs --ldflags`
+ROOFITLIBS = -lRooFit -lRooFitCore -lMinuit
 ROOSTATSFLAGS = -lRooStats 
 
-all: DrawMC fitMgg sPlot
+#all: DrawMC fitMgg sPlot
+all: DrawMC fitMgg
 
 
 SampleHandler.o: SampleHandler.h SampleHandler.cc
@@ -18,11 +19,14 @@ DrawMC.o: DrawMC.cc SampleHandler.h
 DrawMC: DrawMC.o SampleHandler.o
 	$(CC) $(CCFLAGS) $(ROOTLIBS) DrawMC.o SampleHandler.o -o DrawMC.exe
 
+fitMgg.o: fitMgg.cc SampleHandler.h
+	$(CC) $(CCFLAGS) $(ROOTFLAGS) $(ROOFITLIBS) $(ROOSTATSFLAGS) -c fitMgg.cc -o fitMgg.o
+
 fitMgg:
-	$(CC) $(CCFLAGS) $(ROOFITFLAGS) -o fitMgg.exe $(ROOTFLAGS) fitMgg.cc
+	$(CC) $(CCFLAGS) $(ROOFITLIBS) -o fitMgg.exe $(ROOTFLAGS) fitMgg.cc
 
 sPlot:
-	$(CC) $(CCFLAGS) $(ROOFITFLAGS) $(ROOSTATSFLAGS) -o sPlot.exe $(ROOTFLAGS) sPlot.cc
+	$(CC) $(CCFLAGS) $(ROOFITLIBS) $(ROOSTATSFLAGS) -o sPlot.exe $(ROOTFLAGS) sPlot.cc
 
 clean:
 	rm *.o

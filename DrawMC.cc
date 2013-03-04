@@ -326,8 +326,8 @@ int main()
 	
 		DrawMCPlot(chain_sample, sample_list, "dipho_tanhYStar", "diphoTanhYStar", "(20, 0.0, 1.0)", cuts[icut].c_str(), cutName[icut].c_str(), "|tanh(Y^{*})|", 0, canvas, integratedLumi);
 		DrawMCPlot(chain_sample, sample_list, "dipho_tanhYStar", "diphoTanhYStar", "(20, 0.0, 1.0)", cuts[icut].c_str(), cutName[icut].c_str(), "|tanh(Y^{*})|", 1, canvas, integratedLumi);
-		DrawMCPlot(chain_sample, sample_list, "dipho_cosThetaStar_CS", "diphoCosThetaStarCS", "(20, 0.0, 1.0)", cuts[icut].c_str(), cutName[icut].c_str(), "|cos(#theta^{*})|", 0, canvas, integratedLumi);
-		DrawMCPlot(chain_sample, sample_list, "dipho_cosThetaStar_CS", "diphoCosThetaStarCS", "(20, 0.0, 1.0)", cuts[icut].c_str(), cutName[icut].c_str(), "|cos(#theta^{*})|", 1, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_cosThetaStar_CS", "diphoCosThetaStarCS", "(20, 0.0, 1.0)", cuts[icut].c_str(), cutName[icut].c_str(), "|cos(#theta^{*}_{CS})|", 0, canvas, integratedLumi);
+		DrawMCPlot(chain_sample, sample_list, "dipho_cosThetaStar_CS", "diphoCosThetaStarCS", "(20, 0.0, 1.0)", cuts[icut].c_str(), cutName[icut].c_str(), "|cos(#theta^{*}_{CS})|", 1, canvas, integratedLumi);
 		DrawMCPlot(chain_sample, sample_list, "dipho_Y", "diphoY", "(200, -3.0, 3.0)", cuts[icut].c_str(), cutName[icut].c_str(), "Y_{#gamma#gamma}", 1, canvas, integratedLumi);
 		DrawMCPlot(chain_sample, sample_list, "dipho_Y", "diphoY", "(200, -3.0, 3.0)", cuts[icut].c_str(), cutName[icut].c_str(), "Y_{#gamma#gamma}", 0, canvas, integratedLumi);
 		DrawMCPlot(chain_sample, sample_list, "dipho_pt", "diphoPt", "(200, 0.0, 500.0)", cuts[icut].c_str(), cutName[icut].c_str(), "p_{T}^{#gamma#gamma}", 1, canvas, integratedLumi);
