@@ -109,3 +109,44 @@ void Sample::print() const
 	<< endl;
 }
 
+
+vector<string> getStackGroups(vector<Sample> sample_list)
+{
+	vector<string> stackGroups;
+	stackGroups.clear();
+
+	for(int isample = 0 ; isample < (int)sample_list.size() ; isample++)
+	{
+		string stack = sample_list[isample].getStackGroup();
+		bool stackAlreadyProcessed = false;
+		for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
+		{ // check if this stack group has already been processed
+			if( (stack == stackGroups[istack]) && (stack != "") )
+			{
+				stackAlreadyProcessed = true;
+				continue;
+			}
+		}
+		if( (sample_list[isample].getStackGroup() != "") && !stackAlreadyProcessed )
+		{ // if the sample is to be stacked, look for similar samples it is to be stacked with
+			stackGroups.push_back(sample_list[isample].getStackGroup());
+			vector<int> samples;
+			samples.clear();
+			samples.push_back(isample);
+			for(int jsample = isample+1 ; jsample < (int)sample_list.size() ; jsample++)
+			{
+				if( sample_list[isample].getStackGroup() == sample_list[jsample].getStackGroup() )
+					samples.push_back(jsample);
+			}
+			stackSamples.push_back(samples);
+		} else if(sample_list[isample].getStackGroup() == "") {
+			stackGroups.push_back(sample_list[isample].getDisplayName());
+			vector<int> samples;
+			samples.clear();
+			samples.push_back(isample);
+			stackSamples.push_back(samples);
+		}
+	}
+
+	return stackGroups;
+}

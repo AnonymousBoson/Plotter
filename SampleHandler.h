@@ -69,6 +69,8 @@ class Sample
 
 };
 
+vector<string> getStackGroups(vector<Sample>);
+
 /*
 Sample::Sample(string name_, string displayName_, int type_ = 0, double xSection_ = 1.0, double initialNumberOfEvents_ = 1, double kFactor_ = 1.0)
 {
