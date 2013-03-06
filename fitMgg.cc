@@ -4,29 +4,29 @@
 // ROOT headers
 #include "TROOT.h"
 #include <TSystem.h>
-//#include <TChain.h>
-//#include <TCanvas.h>
+#include <TChain.h>
+#include <TCanvas.h>
 #include <TClonesArray.h>
-//#include <TStyle.h>
+#include <TStyle.h>
 // RooFit headers
 #include "RooRealVar.h"
-//#include "RooFormulaVar.h"
-//#include "RooArgSet.h"
-//#include "RooArgList.h"
+#include "RooFormulaVar.h"
+#include "RooArgSet.h"
+#include "RooArgList.h"
 #include "RooDataSet.h"
-//#include "RooAddPdf.h"
-//#include "RooExtendPdf.h"
-//#include "RooGaussian.h"
-//#include "RooBernstein.h"
-//#include "RooFitResult.h"
-//#include "RooPlot.h"
+#include "RooAddPdf.h"
+#include "RooExtendPdf.h"
+#include "RooGaussian.h"
+#include "RooBernstein.h"
+#include "RooFitResult.h"
+#include "RooPlot.h"
 // RooStat headers
-//#include "RooWorkspace.h"
+#include "RooWorkspace.h"
 // local files
-//#include "CMSStyle.C"
-//#include "SampleHandler.h"
+#include "CMSStyle.C"
+#include "SampleHandler.h"
 // Verbosity
-//#define DEBUG 1
+#define DEBUG 0
 // namespaces
 using namespace std;
 using namespace RooFit;
@@ -34,7 +34,7 @@ using namespace RooFit;
 // **************************************************************************************************************************
 int main(int argc, char *argv[])
 {
-/*
+
 	// ##### GET ARGUMENTS #####
 	cout << "argc= " << argc << endl;
 	for(int iarg = 0 ; iarg < argc ; iarg++)
@@ -46,8 +46,8 @@ int main(int argc, char *argv[])
 	}
 	string filename = argv[1];
 	string wspaceName = "WS_" + filename + ".root";
-*/
-/*
+
+
 	// ##### INITIALIZATION OF PLOT STYLE #####
 	gROOT->Reset();
 	gROOT->ProcessLine(".x setTDRStyle.C");
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 	gStyle->SetOptTitle(0);
 	gStyle->SetOptStat(0);
 	TCanvas *canvas = new TCanvas();
-*/
+
 	// ##### SETUP THE SAMPLES #####
 /*
 	Sample sig_ggf("ggh_m125_8TeV", "GGF (125 GeV)", -1, 1.0);
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 	bkg_diphojet_8TeV.setFiles("datastore/tree_v15.root");
 */
 // mh= 120GeV
-/*
+
 	Sample sig_ggh_120("ggh_m120_8TeV", "ggH (120 GeV)", -1, 1.0);
 	sig_ggh_120.setFiles("datastore/tree_v12.root");
 	sig_ggh_120.setStyle(kMagenta, 3, 3004, "");
@@ -395,7 +395,7 @@ int main(int argc, char *argv[])
 	RooDataSet *background = new RooDataSet(unw_background->GetName(), unw_background->GetTitle(), unw_background, *unw_background->get(), 0, wBackground->GetName());
 //		RooDataSet *background = new RooDataSet("background", "background", ((TChain*)chain_sample->At(1)), RooArgList(CMS_hgg_mass, category, evweight, pu_weight), "", "");
 	cout << "##### background->isWeighted()= " << background->isWeighted() << endl;
-*/
+
 
 /*
 // Construct formula to calculate (fake) weight for events
@@ -404,13 +404,14 @@ int main(int argc, char *argv[])
   RooRealVar* w = (RooRealVar*) data->addColumn(wFunc) ;
   // Instruct dataset wdata in interpret w as event weight rather than as observable
   RooDataSet wdata(data->GetName(),data->GetTitle(),data,*data->get(),0,w->GetName()) ;
-*/
+
 	TClonesArray pof("RooRealVar", 10);
 	new (pof[0]) RooRealVar();
 
 	TClonesArray paf("RooDataSet", 10);
 	new (paf[0]) RooDataSet();
-/*
+*/
+
 
 	TClonesArray signal_dataset("RooDataSet", n);
 //	new (signal_dataset[iclass])		RooDataSet(Form("signal_dataset_cat%i", iclass), Form("signal_dataset_cat%i", iclass), signal, RooArgSet(CMS_hgg_mass, category, *wSignal), Form("category == %i", iclass), wSignal->GetName());
@@ -451,9 +452,9 @@ int main(int argc, char *argv[])
 
 	// ##### SAVE STUFF INTO A ROOWORKSPACE #####
 	RooWorkspace *myWS = new RooWorkspace("cms_hgg_workspace");
-	// ### SAVING SPECTATOR VARIABLES
+	// ### SAVING SPECTATOR AND DISCRIMINANT VARIABLES
 	myWS->import(*allVariables);
-*/
+
 /*
 	myWS->import(PhotonsMass);
 	myWS->import(dipho_E);
@@ -464,7 +465,7 @@ int main(int argc, char *argv[])
 	myWS->import(dipho_tanhYStar);
 	myWS->import(dipho_Y);
 */
-/*
+
 	// ### SAVING BACKGROUND
 	myWS->import(*(RooAbsPdf*)background_model.At(iclass));
 	// ### SAVING SIGNAL
@@ -476,7 +477,7 @@ int main(int argc, char *argv[])
 
 	cout << "((RooRealVar*)n_signal.At(0))->getVal()= " << ((RooRealVar*)n_signal.At(0))->getVal() << endl;
 	cout << "((RooRealVar*)n_background.At(0))->getVal()= " << ((RooRealVar*)n_background.At(0))->getVal() << endl;
-*/
+
 	return 0;
 }
 
