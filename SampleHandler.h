@@ -70,6 +70,10 @@ class Sample
 };
 
 void getStackGroups(vector<Sample> sample_list, vector<string> & stackGroups, vector<vector<int> > & stackSamples);
+void printStackGroups(vector<Sample> sample_list, vector<string> stackGroups, vector<vector<int> > stackSamples);
+
+void getSuperStackGroups(vector<Sample> sample_list, vector<vector<int> > stackSamples, vector<string> & superStackGroups, vector<vector<int> > & superStackSamples);
+void printSuperStackGroups(vector<Sample> sample_list, vector<string> superStackGroups, vector<vector<int> > superStackSamples);
 
 /*
 Sample::Sample(string name_, string displayName_, int type_ = 0, double xSection_ = 1.0, double initialNumberOfEvents_ = 1, double kFactor_ = 1.0)

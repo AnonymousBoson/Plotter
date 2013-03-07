@@ -393,6 +393,8 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	vector<vector<int> > stackSamples;
 	stackGroups.clear();
 	stackSamples.clear();
+	getStackGroups(sample_list, stackGroups, stackSamples);
+/*
 	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
 	{
 		string stack = sample_list[isample].getStackGroup();
@@ -425,6 +427,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			stackSamples.push_back(samples);
 		}
 	}
+*/
 	if(DEBUG)
 	{
 		for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
@@ -500,10 +503,12 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	// superStack
 	vector<string> superStackGroups;
 	vector<vector<int> > superStackSamples;
-	vector<double> superIntegrals;
 	superStackGroups.clear();
 	superStackSamples.clear();
+	vector<double> superIntegrals;
 	superIntegrals.clear();
+	getSuperStackGroups(sample_list, stackSamples, superStackGroups, superStackSamples);
+/*
 	for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
 	{
 		int isample = stackSamples[istack].back();
@@ -538,6 +543,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			superStackSamples.push_back(samples);
 		}
 	}
+*/
 	if(DEBUG)
 	{
 		for(int isuperStack = 0 ; isuperStack < (int)superStackGroups.size() ; isuperStack++)

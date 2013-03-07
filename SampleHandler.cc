@@ -151,3 +151,72 @@ void getStackGroups(vector<Sample> sample_list, vector<string> &stackGroups, vec
 
 	return;
 }
+
+void getSuperStackGroups(vector<Sample> sample_list, vector<vector<int> > stackSamples, vector<string> & superStackGroups, vector<vector<int> > & superStackSamples)
+{
+	superStackGroups.clear();
+	superStackSamples.clear();
+	for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
+	{
+		int isample = stackSamples[istack].back();
+		string superStack = sample_list[isample].getSuperStackGroup();
+		bool superStackAlreadyProcessed = false;
+		for(int isuperStack=0 ; isuperStack<(int)superStackGroups.size() ; isuperStack++)
+		{
+			if( (superStack == superStackGroups[isuperStack]) && (superStack != "") )
+			{
+				superStackAlreadyProcessed = true;
+				continue;
+			}
+		}
+		if( (sample_list[isample].getSuperStackGroup() != "") && !superStackAlreadyProcessed )
+		{ // if the sample is to be superStack, look for similar samples it is to be superStacked with
+			superStackGroups.push_back(sample_list[isample].getSuperStackGroup());
+			vector<int> samples;
+			samples.clear();
+			samples.push_back(isample);
+			for(int jstack = istack+1 ; jstack < (int)stackSamples.size() ; jstack++)
+			{
+				int jsample = stackSamples[jstack].back();
+				if( sample_list[isample].getSuperStackGroup() == sample_list[jsample].getSuperStackGroup() )
+					samples.push_back(jsample);
+			}
+			superStackSamples.push_back(samples);
+		} else if(sample_list[isample].getSuperStackGroup() == "") {
+			if(sample_list[isample].getStackGroup() == "")
+				superStackGroups.push_back(sample_list[isample].getDisplayName());
+			else
+				superStackGroups.push_back(sample_list[isample].getStackGroup());
+			vector<int> samples;
+			samples.clear();
+			samples.push_back(isample);
+			superStackSamples.push_back(samples);
+		}
+	}
+	return;
+}
+
+void printStackGroups(vector<Sample> sample_list, vector<string> stackGroups, vector<vector<int> > stackSamples)
+{
+	cout << "stackGroups.size()= " << stackGroups.size() << "\t\tstackSamples.size()= " << stackSamples.size() << endl;
+	for(int is = 0 ; is < (int)stackGroups.size() ; is++)
+	{
+		cout << "stackGroups[" << is << "]= " << stackGroups[is] << endl;
+		for(int js = 0 ; js < (int)stackSamples[is].size() ; js++)
+			cout << "\tstackSamples[" << is << "][" << js << "]= " << stackSamples[is][js] << "\tname= " << sample_list[stackSamples[is][js]].getName() << endl;
+	}
+	return;
+}
+
+void printSuperStackGroups(vector<Sample> sample_list, vector<string> superStackGroups, vector<vector<int> > superStackSamples)
+{
+	cout << "superStackGroups.size()= " << superStackGroups.size() << "\t\tsuperStackSamples.size()= " << superStackSamples.size() << endl;
+	for(int is = 0 ; is < (int)superStackGroups.size() ; is++)
+	{
+		cout << "superStackGroups[" << is << "]= " << superStackGroups[is] << endl;
+		for(int js = 0 ; js < (int)superStackSamples[is].size() ; js++)
+			cout << "\tsuperStackSamples[" << is << "][" << js << "]= " << superStackSamples[is][js] << "\tname= " << sample_list[superStackSamples[is][js]].getName() << endl;
+	}
+	return;
+}
+

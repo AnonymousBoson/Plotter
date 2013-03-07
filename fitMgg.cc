@@ -263,13 +263,22 @@ int main(int argc, char *argv[])
 	}
 
 	// Creating RooDataSet per stack group
+
 	vector<string> stackGroups;
 	vector<vector<int> > stackSamples;
 	stackGroups.clear();
 	stackSamples.clear();
 	getStackGroups(sample_list, stackGroups, stackSamples);
+	vector<string> superStackGroups;
+	vector<vector<int> > superStackSamples;
+	superStackGroups.clear();
+	superStackSamples.clear();
+	getSuperStackGroups(sample_list, stackSamples, superStackGroups, superStackSamples);
 
 	cout << endl << endl << endl << endl;
+	printStackGroups(sample_list, stackGroups, stackSamples);
+	printSuperStackGroups(sample_list, superStackGroups, superStackSamples);
+/*
 	cout << "stackGroups.size()= " << stackGroups.size() << "\t\tstackSamples.size()= " << stackSamples.size() << endl;
 	for(int is = 0 ; is < (int)stackGroups.size() ; is++)
 	{
@@ -277,6 +286,14 @@ int main(int argc, char *argv[])
 		for(int js = 0 ; js < (int)stackSamples[is].size() ; js++)
 			cout << "\tstackSamples[" << is << "][" << js << "]= " << stackSamples[is][js] << "\tname= " << sample_list[stackSamples[is][js]].getName() << endl;
 	}
+	cout << "superStackGroups.size()= " << superStackGroups.size() << "\t\tsuperStackSamples.size()= " << superStackSamples.size() << endl;
+	for(int is = 0 ; is < (int)superStackGroups.size() ; is++)
+	{
+		cout << "superStackGroups[" << is << "]= " << superStackGroups[is] << endl;
+		for(int js = 0 ; js < (int)superStackSamples[is].size() ; js++)
+			cout << "\tsuperStackSamples[" << is << "][" << js << "]= " << superStackSamples[is][js] << "\tname= " << sample_list[superStackSamples[is][js]].getName() << endl;
+	}
+*/
 	cout << endl << endl << endl << endl;
 
 
