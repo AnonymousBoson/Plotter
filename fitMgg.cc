@@ -57,15 +57,7 @@ int main(int argc, char *argv[])
 	TCanvas *canvas = new TCanvas();
 
 	// ##### SETUP THE SAMPLES #####
-/*
-	Sample sig_ggf("ggh_m125_8TeV", "GGF (125 GeV)", -1, 1.0);
-  sig_ggf.setFiles("datastore/../kinematics_v01/tree_v11.root");
-
-	Sample bkg_diphojet_8TeV("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
-	bkg_diphojet_8TeV.setFiles("datastore/tree_v15.root");
-*/
-// mh= 120GeV
-
+	// mh= 120GeV
 	Sample sig_ggh_120("ggh_m120_8TeV", "ggH (120 GeV)", -1, 1.0);
 	sig_ggh_120.setFiles("datastore/tree_v12.root");
 	sig_ggh_120.setStyle(kMagenta, 3, 3004, "");
@@ -98,7 +90,7 @@ int main(int argc, char *argv[])
 	sig_tth_120.setSpecificWeights("manual");
 	sig_tth_120.setStackGroup("SM Higgs (120GeV)");
 
-// mh= 125GeV
+	// mh= 125GeV
 	Sample sig_ggh_125("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
 	sig_ggh_125.setFiles("datastore/tree_v11.root");
 	sig_ggh_125.setStyle(kRed, 3, 3005, "");
@@ -131,7 +123,7 @@ int main(int argc, char *argv[])
 	sig_tth_125.setSpecificWeights("manual");
 	sig_tth_125.setStackGroup("SM Higgs (125GeV)");
 
-// mh= 130GeV
+	// mh= 130GeV
 	Sample sig_ggh_130("ggh_m130_8TeV", "ggH (130 GeV)", -1, 1.0);
 	sig_ggh_130.setFiles("datastore/tree_v10.root");
 	sig_ggh_130.setStyle(kBlue, 3, 3006, "");
@@ -257,9 +249,11 @@ int main(int argc, char *argv[])
 	sample_list.push_back(sig_ggh_125);
 	sample_list.push_back(sig_vbf_125);
 	sample_list.push_back(sig_wzh_125);
+	sample_list.push_back(bkg_dipho_Box_25_8TeV);
 	sample_list.push_back(sig_tth_125);
+	sample_list.push_back(bkg_dipho_Box_250_8TeV);
 	sample_list.push_back(bkg_diphojet_8TeV);
-
+	sample_list.push_back(bkg_DYJetsToLL);
 
 	TClonesArray * chain_sample = new TClonesArray("TChain", sample_list.size() - 1);
 	for(int isample = 0 ; isample < (int)sample_list.size() ; isample++)
@@ -285,40 +279,7 @@ int main(int argc, char *argv[])
 	}
 	cout << endl << endl << endl << endl;
 
-/*
-	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
-  {
-    string stack = sample_list[isample].getStackGroup();
-    bool stackAlreadyProcessed = false;
-    for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
-    { // check if this stack group has already been processed
-      if( (stack == stackGroups[istack])  && (stack != "") )
-      {
-        stackAlreadyProcessed = true;
-        continue;
-      }
-    }
-    if( (sample_list[isample].getStackGroup() != "") && !stackAlreadyProcessed )
-    { // if the sample is to be stack, look for similar samples it is to be stacked with
-      stackGroups.push_back(sample_list[isample].getStackGroup());
-      vector<int> samples;
-      samples.clear();
-      samples.push_back(isample);
-      for(int jsample = isample+1 ; jsample < chain_sample->GetEntriesFast() ; jsample++)
-      {
-        if( sample_list[isample].getStackGroup() == sample_list[jsample].getStackGroup() )
-          samples.push_back(jsample);
-      }
-      stackSamples.push_back(samples);
-    } else if(sample_list[isample].getStackGroup() == "") {
-      stackGroups.push_back(sample_list[isample].getDisplayName());
-      vector<int> samples;
-      samples.clear();
-      samples.push_back(isample);
-      stackSamples.push_back(samples);
-    }
-  }
-*/
+
 	// ##### PREPARE FIT MODELS #####
 	string cuts = "category == 0";
 	// ### SIGNAL ###
@@ -375,6 +336,7 @@ int main(int argc, char *argv[])
 	allVariables->add(pu_weight);
 
 	int iclass=0;
+	// ##### SIGNAL FIT PARAMETERS #####
 	new (mu_signal_0[iclass])	RooRealVar(Form("mu_signal_0_cat%i", iclass), "#mu_{0}", 125., 120., 130., "GeV");
 	new (sigma_signal_0[iclass])    RooRealVar(Form("sigma_signal_0_cat%i", iclass), "#sigma_{0}", 2.5, 0.1, 4., "GeV");
 	new (gauss_signal_0[iclass])    RooGaussian(Form("gauss_signal_0_cat%i", iclass), Form("gauss_signal_0_cat%i", iclass), CMS_hgg_mass, *(RooAbsReal*)mu_signal_0.At(iclass), *(RooAbsReal*)sigma_signal_0.At(iclass));
@@ -390,6 +352,7 @@ int main(int argc, char *argv[])
 //	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass)), kFALSE);
 	new(n_signal[iclass])           RooRealVar(Form("hggpdf_cat%i_signal_norm", iclass), "N_{0}", 20., 0., 500., "events");
 	new(signal_model[iclass])       RooExtendPdf(Form("model_signal_class_cat%i", iclass), Form("model_signal_class_cat%i", iclass), *(RooAddPdf*)signal_model_gauss.At(iclass), *(RooRealVar*)n_signal.At(iclass));
+	// ##### BACKGROUND MODEL PARAMETERS #####
 	new (pol0[iclass])              RooRealVar(Form("pol0_cat%i", iclass), "b_{0}", 0.0001, 0., 1.);
 	new (pol1[iclass])              RooRealVar(Form("pol1_cat%i", iclass), "b_{1}", 0.0001, 0., 1.);
 	new (pol2[iclass])              RooRealVar(Form("pol2_cat%i", iclass), "b_{2}", 0.0001, 0., 1.);
