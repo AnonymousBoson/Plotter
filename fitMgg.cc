@@ -255,6 +255,9 @@ int main(int argc, char *argv[])
 
 	vector<Sample> sample_list;
 	sample_list.push_back(sig_ggh_125);
+	sample_list.push_back(sig_vbf_125);
+	sample_list.push_back(sig_wzh_125);
+	sample_list.push_back(sig_tth_125);
 	sample_list.push_back(bkg_diphojet_8TeV);
 
 
@@ -270,6 +273,19 @@ int main(int argc, char *argv[])
 	vector<vector<int> > stackSamples;
 	stackGroups.clear();
 	stackSamples.clear();
+	getStackGroups(sample_list, stackGroups, stackSamples);
+
+	cout << endl << endl << endl << endl;
+	cout << "stackGroups.size()= " << stackGroups.size() << "\t\tstackSamples.size()= " << stackSamples.size() << endl;
+	for(int is = 0 ; is < (int)stackGroups.size() ; is++)
+	{
+		cout << "stackGroups[" << is << "]= " << stackGroups[is] << endl;
+		for(int js = 0 ; js < (int)stackSamples[is].size() ; js++)
+			cout << "\tstackSamples[" << is << "][" << js << "]= " << stackSamples[is][js] << "\tname= " << sample_list[stackSamples[is][js]].getName() << endl;
+	}
+	cout << endl << endl << endl << endl;
+
+/*
 	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
   {
     string stack = sample_list[isample].getStackGroup();
@@ -302,6 +318,7 @@ int main(int argc, char *argv[])
       stackSamples.push_back(samples);
     }
   }
+*/
 	// ##### PREPARE FIT MODELS #####
 	string cuts = "category == 0";
 	// ### SIGNAL ###

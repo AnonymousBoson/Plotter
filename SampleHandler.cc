@@ -110,10 +110,11 @@ void Sample::print() const
 }
 
 
-vector<string> getStackGroups(vector<Sample> sample_list)
+void getStackGroups(vector<Sample> sample_list, vector<string> &stackGroups, vector<vector<int> > & stackSamples)
 {
-	vector<string> stackGroups;
+//	vector<string> stackGroups;
 	stackGroups.clear();
+	stackSamples.clear();
 
 	for(int isample = 0 ; isample < (int)sample_list.size() ; isample++)
 	{
@@ -148,5 +149,5 @@ vector<string> getStackGroups(vector<Sample> sample_list)
 		}
 	}
 
-	return stackGroups;
+	return;
 }
