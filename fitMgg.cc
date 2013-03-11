@@ -26,7 +26,7 @@
 #include "CMSStyle.C"
 #include "SampleHandler.h"
 // Verbosity
-#define DEBUG 0
+#define DEBUG 1
 // namespaces
 using namespace std;
 using namespace RooFit;
@@ -36,6 +36,7 @@ int main(int argc, char *argv[])
 {
 
 	// ##### GET ARGUMENTS #####
+	if(DEBUG) cout << "##### GET ARGUMENTS #####" << endl;
 	cout << "argc= " << argc << endl;
 	for(int iarg = 0 ; iarg < argc ; iarg++)
 		cout << "argv[" << iarg << "]= " << argv[iarg] << endl;
@@ -57,6 +58,7 @@ int main(int argc, char *argv[])
 	TCanvas *canvas = new TCanvas();
 
 	// ##### SETUP THE SAMPLES #####
+	if(DEBUG) cout << "##### SETUP THE SAMPLES" << endl;
 	// mh= 120GeV
 	Sample sig_ggh_120("ggh_m120_8TeV", "ggH (120 GeV)", -1, 1.0);
 	sig_ggh_120.setFiles("datastore/tree_v12.root");
@@ -251,7 +253,6 @@ int main(int argc, char *argv[])
 	sample_list.push_back(sig_wzh_125);
 	sample_list.push_back(bkg_dipho_Box_25_8TeV);
 	sample_list.push_back(sig_tth_125);
-	sample_list.push_back(bkg_dipho_Box_250_8TeV);
 	sample_list.push_back(bkg_diphojet_8TeV);
 	sample_list.push_back(bkg_DYJetsToLL);
 
@@ -262,8 +263,8 @@ int main(int argc, char *argv[])
 		((TChain*)chain_sample->At(isample))->Add(sample_list[isample].getFiles().c_str());
 	}
 
+	if(DEBUG) cout << "### CREATING ROODATASET PER STACK GROUP ###" << endl;
 	// Creating RooDataSet per stack group
-
 	vector<string> stackGroups;
 	vector<vector<int> > stackSamples;
 	stackGroups.clear();
@@ -271,31 +272,19 @@ int main(int argc, char *argv[])
 	getStackGroups(sample_list, stackGroups, stackSamples);
 	vector<string> superStackGroups;
 	vector<vector<int> > superStackSamples;
+	vector<vector<int> > superStackStacks;
 	superStackGroups.clear();
 	superStackSamples.clear();
-	getSuperStackGroups(sample_list, stackSamples, superStackGroups, superStackSamples);
+	superStackStacks.clear();
+	getSuperStackGroups(sample_list, stackSamples, superStackGroups, superStackSamples, superStackStacks);
 
 	cout << endl << endl << endl << endl;
 	printStackGroups(sample_list, stackGroups, stackSamples);
 	cout << endl << endl;
-	printSuperStackGroups(sample_list, superStackGroups, superStackSamples);
-/*
-	cout << "stackGroups.size()= " << stackGroups.size() << "\t\tstackSamples.size()= " << stackSamples.size() << endl;
-	for(int is = 0 ; is < (int)stackGroups.size() ; is++)
-	{
-		cout << "stackGroups[" << is << "]= " << stackGroups[is] << endl;
-		for(int js = 0 ; js < (int)stackSamples[is].size() ; js++)
-			cout << "\tstackSamples[" << is << "][" << js << "]= " << stackSamples[is][js] << "\tname= " << sample_list[stackSamples[is][js]].getName() << endl;
-	}
-	cout << "superStackGroups.size()= " << superStackGroups.size() << "\t\tsuperStackSamples.size()= " << superStackSamples.size() << endl;
-	for(int is = 0 ; is < (int)superStackGroups.size() ; is++)
-	{
-		cout << "superStackGroups[" << is << "]= " << superStackGroups[is] << endl;
-		for(int js = 0 ; js < (int)superStackSamples[is].size() ; js++)
-			cout << "\tsuperStackSamples[" << is << "][" << js << "]= " << superStackSamples[is][js] << "\tname= " << sample_list[superStackSamples[is][js]].getName() << endl;
-	}
-*/
+	printSuperStackGroups(sample_list, superStackGroups, superStackSamples, superStackStacks);
 	cout << endl << endl << endl << endl;
+
+	int nsamples = (int)sample_list.size();
 	// ##### PREPARE DATASETS #####
 	TClonesArray background_dataset("RooDataSet", nsamples);	
 	TClonesArray signal_dataset("RooDataSet", nsamples);
@@ -324,7 +313,61 @@ int main(int argc, char *argv[])
 	allVariables->add(evweight);
 	allVariables->add(pu_weight);
 
-	// ##### PREPARING ROODATASETS #####
+	// ### PREPARING ROODATASETS ###
+	double integratedLumi = 19620.0; // in picobarn
+	// # LOADING ALL SAMPLES #
+	if(DEBUG) cout << "# LOADING ALL SAMPLES #" << endl;
+	TClonesArray dataset("RooDataSet", nsamples);
+	for(int isample = 0 ; isample < (int)sample_list.size() ; isample++)
+	{
+		if(DEBUG) cout << "sample_list[" << isample << "].getName()= " << sample_list[isample].getName() << endl;
+		new (dataset[isample]) RooDataSet(sample_list[isample].getName().c_str(), sample_list[isample].getDisplayName().c_str(), ((TChain*)chain_sample->At(isample)), *allVariables);
+	}
+	// # WEIGHTING ALL SAMPLES #
+	if(DEBUG) cout << "# WEIGHTING ALL SAMPLES #" << endl;
+	TClonesArray wFunc("RooFormulaVar", nsamples);
+	TClonesArray wVar("RooRealVar", nsamples);
+	TClonesArray wgt_dataset("RooDataSet", nsamples);
+	for(int isample = 0; isample < (int)sample_list.size() ; isample++)
+	{
+		if(sample_list[isample].getSpecificWeights() == "manual")
+		{
+			new (wFunc[isample])	RooFormulaVar("total_weight", "total weight", Form("pu_weight * %f * %f / %f * %f", sample_list[isample].getXSection(), integratedLumi, sample_list[isample].getInitialNumberOfEvents(), sample_list[isample].getKFactor()), pu_weight);
+		} else {
+			new (wFunc[isample])	RooFormulaVar("total_weight", "total weight", "evweight * pu_weight", RooArgList(evweight, pu_weight));
+		}
+		new (wVar[isample])	RooRealVar(     *   (RooRealVar*)( ((RooDataSet*)(dataset.At(isample)))->addColumn( *((RooFormulaVar*)(wFunc.At(isample)))  ))          );
+		new (wgt_dataset[isample]) RooDataSet( ((RooDataSet*)dataset.At(isample))->GetName(), ((RooDataSet*)dataset.At(isample))->GetTitle(), (RooDataSet*)dataset.At(isample), *((RooDataSet*)dataset.At(isample))->get(), 0, ((RooRealVar*)wVar.At(isample))->GetName());
+	}
+	// # CREATING STACKED SAMPLES #
+	if(DEBUG) cout << "# CREATING STACKED SAMPLES #" << endl;
+	TClonesArray stackedDataset("RooDataSet", stackGroups.size() - 1);
+	for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
+	{
+		new (stackedDataset[istack]) RooDataSet(*( (RooDataSet*)wgt_dataset.At(stackSamples[istack][0]) ));
+		for(int jsample = 1 ; jsample < (int)stackSamples[istack].size() ; jsample++)
+		{
+			((RooDataSet*)stackedDataset.At(istack))->append(*((RooDataSet*)wgt_dataset.At(stackSamples[istack][jsample]) ));
+		}
+		cout << "stackGroups[" << istack << "]= " << stackGroups[istack] << endl;
+		cout << "((RooDataSet*)stackedDataset.At(istack))->isWeighted()= " << ((RooDataSet*)stackedDataset.At(istack))->isWeighted() << endl;
+	}
+	// # CREATING SUPERSTACKED SAMPLES #
+	if(DEBUG) cout << "# CREATING SUPERSTACKED SAMPLES #" << endl;
+	TClonesArray superStackedDataset("RooDataSet", superStackGroups.size() -1);
+	for(int isstack = 0 ; isstack < (int)superStackGroups.size() ; isstack++)
+	{
+		new (superStackedDataset[isstack]) RooDataSet(*( (RooDataSet*)stackedDataset.At(superStackStacks[isstack][0]) ));
+		for(int jsample = 1 ; jsample < (int)superStackSamples[isstack].size() ; jsample++)
+		{
+			((RooDataSet*)superStackedDataset.At(isstack))->append(*((RooDataSet*)stackedDataset.At(superStackStacks[isstack][jsample]) ));
+		}
+		cout << "superStackGroups[" << isstack << "]= " << superStackGroups[isstack] << endl;
+		cout << "((RooDataSet*)superStackedDataset.At(isstack))->isWeighted()= " << ((RooDataSet*)superStackedDataset.At(isstack))->isWeighted() << endl;
+	}
+
+
+/*
 	RooDataSet *unw_signal = new RooDataSet("signal", "signal", ((TChain*)chain_sample->At(0)), *allVariables);
 	RooFormulaVar wSignalFunc("wS", "event weight", "pu_weight * 19.52 * 2.28 * 0.001 * 19620.0 / 69036.0 * 1.0", pu_weight);
 	RooRealVar* wSignal = (RooRealVar*) unw_signal->addColumn(wSignalFunc);
@@ -338,34 +381,26 @@ int main(int argc, char *argv[])
 	cout << "##### background->isWeighted()= " << background->isWeighted() << endl;
 
 
-/*
-// Construct formula to calculate (fake) weight for events
-  RooFormulaVar wFunc("w","event weight","(x*x+10)",x) ;
-  // Add column with variable w to previously generated dataset
-  RooRealVar* w = (RooRealVar*) data->addColumn(wFunc) ;
-  // Instruct dataset wdata in interpret w as event weight rather than as observable
-  RooDataSet wdata(data->GetName(),data->GetTitle(),data,*data->get(),0,w->GetName()) ;
 
-	TClonesArray pof("RooRealVar", 10);
-	new (pof[0]) RooRealVar();
-
-	TClonesArray paf("RooDataSet", 10);
-	new (paf[0]) RooDataSet();
-*/
+	int itemp = 0;
+	new (signal_dataset[itemp])		RooDataSet(Form("signal_dataset_cat%i", itemp), Form("signal_dataset_cat%i", itemp), signal, RooArgSet(CMS_hgg_mass, category, *wSignal), Form("category == %i", itemp), wSignal->GetName());
+	new (background_dataset[itemp])		RooDataSet(Form("background_dataset_cat%i", itemp), Form("background_dataset_cat%i", itemp), background, RooArgSet(CMS_hgg_mass, category, *wBackground), Form("category == %i", itemp), wBackground->GetName());
+	((RooDataSet*)signal_dataset.At(itemp))->SetName(Form("signal_dataset_cat%i", itemp));
+	((RooDataSet*)background_dataset.At(itemp))->SetName(Form("background_dataset_cat%i", itemp));
 
 
-	new (signal_dataset[iclass])		RooDataSet(Form("signal_dataset_cat%i", iclass), Form("signal_dataset_cat%i", iclass), signal, RooArgSet(CMS_hgg_mass, category, *wSignal), Form("category == %i", iclass), wSignal->GetName());
-	new (background_dataset[iclass])		RooDataSet(Form("background_dataset_cat%i", iclass), Form("background_dataset_cat%i", iclass), background, RooArgSet(CMS_hgg_mass, category, *wBackground), Form("category == %i", iclass), wBackground->GetName());
-//	new (signal_dataset[iclass])		(RooDataSet)(RooDataSet());
-//	new (background_dataset[iclass])		RooDataSet();
-//	new (signal_dataset[0])		RooDataSet();
-//	new (background_dataset[0])		RooDataSet();
-	((RooDataSet*)signal_dataset.At(iclass))->SetName(Form("signal_dataset_cat%i", iclass));
-	((RooDataSet*)background_dataset.At(iclass))->SetName(Form("background_dataset_cat%i", iclass));
+
+
+
+
+
+
+
 
 
 
 	// ##### PREPARE FIT MODELS #####
+	if(DEBUG) cout << "##### PREPARE FIT MODELS #####" << endl;
 	string cuts = "category == 0";
 	// ### SIGNAL ###
 	int n = 10;
@@ -453,7 +488,7 @@ int main(int argc, char *argv[])
 	RooWorkspace *myWS = new RooWorkspace("cms_hgg_workspace");
 	// ### SAVING SPECTATOR AND DISCRIMINANT VARIABLES
 	myWS->import(*allVariables);
-
+*/
 /*
 	myWS->import(PhotonsMass);
 	myWS->import(dipho_E);
@@ -464,6 +499,7 @@ int main(int argc, char *argv[])
 	myWS->import(dipho_tanhYStar);
 	myWS->import(dipho_Y);
 */
+/*
 
 	// ### SAVING BACKGROUND
 	myWS->import(*(RooAbsPdf*)background_model.At(iclass));
@@ -476,7 +512,7 @@ int main(int argc, char *argv[])
 
 	cout << "((RooRealVar*)n_signal.At(0))->getVal()= " << ((RooRealVar*)n_signal.At(0))->getVal() << endl;
 	cout << "((RooRealVar*)n_background.At(0))->getVal()= " << ((RooRealVar*)n_background.At(0))->getVal() << endl;
-
+*/
 	return 0;
 }
 

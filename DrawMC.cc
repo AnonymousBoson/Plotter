@@ -503,11 +503,12 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	// superStack
 	vector<string> superStackGroups;
 	vector<vector<int> > superStackSamples;
+	vector<vector<int> > superStackStacks;
 	superStackGroups.clear();
 	superStackSamples.clear();
 	vector<double> superIntegrals;
 	superIntegrals.clear();
-	getSuperStackGroups(sample_list, stackSamples, superStackGroups, superStackSamples);
+	getSuperStackGroups(sample_list, stackSamples, superStackGroups, superStackSamples, superStackStacks);
 /*
 	for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
 	{
