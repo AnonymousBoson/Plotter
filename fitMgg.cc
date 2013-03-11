@@ -286,20 +286,21 @@ int main(int argc, char *argv[])
 
 	int nsamples = (int)sample_list.size();
 	// ##### PREPARE DATASETS #####
-	TClonesArray background_dataset("RooDataSet", nsamples);	
-	TClonesArray signal_dataset("RooDataSet", nsamples);
+//	TClonesArray background_dataset("RooDataSet", nsamples);	
+//	TClonesArray signal_dataset("RooDataSet", nsamples);
 	// ### SETUP VARIABLES AND INITIALIZE FIT PARAMETERS ###
 	RooRealVar CMS_hgg_mass("PhotonsMass", "m_{#gamma#gamma}", 100., 180., "GeV");
-	RooRealVar dipho_E("dipho_E", "E^{#gammagamma}", 0., 200., "GeV");
-	RooRealVar dipho_pt("dipho_pt", "p_{T}^{#gammagamma}", 0., 200., "GeV");
-	RooRealVar dipho_eta("dipho_eta", "#eta^{#gammagamma}", -5., 5., "GeV");
-	RooRealVar dipho_phi("dipho_phi", "#phi^{#gammagamma}", -3.16, 3.16, "GeV");
-	RooRealVar dipho_cosThetaStar_CS("dipho_cosThetaStar_CS", "|cos(#theta^{*})|", 0., 1., "GeV");
-	RooRealVar dipho_tanhYStar("dipho_tanhYStar", "|tanh(Y^{*})|", 0., 1., "GeV");
+	CMS_hgg_mass.setBins(160);
+	RooRealVar dipho_E("dipho_E", "E^{#gammagamma}", 0., 8000., "GeV");
+	RooRealVar dipho_pt("dipho_pt", "p_{T}^{#gammagamma}", 0., 8000., "GeV");
+	RooRealVar dipho_eta("dipho_eta", "#eta^{#gammagamma}", -10., 10., "GeV");
+	RooRealVar dipho_phi("dipho_phi", "#phi^{#gammagamma}", -3.2, 3.2, "GeV");
+	RooRealVar dipho_cosThetaStar_CS("dipho_cosThetaStar_CS", "|cos(#theta^{*})|", 0., 1.2, "GeV");
+	RooRealVar dipho_tanhYStar("dipho_tanhYStar", "|tanh(Y^{*})|", 0., 1.2, "GeV");
 	RooRealVar dipho_Y("dipho_Y", "Y^{#gammagamma}", -10., 10., "GeV");
-	RooRealVar category("category", "category", 0, 20);
-	RooRealVar evweight("evweight", "evweight", 0, 100);
-	RooRealVar pu_weight("pu_weight", "pu_weight", 0, 100);
+	RooRealVar category("category", "category", 0., 20.);
+	RooRealVar evweight("evweight", "evweight", 0., 100.);
+	RooRealVar pu_weight("pu_weight", "pu_weight", 0., 100.);
 	RooArgSet *allVariables = new RooArgSet();
 	allVariables->add(CMS_hgg_mass);
 	allVariables->add(dipho_E);
@@ -339,6 +340,7 @@ int main(int argc, char *argv[])
 		new (wVar[isample])	RooRealVar(     *   (RooRealVar*)( ((RooDataSet*)(dataset.At(isample)))->addColumn( *((RooFormulaVar*)(wFunc.At(isample)))  ))          );
 		new (wgt_dataset[isample]) RooDataSet( ((RooDataSet*)dataset.At(isample))->GetName(), ((RooDataSet*)dataset.At(isample))->GetTitle(), (RooDataSet*)dataset.At(isample), *((RooDataSet*)dataset.At(isample))->get(), 0, ((RooRealVar*)wVar.At(isample))->GetName());
 	}
+
 	// # CREATING STACKED SAMPLES #
 	if(DEBUG) cout << "# CREATING STACKED SAMPLES #" << endl;
 	TClonesArray stackedDataset("RooDataSet", stackGroups.size() - 1);
@@ -366,39 +368,35 @@ int main(int argc, char *argv[])
 		cout << "((RooDataSet*)superStackedDataset.At(isstack))->isWeighted()= " << ((RooDataSet*)superStackedDataset.At(isstack))->isWeighted() << endl;
 	}
 
-
 /*
-	RooDataSet *unw_signal = new RooDataSet("signal", "signal", ((TChain*)chain_sample->At(0)), *allVariables);
-	RooFormulaVar wSignalFunc("wS", "event weight", "pu_weight * 19.52 * 2.28 * 0.001 * 19620.0 / 69036.0 * 1.0", pu_weight);
-	RooRealVar* wSignal = (RooRealVar*) unw_signal->addColumn(wSignalFunc);
-	RooDataSet *signal = new RooDataSet(unw_signal->GetName(), unw_signal->GetTitle(), unw_signal, *unw_signal->get(), 0, wSignal->GetName());
-	cout << "##### signal->isWeighted()= " << signal->isWeighted() << endl;
-	RooDataSet *unw_background = new RooDataSet("background", "background", ((TChain*)chain_sample->At(1)), *allVariables);
-	RooFormulaVar wBackgroundFunc("wB", "event weight", "evweight * pu_weight", RooArgList(evweight, pu_weight));
-	RooRealVar* wBackground = (RooRealVar*) unw_background->addColumn(wBackgroundFunc);
-	RooDataSet *background = new RooDataSet(unw_background->GetName(), unw_background->GetTitle(), unw_background, *unw_background->get(), 0, wBackground->GetName());
-//		RooDataSet *background = new RooDataSet("background", "background", ((TChain*)chain_sample->At(1)), RooArgList(CMS_hgg_mass, category, evweight, pu_weight), "", "");
-	cout << "##### background->isWeighted()= " << background->isWeighted() << endl;
+	// ##### DEBUG #####
+	RooPlot *mgg_frame_test = CMS_hgg_mass.frame(Title("test_01"));
+	((RooDataSet*)dataset.At(0))->plotOn(mgg_frame_test);
+	mgg_frame_test->Draw();
+	canvas->Print("dump_test01.pdf");
+	canvas->Clear();
 
+	RooPlot *mgg_frame_test_ = CMS_hgg_mass.frame(Title("test_02"));
+	((RooDataSet*)wgt_dataset.At(0))->plotOn(mgg_frame_test_);
+	mgg_frame_test_->Draw();
+	canvas->Print("dump_test02.pdf");
+	canvas->Clear();
 
+	RooPlot *mgg_frame_test__ = CMS_hgg_mass.frame(Title("test_03"));
+	((RooDataSet*)stackedDataset.At(0))->plotOn(mgg_frame_test__);
+	mgg_frame_test__->Draw();
+	canvas->Print("dump_test03.pdf");
+	canvas->Clear();
 
-	int itemp = 0;
-	new (signal_dataset[itemp])		RooDataSet(Form("signal_dataset_cat%i", itemp), Form("signal_dataset_cat%i", itemp), signal, RooArgSet(CMS_hgg_mass, category, *wSignal), Form("category == %i", itemp), wSignal->GetName());
-	new (background_dataset[itemp])		RooDataSet(Form("background_dataset_cat%i", itemp), Form("background_dataset_cat%i", itemp), background, RooArgSet(CMS_hgg_mass, category, *wBackground), Form("category == %i", itemp), wBackground->GetName());
-	((RooDataSet*)signal_dataset.At(itemp))->SetName(Form("signal_dataset_cat%i", itemp));
-	((RooDataSet*)background_dataset.At(itemp))->SetName(Form("background_dataset_cat%i", itemp));
+	RooPlot *mgg_frame_test___ = CMS_hgg_mass.frame(Title("test_04"));
+	((RooDataSet*)superStackedDataset.At(0))->plotOn(mgg_frame_test___);
+	mgg_frame_test___->Draw();
+	canvas->Print("dump_test04.pdf");
+	canvas->Clear();
 
-
-
-
-
-
-
-
-
-
-
-
+//	return 999;
+	// ##### DEBUG #####
+*/
 	// ##### PREPARE FIT MODELS #####
 	if(DEBUG) cout << "##### PREPARE FIT MODELS #####" << endl;
 	string cuts = "category == 0";
@@ -444,7 +442,7 @@ int main(int argc, char *argv[])
 	new (frac_1[iclass])            RooRealVar(Form("frac_1_cat%i", iclass), "frac_{1}", .3, 0.001, 0.999);
 	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass), *(RooGaussian*)gauss_signal_2.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass), *(RooRealVar*)frac_1.At(iclass)), kFALSE);
 //	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass)), kFALSE);
-	new(n_signal[iclass])           RooRealVar(Form("hggpdf_cat%i_signal_norm", iclass), "N_{0}", 20., 0., 500., "events");
+	new(n_signal[iclass])           RooRealVar(Form("hggpdf_cat%i_signal_norm", iclass), "N_{0}", 200., 0., 5000., "events");
 	new(signal_model[iclass])       RooExtendPdf(Form("model_signal_class_cat%i", iclass), Form("model_signal_class_cat%i", iclass), *(RooAddPdf*)signal_model_gauss.At(iclass), *(RooRealVar*)n_signal.At(iclass));
 	// ##### BACKGROUND MODEL PARAMETERS #####
 	new (pol0[iclass])              RooRealVar(Form("pol0_cat%i", iclass), "b_{0}", 0.0001, 0., 1.);
@@ -457,62 +455,64 @@ int main(int argc, char *argv[])
 	new (background_model_bernstein[iclass])  RooBernstein(Form("model_background_bernstein_class_%i", iclass), Form("model_background_bernstein_class_%i", iclass), CMS_hgg_mass, RooArgList(*(RooRealVar*)pol0.At(iclass), *(RooRealVar*)pol1.At(iclass), *(RooRealVar*)pol2.At(iclass), *(RooRealVar*)pol3.At(iclass), *(RooRealVar*)pol4.At(iclass)));
 	new (background_model[iclass])  RooExtendPdf(Form("model_background_class_cat%i", iclass), Form("model_background_class_cat%i", iclass), *(RooBernstein*)background_model_bernstein.At(iclass), *(RooRealVar*)n_background.At(iclass));
 
-	// ##### FIT #####
-	cout << "##### (RooDataSet*)signal_dataset.At(iclass)->isWeighted= " << ((RooDataSet*)signal_dataset.At(iclass))->isWeighted() << endl;
-	cout << "##### (RooDataSet*)background_dataset.At(iclass)->isWeighted= " << ((RooDataSet*)background_dataset.At(iclass))->isWeighted() << endl;
-	RooFitResult *result_signal = ((RooAbsPdf*)signal_model.At(iclass))->fitTo(*(RooDataSet*)signal_dataset.At(iclass), Save(), SumW2Error(kTRUE));
-	RooFitResult *result_background = ((RooAbsPdf*)background_model.At(iclass))->fitTo(*(RooDataSet*)background_dataset.At(iclass), Save(), SumW2Error(kTRUE));
+	// ##### SETTING UP THE FITS #####
+	for( int iss = 0 ; iss < (int)superStackGroups.size() ; iss++)
+//	for( int iss = 0 ; iss < 1 ; iss++)
+	{
+		cout << "superStackGroups[" << iss << "]= " << superStackGroups[iss] << endl;
+		if(superStackGroups[iss].find("SM Higgs") != string::npos)
+		{
+			// ### SIGNAL ###
+			cout << "### FITTING AND PLOTTING SIGNAL ###" << endl;
+			((RooDataSet*)superStackedDataset.At(iss))->SetNameTitle("signal", "signal");
+			RooFitResult *result_signal = ((RooAbsPdf*)signal_model.At(iclass))->fitTo(*(RooDataSet*)superStackedDataset.At(iss), Save(), SumW2Error(kTRUE));
+			RooPlot *mgg_frame_signal = CMS_hgg_mass.frame(Title("signal"));
+			((RooDataSet*)superStackedDataset.At(iss))->plotOn(mgg_frame_signal, DataError(RooAbsData::SumW2));
+//			((RooDataSet*)signal_dataset.At(iclass))->plotOn(mgg_frame_signal, DataError(RooAbsData::SumW2));
+			((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, Components(Form("gauss_signal_0_cat%i", iclass)), LineStyle(kDashed), LineColor(kGreen), LineWidth(2));
+			((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, Components(Form("gauss_signal_1_cat%i", iclass)), LineStyle(kDashed), LineColor(kBlue)), LineWidth(2);
+			((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, Components(Form("gauss_signal_2_cat%i", iclass)), LineStyle(kDashed), LineColor(kCyan), LineWidth(2));
+			((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, LineColor(kRed), LineWidth(2));
+			mgg_frame_signal->Draw();
+			RooArgList param_signal = result_signal->floatParsFinal();
+			canvas->Print("dump_signal.pdf");
+			canvas->Clear();
+			cout << "### END SIGNAL FIT ###" << endl;
+		} else if (superStackGroups[iss].find("Background") != string::npos) {
+			// ### BACKGROUND ###
+			cout << "### FITTING AND PLOTTING BACKGROUND ###" << endl;
+			((RooDataSet*)superStackedDataset.At(iss))->SetNameTitle("background", "background");
+			RooFitResult *result_background = ((RooAbsPdf*)background_model.At(iclass))->fitTo(*(RooDataSet*)superStackedDataset.At(iss), Save(), SumW2Error(kTRUE));
+			RooPlot *mgg_frame_background = CMS_hgg_mass.frame(Title("background"));
+//			((RooDataSet*)background_dataset.At(iclass))->plotOn(mgg_frame_background, DataError(RooAbsData::SumW2));
+			((RooDataSet*)superStackedDataset.At(iss))->plotOn(mgg_frame_background, DataError(RooAbsData::SumW2));
+			((RooAbsPdf*)background_model.At(iclass))->plotOn(mgg_frame_background, LineColor(kRed), LineWidth(2));
+			mgg_frame_background->Draw();
+			RooArgList param_background = result_background->floatParsFinal();
+			canvas->Print("dump_background.pdf");
+			canvas->Clear();
+			cout << "### END BACKGROUND FIT ###" << endl;
+		}
+	}
 
-	// ##### PLOT THE FIT #####
-	// ### SIGNAL
-	RooPlot *mgg_frame_signal = CMS_hgg_mass.frame(Title("signal"));
-	((RooDataSet*)signal_dataset.At(iclass))->plotOn(mgg_frame_signal, DataError(RooAbsData::SumW2));
-	((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, Components(Form("gauss_signal_0_cat%i", iclass)), LineStyle(kDashed), LineColor(kGreen), LineWidth(2));
-	((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, Components(Form("gauss_signal_1_cat%i", iclass)), LineStyle(kDashed), LineColor(kBlue)), LineWidth(2);
-	((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, Components(Form("gauss_signal_2_cat%i", iclass)), LineStyle(kDashed), LineColor(kCyan), LineWidth(2));
-	((RooAbsPdf*)signal_model.At(iclass))->plotOn(mgg_frame_signal, LineColor(kRed), LineWidth(2));
-	mgg_frame_signal->Draw();
-	RooArgList param_signal = result_signal->floatParsFinal();
-	canvas->Print("dump_signal.pdf");
-	canvas->Clear();
-	// ### BACKGROUND
-	RooPlot *mgg_frame_background = CMS_hgg_mass.frame(Title("background"));
-	((RooDataSet*)background_dataset.At(iclass))->plotOn(mgg_frame_background, DataError(RooAbsData::SumW2));
-	((RooAbsPdf*)background_model.At(iclass))->plotOn(mgg_frame_background, LineColor(kRed), LineWidth(2));
-	mgg_frame_background->Draw();
-	RooArgList param_background = result_background->floatParsFinal();
-	canvas->Print("dump_background.pdf");
-	canvas->Clear();
 
 	// ##### SAVE STUFF INTO A ROOWORKSPACE #####
+	cout << "##### SAVE STUFF INTO A ROOWORKSPACE #####" << endl;
 	RooWorkspace *myWS = new RooWorkspace("cms_hgg_workspace");
 	// ### SAVING SPECTATOR AND DISCRIMINANT VARIABLES
 	myWS->import(*allVariables);
-*/
-/*
-	myWS->import(PhotonsMass);
-	myWS->import(dipho_E);
-	myWS->import(dipho_pt);
-	myWS->import(dipho_eta);
-	myWS->import(dipho_phi);
-	myWS->import(dipho_cosThetaStar_CS);
-	myWS->import(dipho_tanhYStar);
-	myWS->import(dipho_Y);
-*/
-/*
+
 
 	// ### SAVING BACKGROUND
 	myWS->import(*(RooAbsPdf*)background_model.At(iclass));
 	// ### SAVING SIGNAL
 	myWS->import(*(RooAbsPdf*)signal_model.At(iclass));
-	// ### SAVING (PSEUDO-)DATA
-	// FIXME
 	// ### WRITING FILE
 	myWS->writeToFile(wspaceName.c_str());
 
 	cout << "((RooRealVar*)n_signal.At(0))->getVal()= " << ((RooRealVar*)n_signal.At(0))->getVal() << endl;
 	cout << "((RooRealVar*)n_background.At(0))->getVal()= " << ((RooRealVar*)n_background.At(0))->getVal() << endl;
-*/
+
 	return 0;
 }
 
