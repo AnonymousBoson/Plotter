@@ -248,12 +248,23 @@ int main(int argc, char *argv[])
 	bkg_DYJetsToLL.setSuperStackGroup("Background");
 
 	vector<Sample> sample_list;
+	// SM Higgs @ 125 GeV
 	sample_list.push_back(sig_ggh_125);
 	sample_list.push_back(sig_vbf_125);
 	sample_list.push_back(sig_wzh_125);
-	sample_list.push_back(bkg_dipho_Box_25_8TeV);
 	sample_list.push_back(sig_tth_125);
+	// Background
+	sample_list.push_back(bkg_qcd_30_8TeV_ff);
+	sample_list.push_back(bkg_qcd_40_8TeV_ff);
+	sample_list.push_back(bkg_qcd_30_8TeV_pf);
+	sample_list.push_back(bkg_qcd_40_8TeV_pf);
+	sample_list.push_back(bkg_gjet_20_8TeV_pf);
+	sample_list.push_back(bkg_gjet_40_8TeV_pf);
+	sample_list.push_back(bkg_gjet_20_8TeV_pp);
+	sample_list.push_back(bkg_gjet_40_8TeV_pp);
 	sample_list.push_back(bkg_diphojet_8TeV);
+	sample_list.push_back(bkg_dipho_Box_25_8TeV);
+	sample_list.push_back(bkg_dipho_Box_250_8TeV);
 	sample_list.push_back(bkg_DYJetsToLL);
 
 	TClonesArray * chain_sample = new TClonesArray("TChain", sample_list.size() - 1);
@@ -440,8 +451,8 @@ int main(int argc, char *argv[])
 	new (gauss_signal_2[iclass])    RooGaussian(Form("gauss_signal_2_cat%i", iclass), Form("gauss_signal_2_cat%i", iclass), CMS_hgg_mass, *(RooAbsReal*)mu_signal_2.At(iclass), *(RooAbsReal*)sigma_signal_2.At(iclass));
 	new (frac_0[iclass])            RooRealVar(Form("frac_0_cat%i", iclass), "frac_{0}", .5, 0.001, 0.999);
 	new (frac_1[iclass])            RooRealVar(Form("frac_1_cat%i", iclass), "frac_{1}", .3, 0.001, 0.999);
-	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass), *(RooGaussian*)gauss_signal_2.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass), *(RooRealVar*)frac_1.At(iclass)), kFALSE);
-//	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass)), kFALSE);
+//	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass), *(RooGaussian*)gauss_signal_2.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass), *(RooRealVar*)frac_1.At(iclass)), kFALSE);
+	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass)), kFALSE);
 	new(n_signal[iclass])           RooRealVar(Form("hggpdf_cat%i_signal_norm", iclass), "N_{0}", 200., 0., 5000., "events");
 	new(signal_model[iclass])       RooExtendPdf(Form("model_signal_class_cat%i", iclass), Form("model_signal_class_cat%i", iclass), *(RooAddPdf*)signal_model_gauss.At(iclass), *(RooRealVar*)n_signal.At(iclass));
 	// ##### BACKGROUND MODEL PARAMETERS #####
