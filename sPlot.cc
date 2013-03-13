@@ -106,13 +106,13 @@ int main(int argc, char *argv[])
 	toy->plotOn(mgg_frame);
 	// fix signal parameters
 	RooRealVar *frac_0_cat0 = ws->var("frac_0_cat0");		frac_0_cat0->setConstant();
-	RooRealVar *frac_1_cat0 = ws->var("frac_1_cat0");		frac_1_cat0->setConstant();
+//	RooRealVar *frac_1_cat0 = ws->var("frac_1_cat0");		frac_1_cat0->setConstant();
 	RooRealVar *mu_signal_0_cat0 = ws->var("mu_signal_0_cat0");		mu_signal_0_cat0->setConstant();
 	RooRealVar *mu_signal_1_cat0 = ws->var("mu_signal_1_cat0");		mu_signal_1_cat0->setConstant();
-	RooRealVar *mu_signal_2_cat0 = ws->var("mu_signal_2_cat0");		mu_signal_2_cat0->setConstant();
+//	RooRealVar *mu_signal_2_cat0 = ws->var("mu_signal_2_cat0");		mu_signal_2_cat0->setConstant();
 	RooRealVar *sigma_signal_0_cat0 = ws->var("sigma_signal_0_cat0");		sigma_signal_0_cat0->setConstant();
 	RooRealVar *sigma_signal_1_cat0 = ws->var("sigma_signal_1_cat0");		sigma_signal_1_cat0->setConstant();
-	RooRealVar *sigma_signal_2_cat0 = ws->var("sigma_signal_2_cat0");		sigma_signal_2_cat0->setConstant();
+//	RooRealVar *sigma_signal_2_cat0 = ws->var("sigma_signal_2_cat0");		sigma_signal_2_cat0->setConstant();
 	// first fit of toy data with bkg pdf
 	bkgpdf->fitTo(*toy, Extended());
 	cout << "hggpdf_cat0_background_norm->getVal()= " << hggpdf_cat0_background_norm->getVal() << endl;

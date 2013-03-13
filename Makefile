@@ -6,8 +6,8 @@ ROOTLIBS	= `root-config --libs --ldflags`
 ROOFITLIBS = -lRooFit -lRooFitCore -lMinuit
 ROOSTATSLIBS = -lRooStats 
 
-#all: DrawMC fitMgg sPlot
-all: DrawMC fitMgg
+all: DrawMC fitMgg sPlot
+#all: DrawMC fitMgg
 
 
 SampleHandler.o: SampleHandler.h SampleHandler.cc
@@ -25,8 +25,11 @@ fitMgg.o: fitMgg.cc SampleHandler.h
 fitMgg: fitMgg.o SampleHandler.o
 	$(CC) $(CCFLAGS) $(ROOTLIBS) $(ROOFITLIBS) fitMgg.o SampleHandler.o -o fitMgg.exe
 
-sPlot:
-	$(CC) $(CCFLAGS) $(ROOFITLIBS) $(ROOSTATSLIBS) -o sPlot.exe $(ROOTFLAGS) sPlot.cc
+sPlot.o: sPlot.cc
+	$(CC) $(CCFLAGS) $(ROOTFLAGS) -c sPlot.cc -o sPlot.o
+
+sPlot: sPlot.o
+	$(CC) $(CCFLAGS) $(ROOTLIBS) $(ROOFITLIBS) $(ROOSTATSLIBS) sPlot.o -o sPlot.exe
 
 clean:
 	rm *.o

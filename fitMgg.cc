@@ -248,15 +248,20 @@ int main(int argc, char *argv[])
 	bkg_DYJetsToLL.setSuperStackGroup("Background");
 
 	vector<Sample> sample_list;
+	vector<int> tmp_event_count;
 	// SM Higgs @ 125 GeV
+	sig_ggh_125.setKFactor(10.0);
+	sig_vbf_125.setKFactor(10.0);
+	sig_wzh_125.setKFactor(10.0);
+	sig_tth_125.setKFactor(10.0);
 	sample_list.push_back(sig_ggh_125);
-	sample_list.push_back(sig_vbf_125);
-	sample_list.push_back(sig_wzh_125);
-	sample_list.push_back(sig_tth_125);
+//	sample_list.push_back(sig_vbf_125);
+//	sample_list.push_back(sig_wzh_125);
+//	sample_list.push_back(sig_tth_125);
 	// Background
-	sample_list.push_back(bkg_qcd_30_8TeV_ff);
-	sample_list.push_back(bkg_qcd_40_8TeV_ff);
-	sample_list.push_back(bkg_qcd_30_8TeV_pf);
+//	sample_list.push_back(bkg_qcd_30_8TeV_ff);
+//	sample_list.push_back(bkg_qcd_40_8TeV_ff);
+//	sample_list.push_back(bkg_qcd_30_8TeV_pf);
 	sample_list.push_back(bkg_qcd_40_8TeV_pf);
 	sample_list.push_back(bkg_gjet_20_8TeV_pf);
 	sample_list.push_back(bkg_gjet_40_8TeV_pf);
@@ -264,14 +269,17 @@ int main(int argc, char *argv[])
 	sample_list.push_back(bkg_gjet_40_8TeV_pp);
 	sample_list.push_back(bkg_diphojet_8TeV);
 	sample_list.push_back(bkg_dipho_Box_25_8TeV);
-	sample_list.push_back(bkg_dipho_Box_250_8TeV);
+//	sample_list.push_back(bkg_dipho_Box_250_8TeV);
 	sample_list.push_back(bkg_DYJetsToLL);
+	string cuts = "category == 0 && ph1_ciclevel >= 4 && ph2_ciclevel >= 4";
 
 	TClonesArray * chain_sample = new TClonesArray("TChain", sample_list.size() - 1);
 	for(int isample = 0 ; isample < (int)sample_list.size() ; isample++)
 	{
 		new ((*chain_sample)[isample]) TChain(sample_list[isample].getName().c_str());
 		((TChain*)chain_sample->At(isample))->Add(sample_list[isample].getFiles().c_str());
+		tmp_event_count.push_back(((TChain*)chain_sample->At(isample))->GetEntries(cuts.c_str()));
+		cout << "### CREATING SAMPLE " << sample_list[isample].getName() << "\t#entries= " << ((TChain*)chain_sample->At(isample))->GetEntries() << "\t(selected= " << ((TChain*)chain_sample->At(isample))->GetEntries(cuts.c_str()) << ")" << endl;
 	}
 
 	if(DEBUG) cout << "### CREATING ROODATASET PER STACK GROUP ###" << endl;
@@ -332,7 +340,12 @@ int main(int argc, char *argv[])
 	TClonesArray dataset("RooDataSet", nsamples);
 	for(int isample = 0 ; isample < (int)sample_list.size() ; isample++)
 	{
-		if(DEBUG) cout << "sample_list[" << isample << "].getName()= " << sample_list[isample].getName() << endl;
+		if(DEBUG) cout << "# LOADING sample_list[" << isample << "].getName()= " << sample_list[isample].getName() << endl;
+		if(tmp_event_count[isample] == 0)
+		{
+			new (dataset[isample]) RooDataSet();
+			continue;
+		}
 		new (dataset[isample]) RooDataSet(sample_list[isample].getName().c_str(), sample_list[isample].getDisplayName().c_str(), ((TChain*)chain_sample->At(isample)), *allVariables);
 	}
 	// # WEIGHTING ALL SAMPLES #
@@ -342,6 +355,13 @@ int main(int argc, char *argv[])
 	TClonesArray wgt_dataset("RooDataSet", nsamples);
 	for(int isample = 0; isample < (int)sample_list.size() ; isample++)
 	{
+		if(tmp_event_count[isample] == 0)
+		{
+			new (wFunc[isample])  RooFormulaVar();
+			new (wVar[isample]) RooRealVar();
+			new (wgt_dataset[isample]) RooDataSet();
+			continue;
+		}
 		if(sample_list[isample].getSpecificWeights() == "manual")
 		{
 			new (wFunc[isample])	RooFormulaVar("total_weight", "total weight", Form("pu_weight * %f * %f / %f * %f", sample_list[isample].getXSection(), integratedLumi, sample_list[isample].getInitialNumberOfEvents(), sample_list[isample].getKFactor()), pu_weight);
@@ -357,12 +377,12 @@ int main(int argc, char *argv[])
 	TClonesArray stackedDataset("RooDataSet", stackGroups.size() - 1);
 	for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
 	{
+		cout << "stackGroups[" << istack << "]= " << stackGroups[istack] << endl;
 		new (stackedDataset[istack]) RooDataSet(*( (RooDataSet*)wgt_dataset.At(stackSamples[istack][0]) ));
 		for(int jsample = 1 ; jsample < (int)stackSamples[istack].size() ; jsample++)
 		{
 			((RooDataSet*)stackedDataset.At(istack))->append(*((RooDataSet*)wgt_dataset.At(stackSamples[istack][jsample]) ));
 		}
-		cout << "stackGroups[" << istack << "]= " << stackGroups[istack] << endl;
 		cout << "((RooDataSet*)stackedDataset.At(istack))->isWeighted()= " << ((RooDataSet*)stackedDataset.At(istack))->isWeighted() << endl;
 	}
 	// # CREATING SUPERSTACKED SAMPLES #
@@ -379,38 +399,8 @@ int main(int argc, char *argv[])
 		cout << "((RooDataSet*)superStackedDataset.At(isstack))->isWeighted()= " << ((RooDataSet*)superStackedDataset.At(isstack))->isWeighted() << endl;
 	}
 
-/*
-	// ##### DEBUG #####
-	RooPlot *mgg_frame_test = CMS_hgg_mass.frame(Title("test_01"));
-	((RooDataSet*)dataset.At(0))->plotOn(mgg_frame_test);
-	mgg_frame_test->Draw();
-	canvas->Print("dump_test01.pdf");
-	canvas->Clear();
-
-	RooPlot *mgg_frame_test_ = CMS_hgg_mass.frame(Title("test_02"));
-	((RooDataSet*)wgt_dataset.At(0))->plotOn(mgg_frame_test_);
-	mgg_frame_test_->Draw();
-	canvas->Print("dump_test02.pdf");
-	canvas->Clear();
-
-	RooPlot *mgg_frame_test__ = CMS_hgg_mass.frame(Title("test_03"));
-	((RooDataSet*)stackedDataset.At(0))->plotOn(mgg_frame_test__);
-	mgg_frame_test__->Draw();
-	canvas->Print("dump_test03.pdf");
-	canvas->Clear();
-
-	RooPlot *mgg_frame_test___ = CMS_hgg_mass.frame(Title("test_04"));
-	((RooDataSet*)superStackedDataset.At(0))->plotOn(mgg_frame_test___);
-	mgg_frame_test___->Draw();
-	canvas->Print("dump_test04.pdf");
-	canvas->Clear();
-
-//	return 999;
-	// ##### DEBUG #####
-*/
 	// ##### PREPARE FIT MODELS #####
 	if(DEBUG) cout << "##### PREPARE FIT MODELS #####" << endl;
-	string cuts = "category == 0";
 	// ### SIGNAL ###
 	int n = 10;
 	TClonesArray mu_signal_0("RooRealVar", n);
@@ -424,7 +414,8 @@ int main(int argc, char *argv[])
 	TClonesArray gauss_signal_2("RooGaussian", n);
 	TClonesArray frac_0("RooRealVar", n);
 	TClonesArray frac_1("RooRealVar", n);
-	TClonesArray signal_model_gauss("RooAddPdf", n);
+	TClonesArray signal_model_2gauss("RooAddPdf", n);
+	TClonesArray signal_model_3gauss("RooAddPdf", n);
 	TClonesArray signal_model("RooExtendPdf", n);
 	TClonesArray n_signal("RooRealVar", n);
 	// ### BACKGROUND ###
@@ -451,10 +442,10 @@ int main(int argc, char *argv[])
 	new (gauss_signal_2[iclass])    RooGaussian(Form("gauss_signal_2_cat%i", iclass), Form("gauss_signal_2_cat%i", iclass), CMS_hgg_mass, *(RooAbsReal*)mu_signal_2.At(iclass), *(RooAbsReal*)sigma_signal_2.At(iclass));
 	new (frac_0[iclass])            RooRealVar(Form("frac_0_cat%i", iclass), "frac_{0}", .5, 0.001, 0.999);
 	new (frac_1[iclass])            RooRealVar(Form("frac_1_cat%i", iclass), "frac_{1}", .3, 0.001, 0.999);
-//	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass), *(RooGaussian*)gauss_signal_2.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass), *(RooRealVar*)frac_1.At(iclass)), kFALSE);
-	new (signal_model_gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass)), kFALSE);
-	new(n_signal[iclass])           RooRealVar(Form("hggpdf_cat%i_signal_norm", iclass), "N_{0}", 200., 0., 5000., "events");
-	new(signal_model[iclass])       RooExtendPdf(Form("model_signal_class_cat%i", iclass), Form("model_signal_class_cat%i", iclass), *(RooAddPdf*)signal_model_gauss.At(iclass), *(RooRealVar*)n_signal.At(iclass));
+	new (signal_model_2gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass)), kFALSE);
+	new (signal_model_3gauss[iclass])      RooAddPdf(Form("gauss_signal_class_cat%i", iclass), Form("gauss_signal_class_cat%i", iclass), RooArgList(*(RooGaussian*)gauss_signal_0.At(iclass), *(RooGaussian*)gauss_signal_1.At(iclass), *(RooGaussian*)gauss_signal_2.At(iclass)), RooArgList(*(RooRealVar*)frac_0.At(iclass), *(RooRealVar*)frac_1.At(iclass)), kFALSE);
+	new(n_signal[iclass])           RooRealVar(Form("hggpdf_cat%i_signal_norm", iclass), "N_{0}", 200., 0., 10000., "events");
+	new(signal_model[iclass])       RooExtendPdf(Form("model_signal_class_cat%i", iclass), Form("model_signal_class_cat%i", iclass), *(RooAddPdf*)signal_model_2gauss.At(iclass), *(RooRealVar*)n_signal.At(iclass));
 	// ##### BACKGROUND MODEL PARAMETERS #####
 	new (pol0[iclass])              RooRealVar(Form("pol0_cat%i", iclass), "b_{0}", 0.0001, 0., 1.);
 	new (pol1[iclass])              RooRealVar(Form("pol1_cat%i", iclass), "b_{1}", 0.0001, 0., 1.);
