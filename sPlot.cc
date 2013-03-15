@@ -79,6 +79,7 @@ void addToyDataToWorkSpace(RooWorkspace *ws)
 	RooAddPdf *dummypdf = new RooAddPdf("dummypdf", "dummypdf", RooArgList(dummy_sig, dummy_bkg), RooArgList(*nsig, *nbkg));
 //	RooProdPdf twodmodel("twodmodel", "twodmodel", RooArgList(*totpdf, *dummypdf));
 
+
 	RooProdPdf *sig = new RooProdPdf("sig", "sig", RooArgList(*sigpdf, dummy_sig));
 	RooProdPdf *bkg = new RooProdPdf("bkg", "bkg", RooArgList(*bkgpdf, dummy_bkg));
 	RooAddPdf twodmodel("twodmodel", "twodmodel", RooArgList(*sig, *bkg), RooArgList(*nsig, *nbkg));
