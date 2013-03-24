@@ -3,7 +3,7 @@ CCFLAGS		=	-Wall -g
 SOURCES 	= 
 ROOTFLAGS	= `root-config --cflags`
 ROOTLIBS	= `root-config --libs --ldflags`
-ROOFITLIBS = -lRooFit -lRooFitCore -lMinuit
+ROOFITLIBS = -lRooFit -lRooFitCore -lMinuit -lFoam
 ROOSTATSLIBS = -lRooStats 
 
 all: DrawMC fitMgg sPlot

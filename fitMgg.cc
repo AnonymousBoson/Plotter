@@ -521,8 +521,10 @@ int main(int argc, char *argv[])
 	// ### SAVING BACKGROUND AND SIGNAL MODELS
 //	myWS->import(*(RooAbsPdf*)background_model.At(iclass));
 //	myWS->import(*(RooAbsPdf*)signal_model.At(iclass));
-	myWS->import(*(RooAbsPdf*)background_model_bernstein.At(iclass));
-	myWS->import(*(RooAbsPdf*)signal_model_2gauss.At(iclass));
+//	myWS->import(*(RooAbsPdf*)background_model_bernstein.At(iclass));
+//	myWS->import(*(RooAbsPdf*)signal_model_2gauss.At(iclass));
+	myWS->import(*(RooBernstein*)background_model_bernstein.At(iclass));
+	myWS->import(*(RooAddPdf*)signal_model_2gauss.At(iclass));
 	// ### WRITING FILE
 	myWS->writeToFile(wspaceName.c_str());
 
