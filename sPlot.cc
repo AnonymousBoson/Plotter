@@ -67,8 +67,8 @@ void addToyDataToWorkSpace(RooWorkspace *ws)
 	RooAbsPdf *bkgpdf = ws->pdf("model_background_bernstein_class_0");
 	RooAbsPdf *sigpdf = ws->pdf("gauss_signal_class_cat0");
 	cout << "##### PREPARING AND GENERATING TOY DATA #####" << endl;
-	double nsignal = 10000;
-	double nbackground = 1000;
+	double nbackground = 20000;
+	double nsignal = nbackground * 0.02;
 	double ntot = nsignal + nbackground;
 	cout << "### NTOT= " << ntot << " ###" << endl;
 	RooRealVar *nsig = new RooRealVar("nsig", "nsig", nsignal, 0., 100000.);
@@ -121,7 +121,7 @@ void makeCombinedModel(RooWorkspace *ws)
 	RooRealVar *nbkg = new RooRealVar("nbkg", "nbkg", 90., 0., 50000.);
 	RooAddPdf *totpdf = new RooAddPdf("totpdf", "totpdf", RooArgList(*sigpdf, *bkgpdf), RooArgList(*nsig, *nbkg));
 	RooDataSet* data = (RooDataSet*)ws->data("data");
-	totpdf->fitTo(*data, Extended());
+//	totpdf->fitTo(*data, Extended());
 
 	cout << "##### IMPORT MODEL INTO WORKSPACE #####" << endl;
 	ws->import(*totpdf);
@@ -172,8 +172,8 @@ void doSPlot(RooWorkspace *ws)
 	cout << "# SPLOT #" << endl;
 //	RooStats::SPlot *splot = new RooStats::SPlot("splot", "splot", *data, totpdf, RooArgList(*nsig, *nbkg));
 //	ws->pdf("totpdf")->Dump();
-	totpdf->Print();
-	RooStats::SPlot *splot = new RooStats::SPlot("splot", "splot", *data, totpdf, RooArgList(*nsig, *nbkg));
+//	totpdf->Print();
+//	RooStats::SPlot *splot = new RooStats::SPlot("splot", "splot", *data, totpdf, RooArgList(*nsig, *nbkg));
 //	RooStats::SPlot *splot = new RooStats::SPlot("splot", "splot", *data, (RooAddPdf*)ws->pdf("totpdf"), RooArgList(*nsig, *nbkg));
 //	RooStats::SPlot *splot = new RooStats::SPlot("splot", "splot", *((RooDataSet*)ws->data("data")), ws->pdf("totpdf"), RooArgList(*(ws->var("nsig")), *(ws->var("nbkg"))));
 /*
@@ -193,9 +193,16 @@ void doSPlot(RooWorkspace *ws)
 	RooAddPdf *sig = new RooAddPdf("sig", "sig", RooArgList(*gau0, *gau1), *f0);
 	RooBernstein *bkg = new RooBernstein("bkg", "bkg", *PhotonsMass, RooArgList(*p0, *p1, *p2, *p3, *p4));
 	RooAddPdf *totpdf2 = new RooAddPdf("totpdf2", "totpdf2", RooArgList(*sig, *bkg), RooArgList(*nsig, *nbkg));
+*/
+	RooGaussian *gau0 = new RooGaussian("gau0", "gau0", *PhotonsMass, *mu_signal_0_cat0, *sigma_signal_0_cat0);
+	RooGaussian *gau1 = new RooGaussian("gau1", "gau1", *PhotonsMass, *mu_signal_1_cat0, *sigma_signal_1_cat0);
+	RooAddPdf *sig = new RooAddPdf("sig", "sig", RooArgList(*gau0, *gau1), *frac_0_cat0);
+	RooBernstein *bkg = new RooBernstein("bkg", "bkg", *PhotonsMass, RooArgList(*pol0_cat0, *pol1_cat0, *pol2_cat0, *pol3_cat0, *pol4_cat0));
+	RooAddPdf *totpdf2 = new RooAddPdf("totpdf2", "totpdf2", RooArgList(*sig, *bkg), RooArgList(*nsig, *nbkg));
+	totpdf2->fitTo(*data, Extended());
 
 	RooStats::SPlot *splot = new RooStats::SPlot("splot", "splot", *data, totpdf2, RooArgList(*nbkg, *nsig));
-*/
+
 /*
 	RooStats::SPlot *splot2 = new RooStats::SPlot("splot", "splot", *data, ws->pdf("totpdf"), RooArgList(*nsig, *nbkg));
 
@@ -224,17 +231,25 @@ void doSPlot(RooWorkspace *ws)
 
 	RooStats::SPlot *splot3 = new RooStats::SPlot("splot3", "splot3", *data, gg, RooArgList(*nsig, *nbkg));
 */
-/*
+
+	RooRealVar mu_sig("mu_sig", "mu_sig", 5.);
+	RooRealVar sigma_sig("sigma_sig", "sigma_sig", 1.0);
+	RooRealVar mu_bkg("mu_bkg", "mu_bkg", -5.);
+	RooRealVar sigma_bkg("sigma_bkg", "sigma_bkg", 1.0);
+	RooGaussian dummy_sig("dummy_sig", "dummy_sig", *dummy, mu_sig, sigma_sig);
+	RooGaussian dummy_bkg("dummy_bkg", "dummy_bkg", *dummy, mu_bkg, sigma_bkg);
+
 	RooDataSet * dataw = new RooDataSet(data->GetName(),data->GetTitle(),data,*data->get(),0,"nsig_sw"); 
 	RooPlot *sdummy_frame = dummy->frame();
 	dataw->plotOn(sdummy_frame);
+	dummy_sig.plotOn(sdummy_frame);
 	sdummy_frame->Draw();
 	canvas->Print("dumps.pdf");
 	canvas->Clear();
 
 	RooPlot *smgg_frame = PhotonsMass->frame();
 	dataw->plotOn(smgg_frame);
-	sigpdf->plotOn(smgg_frame);
+	sig->plotOn(smgg_frame);
 	smgg_frame->Draw();
 	canvas->Print("dumpss.pdf");
 	canvas->Clear();
@@ -242,17 +257,18 @@ void doSPlot(RooWorkspace *ws)
 	RooDataSet * datawb = new RooDataSet(data->GetName(),data->GetTitle(),data,*data->get(),0,"nbkg_sw"); 
 	RooPlot *sdummy_frameb = dummy->frame();
 	datawb->plotOn(sdummy_frameb);
+	dummy_bkg.plotOn(sdummy_frameb);
 	sdummy_frameb->Draw();
 	canvas->Print("dumpb.pdf");
 	canvas->Clear();
 
 	RooPlot *smgg_frameb = PhotonsMass->frame();
 	datawb->plotOn(smgg_frameb);
-	bkgpdf->plotOn(smgg_frameb);
+	bkg->plotOn(smgg_frameb);
 	smgg_frameb->Draw();
 	canvas->Print("dumpbb.pdf");
 	canvas->Clear();
-*/
+
 	return;
 }
 

@@ -250,10 +250,10 @@ int main(int argc, char *argv[])
 	vector<Sample> sample_list;
 	vector<int> tmp_event_count;
 	// SM Higgs @ 125 GeV
-	sig_ggh_125.setKFactor(100.0);
-	sig_vbf_125.setKFactor(100.0);
-	sig_wzh_125.setKFactor(100.0);
-	sig_tth_125.setKFactor(100.0);
+//	sig_ggh_125.setKFactor(100.0);
+//	sig_vbf_125.setKFactor(100.0);
+//	sig_wzh_125.setKFactor(100.0);
+//	sig_tth_125.setKFactor(100.0);
 	sample_list.push_back(sig_ggh_125);
 //	sample_list.push_back(sig_vbf_125);
 //	sample_list.push_back(sig_wzh_125);
@@ -468,8 +468,8 @@ int main(int argc, char *argv[])
 			// ### SIGNAL ###
 			cout << "### FITTING AND PLOTTING SIGNAL ###" << endl;
 			((RooDataSet*)superStackedDataset.At(iss))->SetNameTitle("signal", "signal");
-//			RooFitResult *result_signal = ((RooAbsPdf*)signal_model.At(iclass))->fitTo(*(RooDataSet*)superStackedDataset.At(iss), Save(), SumW2Error(kTRUE));
-			RooFitResult *result_signal = ((RooAbsPdf*)signal_model_2gauss.At(iclass))->fitTo(*(RooDataSet*)superStackedDataset.At(iss), Save(), SumW2Error(kTRUE));
+			RooFitResult *result_signal = ((RooAbsPdf*)signal_model.At(iclass))->fitTo(*(RooDataSet*)superStackedDataset.At(iss), Save(), SumW2Error(kTRUE));
+//			RooFitResult *result_signal = ((RooAbsPdf*)signal_model_2gauss.At(iclass))->fitTo(*(RooDataSet*)superStackedDataset.At(iss), Save(), SumW2Error(kTRUE));
 			RooPlot *dipho_pt_frame_signal = dipho_pt.frame(Title("signal"));
 			RooPlot *mgg_frame_signal = PhotonsMass.frame(Title("signal"));
 			((RooDataSet*)superStackedDataset.At(iss))->plotOn(mgg_frame_signal, DataError(RooAbsData::SumW2));
@@ -491,8 +491,8 @@ int main(int argc, char *argv[])
 			// ### BACKGROUND ###
 			cout << "### FITTING AND PLOTTING BACKGROUND ###" << endl;
 			((RooDataSet*)superStackedDataset.At(iss))->SetNameTitle("background", "background");
-//			RooFitResult *result_background = ((RooAbsPdf*)background_model.At(iclass))->fitTo(*(RooDataSet*)superStackedDataset.At(iss), Save(), SumW2Error(kTRUE));
-			RooFitResult *result_background = ((RooAbsPdf*)background_model_bernstein.At(iclass))->fitTo(*(RooDataSet*)superStackedDataset.At(iss), Save(), SumW2Error(kTRUE));
+			RooFitResult *result_background = ((RooAbsPdf*)background_model.At(iclass))->fitTo(*(RooDataSet*)superStackedDataset.At(iss), Save(), SumW2Error(kTRUE));
+//			RooFitResult *result_background = ((RooAbsPdf*)background_model_bernstein.At(iclass))->fitTo(*(RooDataSet*)superStackedDataset.At(iss), Save(), SumW2Error(kTRUE));
 			RooPlot *mgg_frame_background = PhotonsMass.frame(Title("background"));
 			RooPlot *dipho_pt_frame_background = dipho_pt.frame(Title("background"));
 //			((RooDataSet*)background_dataset.At(iclass))->plotOn(mgg_frame_background, DataError(RooAbsData::SumW2));
@@ -525,6 +525,11 @@ int main(int argc, char *argv[])
 //	myWS->import(*(RooAbsPdf*)signal_model_2gauss.At(iclass));
 	myWS->import(*(RooBernstein*)background_model_bernstein.At(iclass));
 	myWS->import(*(RooAddPdf*)signal_model_2gauss.At(iclass));
+
+	// ### SAVING 'DATA'
+	for( int iss = 0 ; iss < (int)superStackGroups.size() ; iss++)
+		myWS->import(*(RooDataSet*)superStackedDataset.At(iss));
+
 	// ### WRITING FILE
 	myWS->writeToFile(wspaceName.c_str());
 
