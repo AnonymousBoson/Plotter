@@ -1,4 +1,4 @@
-DrawMC.exe
+*.exe
 datastore
 pdf/*
 root/*
