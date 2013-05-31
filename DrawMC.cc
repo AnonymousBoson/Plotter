@@ -25,7 +25,8 @@
 using namespace std;
 
 // **************************************************************************************************************************
-void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string variable, string variableFileName, string range, string cuts, string cutsFileName, string xAxisTitle, bool inLogScale, TCanvas *canvas, double integratedLumi);
+void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string variable, string variableFileName, string range, string cuts, string cutsFileName, string xAxisTitle, bool inLogScale, TCanvas *canvas, double integratedLumi, string othervariable = "");
+string to_string(int num);
 
 // **************************************************************************************************************************
 int main()
@@ -37,6 +38,29 @@ int main()
 	TGaxis::SetMaxDigits(3);
 	vector<Sample> sample_list;
 
+//	../BJetRegression/regressionGen2TMVA.root
+//	../BJetRegression/regressionParton2TMVA.root
+
+	Sample radion("Radion_m300_8TeV_nm", "Radion (300 GeV)", -1, 1.0);
+	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm.root");
+	radion.setStackGroup("Default jet energy");
+	radion.setStyle(kGreen, 3, 3004, "");
+	radion.setSpecificWeights("manual");
+
+	Sample radion_prtRegBDT(radion);
+	radion_prtRegBDT.setDisplayName("Regression (BDT)");
+	radion_prtRegBDT.setStackGroup("Regression (BDT)");
+	radion_prtRegBDT.setStyle(kRed, 3, 3002, "");
+	radion_prtRegBDT.setUseAlternativeVariable(true);
+
+	Sample radion_prtRegMLP(radion);
+	radion_prtRegMLP.setDisplayName("Regression (MLP)");
+	radion_prtRegMLP.setStackGroup("Regression (MLP)");
+	radion_prtRegMLP.setStyle(kRed, 3, 3002, "");
+	radion_prtRegMLP.setUseAlternativeVariable(true);
+
+
+/*
 	Sample sig_vbf("vbf_m125_8TeV", "VBF (125 GeV)", -1, 1.0);
 	sig_vbf.setFiles("datastore/histograms_CMS-HGG_ALL.root");
 	sig_vbf.setStyle(kGreen, 3, 3004, "");
@@ -69,6 +93,9 @@ int main()
 	sample_list.push_back(bkg_diphojet);
 	sample_list.push_back(sig_vbf);
 	sample_list.push_back(sig_ggh);
+*/
+	sample_list.push_back(radion);
+	sample_list.push_back(radion_prtRegBDT);
 
 	TClonesArray * chain_sample = new TClonesArray("TChain", sample_list.size() - 1);
 	for(unsigned int isample = 0; isample < sample_list.size() ; isample++)
@@ -82,6 +109,8 @@ int main()
 	double integratedLumi = -1.0;
 
 	cout << "##### DRAW #####" << endl;
+	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 250)", "50 < jj_mass && jj_mass < 250", "all_cat", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass");
+/*
 	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
 
 	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
@@ -95,7 +124,7 @@ int main()
 	DrawMCPlot(chain_sample, sample_list, "diphoPt", "diphoPt", "(200, 0.0, 500.0)", "100 < mass && mass < 180 && category == 0", "cat0", "p_{T}^{#gamma#gamma}", 0, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "diphoEta", "diphoEta", "(200, -10.0, 10.0)", "100 < mass && mass < 180 && category == 0", "cat0", "#eta^{#gamma#gamma}", 1, canvas, integratedLumi);
 	DrawMCPlot(chain_sample, sample_list, "diphoEta", "diphoEta", "(200, -10.0, 10.0)", "100 < mass && mass < 180 && category == 0", "cat0", "#eta^{#gamma#gamma}", 0, canvas, integratedLumi);
-
+*/
 
 	delete canvas;
 	canvas = 0;
@@ -105,9 +134,11 @@ int main()
 	return 0;
 }
 
-// **************************************************************************************************************************
-void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string variable, string variableFileName, string range, string cuts, string cutsFileName, string xAxisTitle, bool inLogScale, TCanvas *canvas, double integratedLumi)
+// ***********************************************************************************************************************
+void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string variable, string variableFileName, string range, string cuts, string cutsFileName, string xAxisTitle, bool inLogScale, TCanvas *canvas, double integratedLumi, string othervariable)
 {
+	string CMSPrivate = "CMS Private 2013     #sqrt{s} = 8 TeV";
+//	string CMSPrivate = "CMS Private 2013     #sqrt{s} = 8 TeV     Parton regression";
 	if(DEBUG) cout << "##### INITIALIZATION #####" << endl;
 	// ##### INITIALIZATION #####
 	CMSstyle();
@@ -118,16 +149,20 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	TClonesArray * histos_temp = new TClonesArray("TH1F", sample_list.size() - 1);
 	TClonesArray * histos = new TClonesArray("TH1F", sample_list.size() - 1);
 	TClonesArray * superHistos = new TClonesArray("TH1F", sample_list.size() - 1);
-	for(unsigned int isample = 0 ; isample < sample_list.size() ; isample++)
+	for(int isample = 0 ; isample < (int)sample_list.size() ; isample++)
 	{
 		new ((*histos_temp)[isample]) TH1F();
-		string tmp_histname = "histo_" + sample_list[isample].getName() + "_temp";
+		string tmp_histname = "histo_" + sample_list[isample].getName() + "_temp" + to_string(isample);
 		string var = variable + ">>" + tmp_histname + range;
+		if(sample_list[isample].getUseAlternativeVariable()) var = othervariable + ">>" + tmp_histname + range;
 		string cut = "(" + cuts + " && " + sample_list[isample].getSpecificCuts() + ")";
 		if( (sample_list[isample].getSpecificWeights()).find("manual") != std::string::npos )
 		{
 			std::ostringstream cutOSS;
-			cutOSS << (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * (double)integratedLumi * (double)sample_list[isample].getKFactor();
+			if(integratedLumi > 0.)
+				cutOSS << (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * (double)integratedLumi * (double)sample_list[isample].getKFactor();
+			else
+				cutOSS << (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * (double)sample_list[isample].getKFactor();
 			string cutString = cutOSS.str();
 			cut += " * pu_weight * " + cutString;
 		} else {
@@ -140,10 +175,14 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		if(DEBUG) cout << cut << endl;
 		((TChain*)chain_sample->At(isample))->Draw(var.c_str(), cut.c_str());
 		if(DEBUG) canvas->Print("dump.pdf");
+		if(DEBUG) cout << "tmp_histname= " << tmp_histname << endl;
 		((*histos)[isample]) = (TH1F*)gDirectory->Get(tmp_histname.c_str());
+		if(DEBUG) cout << "((TH1F*)histos->At(" << isample << "))->Integral()= " << ((TH1F*)histos->At(isample))->Integral() << endl;
 		((*superHistos)[isample]) = (TH1F*)gDirectory->Get(tmp_histname.c_str());
 		canvas->Clear();
 	}
+	if(DEBUG) cout << "END OF INITIALIZATION" << endl;
+		if(DEBUG) {unsigned int isample = 0; cout << "((TH1F*)histos->At(" << isample << "))->Integral()= " << ((TH1F*)histos->At(isample))->Integral() << endl; }
 
 	if(DEBUG) cout << "##### SETUP STACK GROUPS #####" << endl;
 	// ##### SETUP STACK GROUPS #####
@@ -154,6 +193,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	for(int isample = 0 ; isample < chain_sample->GetEntriesFast() ; isample++)
 	{
 		string stack = sample_list[isample].getStackGroup();
+		if(DEBUG) cout << "sample_list[" << isample << "].getStackGroup()= " << sample_list[isample].getStackGroup() << endl;
 		bool stackAlreadyProcessed = false;
 		for(int istack = 0 ; istack < (int)stackGroups.size() ; istack++)
 		{ // check if this stack group has already been processed
@@ -205,6 +245,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	// to cope with under and overflow
 	// do it only for the latest one in the stack
 	vector<double> integrals;
+	if(DEBUG) cout << "stackSamples.size()= " << stackSamples.size() << endl;
 	for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
 	{
 		integrals.push_back(0.0);
@@ -215,16 +256,24 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			((TChain*)chain_sample->At(isample))->Draw("pu_weight>>temp_pu(100,0,10)", cut.c_str());
 			double pu_mean = (((TH1F*)gDirectory->Get("temp_pu"))->GetMean());
 			canvas->Clear();
+			if(DEBUG) cout << "pu_mean= " << pu_mean << endl;
 			if(DEBUG) cout << "stack = " << stackGroups[istack] << "\tsample= " << sample_list[isample].getName() << endl;
 			if(DEBUG) cout << "specific weight= " << (sample_list[isample].getSpecificWeights()) << endl;
 			if(DEBUG) cout << "isMatching= " << (sample_list[isample].getSpecificWeights()).find("manual") << endl;
+			if(DEBUG) cout << "((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str())= " << ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) << endl;
 			if( (sample_list[isample].getSpecificWeights()).find("manual") != std::string::npos )
 			{
-				integrals[istack] += ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * (double)integratedLumi * sample_list[isample].getKFactor();
+				if(integratedLumi > 0.)
+					integrals[istack] += ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * (double)integratedLumi * sample_list[isample].getKFactor();
+				else
+					integrals[istack] += ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * (double)sample_list[isample].getXSection() / (double)sample_list[isample].getInitialNumberOfEvents() * sample_list[isample].getKFactor();
+				if(DEBUG) cout << "manual weight, integrals[istack]+= " << integrals[istack] << endl;
 			} else {
-				((TChain*)chain_sample->At(isample))->Draw("xsec_weight>>temp_xsec(100,0,10)", cut.c_str());
+//				((TChain*)chain_sample->At(isample))->Draw("xsec_weight>>temp_xsec(100,0,10)", cut.c_str());
+				((TChain*)chain_sample->At(isample))->Draw("weight>>temp_xsec(100,0,10)", cut.c_str());
 				double xsec_mean = (((TH1F*)gDirectory->Get("temp_xsec"))->GetMean());
 				integrals[istack] += ((TChain*)chain_sample->At(isample))->GetEntries(cut.c_str()) * pu_mean * xsec_mean * sample_list[isample].getKFactor();
+				if(DEBUG) cout << "integrals[istack]+= " << integrals[istack] << endl;
 			}
 			canvas->Clear();
 			if(DEBUG) cout << "integrals[" << istack << "]= " << integrals[istack] << endl;
@@ -233,10 +282,27 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	// If normalisation to unity asked for, divide histo by integral
 	if(integratedLumi < 0.0)
 	{
+		if(DEBUG) cout << "Will normalize to unity" << endl;
+		if(DEBUG)
+		{
+			cout << "stackSamples.size()= " << stackSamples.size() << endl;
+			for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
+			{
+				cout << "stackSamples[" << istack << "].size()= " << stackSamples[istack].size() << endl;
+				for(int jsample=0 ; jsample < (int)stackSamples[istack].size() ; jsample++)
+				{
+					cout << "\tstackSamples[" << istack << "][" << jsample << "]= " << stackSamples[istack][jsample] << endl;
+				}
+				cout << "stackSamples[" << istack << "].back()= " << stackSamples[istack].back() << endl;
+			}
+		}
 		for(int istack=0 ; istack < (int)stackSamples.size() ; istack++)
 		{
 			int isample = stackSamples[istack].back();
-			if(DEBUG) cout << "integral histogram= " << ((TH1F*)histos->At(isample))->Integral() << endl;
+			if(DEBUG) cout << "isample= " << isample << endl;
+			((TH1F*)histos->At(isample))->ComputeIntegral();
+//			if(DEBUG) cout << "integral histogram= " << ((TH1F*)histos->At(isample))->Integral() << endl;
+			if(DEBUG) cout << "((TH1F*)histos->At(" << isample << "))->Integral()= " << ((TH1F*)histos->At(isample))->Integral() << endl;
 			if(DEBUG) cout << "max,min= " << ((TH1F*)histos->At(isample))->GetMaximum() << " , " << ((TH1F*)histos->At(isample))->GetMinimum() << endl;
 			((TH1F*)histos->At(isample))->Scale((double)1.0/(double)integrals[istack]);
 			if(DEBUG) cout << "integral stored= " << integrals[istack] << endl;
@@ -352,7 +418,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 
 	if(DEBUG) cout << "##### SET UP NAMES, TITLES, LEGEND #####" << endl;
 	// ##### SET UP NAMES, TITLES, LEGEND #####
-	string canvas_name = variableFileName + "_" + cutsFileName;
+	if(DEBUG) cout << "setup axis titles" << endl;
 	std::ostringstream binWidthOSS;
 	binWidthOSS << (double)((TH1F*)histos->At(0))->GetBinWidth(1);
 	string binWidth = binWidthOSS.str();
@@ -366,10 +432,13 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	}
 
 
+	if(DEBUG) cout << "setup canvas name and title" << endl;
+	string canvas_name = variableFileName + "_" + cutsFileName;
 	((TH1F*)histos->At(0))->SetName(canvas_name.c_str());
 	canvas->SetName(canvas_name.c_str());
 	canvas->SetTitle(canvas_name.c_str());
 
+	if(DEBUG) cout << "setup legend" << endl;
 	TLegend *legend = new TLegend(0.65, 0.82, 0.90, 0.93, "");
 	legend->SetTextSize(0.025);
 	legend->SetFillColor(kWhite);
@@ -463,8 +532,8 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	string intLumiText = "#intL= " + intLumiString.str() + " fb^{-1}";
 	latexLabel->SetTextSize(0.03);
 	latexLabel->SetNDC();
-	latexLabel->DrawLatex(0.25, 0.96, "CMS Private 2013");
-	latexLabel->DrawLatex(0.50, 0.96, "#sqrt{s} = 8 TeV");
+	latexLabel->DrawLatex(0.25, 0.96, CMSPrivate.c_str());
+//	latexLabel->DrawLatex(0.50, 0.96, "#sqrt{s} = 8 TeV");
 	if(integratedLumi > 0.0) latexLabel->DrawLatex(0.67, 0.96, intLumiText.c_str());
 
 	TLatex *latexYields = new TLatex();
@@ -506,5 +575,12 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	histos->Delete();
 
 	return;
+}
+
+string to_string(int num)
+{
+	stringstream ss;
+	ss << num;
+	return ss.str();
 }
 

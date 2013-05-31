@@ -1,5 +1,5 @@
 CC				= g++
-CCFLAGS		=	-Wall
+CCFLAGS		=	-Wall -g
 SOURCES 	= 
 ROOTFLAGS	= `root-config --cflags --glibs`
 
