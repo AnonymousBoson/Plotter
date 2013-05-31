@@ -59,41 +59,6 @@ int main()
 	radion_prtRegMLP.setStyle(kRed, 3, 3002, "");
 	radion_prtRegMLP.setUseAlternativeVariable(true);
 
-
-/*
-	Sample sig_vbf("vbf_m125_8TeV", "VBF (125 GeV)", -1, 1.0);
-	sig_vbf.setFiles("datastore/histograms_CMS-HGG_ALL.root");
-	sig_vbf.setStyle(kGreen, 3, 3004, "");
-	sig_vbf.setXSection((1.578 * 2.28 * 0.001));
-	sig_vbf.setInitialNumberOfEvents(79784.0);
-	sig_vbf.setSpecificWeights("manual");
-	sig_vbf.setStackGroup("SM Higgs (125GeV)");
-//	sig_vbf.setSuperStackGroup("s+b");
-
-	Sample sig_ggh("ggh_m125_8TeV", "ggH (125 GeV)", -1, 1.0);
-	sig_ggh.setFiles("datastore/histograms_CMS-HGG_ALL.root");
-	sig_ggh.setStyle(kRed, 3, 3004, "");
-	sig_ggh.setXSection((19.52 * 2.28 * 0.001));
-	sig_ggh.setInitialNumberOfEvents(69036.0);
-	sig_ggh.setSpecificWeights("manual");
-	sig_ggh.setStackGroup("SM Higgs (125GeV)");
-//	sig_ggh.setSuperStackGroup("s+b");
-
-	Sample bkg_diphojet("diphojet_8TeV", "#gamma#gamma + jets", 1, 1.0);
-	bkg_diphojet.setFiles("datastore/histograms_CMS-HGG_ALL.root");
-	bkg_diphojet.setStyle(kAzure+1, 1, 3001, "");
-	bkg_diphojet.setSpecificWeights("xsec_weight");
-//	bkg_diphojet.setSuperStackGroup("s+b");
-
-// prodXsection@125GeV
-//{'vbf_m120_8TeV': 1.649 * 2.23 10-3, 'vbf_m125_8TeV': 1.578 * 2.28 10-3, 'ggh_m125_8TeV': 19.52 * 2.28 10-3}
-// number of initial events
-//{'vbf_m120_8TeV': 79376.0, 'diphojet_8TeV': 639312.0, 'vbf_m125_8TeV': 79784.0, 'ggh_m125_8TeV': 69036.0}
-
-	sample_list.push_back(bkg_diphojet);
-	sample_list.push_back(sig_vbf);
-	sample_list.push_back(sig_ggh);
-*/
 	sample_list.push_back(radion);
 	sample_list.push_back(radion_prtRegBDT);
 
