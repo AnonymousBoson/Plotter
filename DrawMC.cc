@@ -25,8 +25,9 @@
 using namespace std;
 
 // **************************************************************************************************************************
-void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string variable, string variableFileName, string range, string cuts, string cutsFileName, string xAxisTitle, bool inLogScale, TCanvas *canvas, double integratedLumi, string othervariable = "");
+void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string variable, string variableFileName, string range, string cuts, string cutsFileName, string xAxisTitle, bool inLogScale, TCanvas *canvas, double integratedLumi, string othervariable = "", bool computeEffSigma = false);
 string to_string(int num);
+Double_t effSigma(TH1 * hist);
 
 // **************************************************************************************************************************
 int main()
@@ -37,30 +38,37 @@ int main()
 	gROOT->ProcessLine(".x setTDRStyle.C");
 	TGaxis::SetMaxDigits(3);
 	vector<Sample> sample_list;
+	vector<Sample> sample_list_v2;
 
 //	../BJetRegression/regressionGen2TMVA.root
 //	../BJetRegression/regressionParton2TMVA.root
 
 	Sample radion("Radion_m300_8TeV_nm", "Radion (300 GeV)", -1, 1.0);
-	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm.root");
+//	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm_parton.root");
+	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm_genjet.root");
+//	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm.root");
 	radion.setStackGroup("Default jet energy");
-	radion.setStyle(kGreen, 3, 3004, "");
-	radion.setSpecificWeights("manual");
+	radion.setStyle(kGreen+3, 3, 3004, "");
+	radion.setInitialNumberOfEvents(20000);
+	radion.setXSection(2.71e-4);
+//	radion.setSpecificWeights("manual");
 
 	Sample radion_prtRegBDT(radion);
 	radion_prtRegBDT.setDisplayName("Regression (BDT)");
 	radion_prtRegBDT.setStackGroup("Regression (BDT)");
-	radion_prtRegBDT.setStyle(kRed, 3, 3002, "");
+	radion_prtRegBDT.setStyle(kRed+2, 3, 3005, "");
 	radion_prtRegBDT.setUseAlternativeVariable(true);
 
 	Sample radion_prtRegMLP(radion);
 	radion_prtRegMLP.setDisplayName("Regression (MLP)");
 	radion_prtRegMLP.setStackGroup("Regression (MLP)");
-	radion_prtRegMLP.setStyle(kRed, 3, 3002, "");
-	radion_prtRegMLP.setUseAlternativeVariable(true);
+	radion_prtRegMLP.setStyle(kBlue, 3, 3002, "");
+//	radion_prtRegMLP.setSpecificWeights("jet1_MLPweight * jet2_MLPweight");
 
 	sample_list.push_back(radion);
 	sample_list.push_back(radion_prtRegBDT);
+
+	sample_list_v2.push_back(radion_prtRegMLP);
 
 	TClonesArray * chain_sample = new TClonesArray("TChain", sample_list.size() - 1);
 	for(unsigned int isample = 0; isample < sample_list.size() ; isample++)
@@ -69,27 +77,25 @@ int main()
 		((TChain*)chain_sample->At(isample))->Add(sample_list[isample].getFiles().c_str());
 	}
 
+	TClonesArray * chain_sample_v2 = new TClonesArray("TChain", sample_list_v2.size() - 1);
+	for(unsigned int isample = 0; isample < sample_list_v2.size() ; isample++)
+	{
+		new ((*chain_sample_v2)[isample])	TChain(sample_list_v2[isample].getName().c_str());
+		((TChain*)chain_sample_v2->At(isample))->Add(sample_list_v2[isample].getFiles().c_str());
+	}
+
 	TCanvas *canvas = new TCanvas();
-//	double integratedLumi = 5000.0;
+//	double integratedLumi = 19620.0;
 	double integratedLumi = -1.0;
 
 	cout << "##### DRAW #####" << endl;
-	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 250)", "50 < jj_mass && jj_mass < 250", "all_cat", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass");
-/*
-	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", "50 < jj_mass && jj_mass < 200", "all_cat", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", true);
+	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(50, 200, 400)", "100 < ggjj_mass && ggjj_mass < 400", "all_cat", "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", true);
+	DrawMCPlot(chain_sample, sample_list, "jet1_pt", "jet1_pt", "(35, 25, 200)", "1", "all_cat", "p_{T} [GeV]", 0, canvas, integratedLumi, "regjet1_pt");
+	DrawMCPlot(chain_sample, sample_list, "jet2_pt", "jet2_pt", "(35, 25, 200)", "1", "all_cat", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjet2_pt");
+	DrawMCPlot(chain_sample_v2, sample_list_v2, "jet1_MLPweight", "jet1_MLPweight", "(50, -1., 1.)", "1.0", "all_cat", "jet_{1} MLP output", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample_v2, sample_list_v2, "jet2_MLPweight", "jet2_MLPweight", "(50, -1., 1.)", "1.0", "all_cat", "jet_{2} MLP output", 0, canvas, integratedLumi);
 
-	DrawMCPlot(chain_sample, sample_list, "mass", "mass", "(80, 100, 180)", "100 < mass && mass < 180 && category == 0", "cat0", "m_{#gamma#gamma} [GeV]", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar_altDef", "diphoCosThetaStar_altDef", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|tanh(Y^{*})|", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar_altDef", "diphoCosThetaStar_altDef", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|tanh(Y^{*})|", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar", "diphoCosThetaStar", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|cos(#theta^{*})|", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoCosThetaStar", "diphoCosThetaStar", "(20, 0.0, 1.0)", "100 < mass && mass < 180 && category == 0", "cat0", "|cos(#theta^{*})|", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoRapidity", "diphoRapidity", "(200, -3.0, 3.0)", "100 < mass && mass < 180 && category == 0", "cat0", "Y_{#gamma#gamma}", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoRapidity", "diphoRapidity", "(200, -3.0, 3.0)", "100 < mass && mass < 180 && category == 0", "cat0", "Y_{#gamma#gamma}", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoPt", "diphoPt", "(200, 0.0, 500.0)", "100 < mass && mass < 180 && category == 0", "cat0", "p_{T}^{#gamma#gamma}", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoPt", "diphoPt", "(200, 0.0, 500.0)", "100 < mass && mass < 180 && category == 0", "cat0", "p_{T}^{#gamma#gamma}", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoEta", "diphoEta", "(200, -10.0, 10.0)", "100 < mass && mass < 180 && category == 0", "cat0", "#eta^{#gamma#gamma}", 1, canvas, integratedLumi);
-	DrawMCPlot(chain_sample, sample_list, "diphoEta", "diphoEta", "(200, -10.0, 10.0)", "100 < mass && mass < 180 && category == 0", "cat0", "#eta^{#gamma#gamma}", 0, canvas, integratedLumi);
-*/
 
 	delete canvas;
 	canvas = 0;
@@ -100,7 +106,7 @@ int main()
 }
 
 // ***********************************************************************************************************************
-void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string variable, string variableFileName, string range, string cuts, string cutsFileName, string xAxisTitle, bool inLogScale, TCanvas *canvas, double integratedLumi, string othervariable)
+void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string variable, string variableFileName, string range, string cuts, string cutsFileName, string xAxisTitle, bool inLogScale, TCanvas *canvas, double integratedLumi, string othervariable, bool computeEffSigma)
 {
 	string CMSPrivate = "CMS Private 2013     #sqrt{s} = 8 TeV";
 //	string CMSPrivate = "CMS Private 2013     #sqrt{s} = 8 TeV     Parton regression";
@@ -405,6 +411,8 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 
 	if(DEBUG) cout << "setup legend" << endl;
 	TLegend *legend = new TLegend(0.65, 0.82, 0.90, 0.93, "");
+	if( computeEffSigma )
+		legend->SetX1(0.45);
 	legend->SetTextSize(0.025);
 	legend->SetFillColor(kWhite);
 	legend->SetLineColor(kWhite);
@@ -446,6 +454,12 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 			legendText = sample_list[isample].getStackGroup();
 		else
 			legendText = sample_list[isample].getDisplayName();
+		if( computeEffSigma )
+		{
+			std::ostringstream tempString;
+			tempString << setprecision(2) << fixed << effSigma((TH1F*)superHistos->At(isample));
+			legendText += "   #sigma_{eff}= " + tempString.str() + " GeV";
+		}
 		legend->AddEntry(((TH1F*)superHistos->At(isample))->GetName(), legendText.c_str(), "f");
 	}
 	}
@@ -517,6 +531,25 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 		}
 	}
 
+/*
+	TLatex *latexEffSigma = new TLatex();
+	if( computeEffSigma )
+	{
+		latexEffSigma->SetTextSize(0.03);
+		latexEffSigma->SetNDC();
+		double yCoordinate = 0.90;
+		double yStep = .04;
+		for(int isuperStack = 0 ; isuperStack < (int)superStackSamples.size() ; isuperStack++, yCoordinate-=yStep)
+		{
+			int isample = superStackSamples[isuperStack].back();
+			std::ostringstream tempString;
+//		legend->AddEntry(((TH1F*)superHistos->At(isample))->GetName(), legendText.c_str(), "f");
+			tempString << setprecision(2) << fixed << effSigma((TH1F*)superHistos->At(isample));
+			string tempText = "#sigma_{eff} (" + stackGroups[isample] + ")= " + tempString.str();
+			latexEffSigma->DrawLatex(0.18, yCoordinate, tempText.c_str());
+		}
+	}
+*/
 	canvas->Update();
 	canvas->Draw();
 
@@ -549,3 +582,81 @@ string to_string(int num)
 	return ss.str();
 }
 
+
+// --- Compute the effective sigma of a given histogram --- //
+Double_t effSigma(TH1 * hist)
+{
+
+  TAxis *xaxis = hist->GetXaxis();
+  Int_t nb = xaxis->GetNbins();
+  if(nb < 10) {
+    cout << "effsigma: Not a valid histo. nbins = " << nb << endl;
+    return 0.;
+  }
+  
+  Double_t bwid = xaxis->GetBinWidth(1);
+  if(bwid == 0) {
+    cout << "effsigma: Not a valid histo. bwid = " << bwid << endl;
+    return 0.;
+  }
+//  Double_t xmax = xaxis->GetXmax();
+  Double_t xmin = xaxis->GetXmin();
+  Double_t ave = hist->GetMean();
+  Double_t rms = hist->GetRMS();
+
+  Double_t total=0.;
+  for(Int_t i=0; i<nb+2; i++) {
+    total+=hist->GetBinContent(i);
+  }
+  if(total < 100.) {
+    cout << "effsigma: Too few entries " << total << endl;
+    return 0.;
+  }
+  Int_t ierr=0;
+  Int_t ismin=999;
+  
+  Double_t rlim=0.683*total;
+  Int_t nrms=rms/(bwid);    // Set scan size to +/- rms
+  if(nrms > nb/10) nrms=nb/10; // Could be tuned...
+
+  Double_t widmin=9999999.;
+  for(Int_t iscan=-nrms;iscan<nrms+1;iscan++) { // Scan window centre
+    Int_t ibm=(ave-xmin)/bwid+1+iscan;
+    Double_t x=(ibm-0.5)*bwid+xmin;
+    Double_t xj=x;
+    Double_t xk=x;
+    Int_t jbm=ibm;
+    Int_t kbm=ibm;
+    Double_t bin=hist->GetBinContent(ibm);
+    total=bin;
+    for(Int_t j=1;j<nb;j++){
+      if(jbm < nb) {
+        jbm++;
+        xj+=bwid;
+        bin=hist->GetBinContent(jbm);
+        total+=bin;
+        if(total > rlim) break;
+      }
+      else ierr=1;
+      if(kbm > 0) {
+        kbm--;
+        xk-=bwid;
+        bin=hist->GetBinContent(kbm);
+        total+=bin;
+        if(total > rlim) break;
+      }
+      else ierr=1;
+    }
+    Double_t dxf=(total-rlim)*bwid/bin;
+    Double_t wid=(xj-xk+bwid-dxf)*0.5;
+    if(wid < widmin) {
+      widmin=wid;
+      ismin=iscan;
+    }   
+  }
+  if(ismin == nrms || ismin == -nrms) ierr=3;
+  if(ierr != 0) cout << "effsigma: Error of type " << ierr << endl;
+  
+  return widmin;
+  
+}

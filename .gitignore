@@ -1,3 +1,4 @@
+*2013*
 *.exe
 datastore
 pdf/*
@@ -5,4 +6,5 @@ root/*
 gif/*
 *.swp
 .DS_Store
-dump.pdf
+*.pdf
+functions.cpp
