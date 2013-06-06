@@ -40,22 +40,21 @@ int main()
 	vector<Sample> sample_list;
 	vector<Sample> sample_list_v2;
 
-//	../BJetRegression/regressionGen2TMVA.root
-//	../BJetRegression/regressionParton2TMVA.root
 
+// 300 GeV Radion
 	Sample radion("Radion_m300_8TeV_nm", "Radion (300 GeV)", -1, 1.0);
 //	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm_parton.root");
 	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm_genjet.root");
-//	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm.root");
-	radion.setStackGroup("Default jet energy");
+//	radion.setStackGroup("Default jet energy");
 	radion.setStyle(kGreen+3, 3, 3004, "");
 	radion.setInitialNumberOfEvents(20000);
 	radion.setXSection(2.71e-4);
-//	radion.setSpecificWeights("manual");
+	radion.setSpecificWeights("manual");
 
 	Sample radion_prtRegBDT(radion);
-	radion_prtRegBDT.setDisplayName("Regression (BDT)");
-	radion_prtRegBDT.setStackGroup("Regression (BDT)");
+//	radion_prtRegBDT.setDisplayName("Regression (BDT)");
+	radion_prtRegBDT.setDisplayName("Radion (300 GeV) (Reg)");
+//	radion_prtRegBDT.setStackGroup("Regression (BDT)");
 	radion_prtRegBDT.setStyle(kRed+2, 3, 3005, "");
 	radion_prtRegBDT.setUseAlternativeVariable(true);
 
@@ -65,8 +64,43 @@ int main()
 	radion_prtRegMLP.setStyle(kBlue, 3, 3002, "");
 //	radion_prtRegMLP.setSpecificWeights("jet1_MLPweight * jet2_MLPweight");
 
+// 500 GeV Radion
+	Sample radion_500("Radion_m500_8TeV_nm", "Radion (500 GeV)", -1, 1.0);
+	radion_500.setFiles("../BJetRegression/Radion_m500_8TeV_nm_genjet.root");
+//	radion_500.setStackGroup("Default jet energy");
+	radion_500.setStyle(kBlue+2, 3, 3004, "");
+	radion_500.setInitialNumberOfEvents(19998);
+	radion_500.setXSection(2.71e-4);
+//	radion_500.setXSection(4.71e-5);
+	radion_500.setSpecificWeights("manual");
+
+	Sample radion_500_prtRegBDT(radion_500);
+	radion_500_prtRegBDT.setDisplayName("Radion (500 GeV) (Reg)");
+//	radion_500_prtRegBDT.setStackGroup("Regression (BDT)");
+	radion_500_prtRegBDT.setStyle(kMagenta+2, 3, 3005, "");
+	radion_500_prtRegBDT.setUseAlternativeVariable(true);
+
+// WZH
+	Sample wzh_m125_8TeV("wzh_m125_8TeV", "WZH (125 GeV)", -1, 1.0);
+	wzh_m125_8TeV.setFiles("../BJetRegression/wzh_m125_8TeV_genjet.root");
+//	wzh_m125_8TeV.setStackGroup("Default jet energy");
+	wzh_m125_8TeV.setStyle(kAzure-3, 3, 3003, "");
+	wzh_m125_8TeV.setInitialNumberOfEvents(100320);
+	wzh_m125_8TeV.setXSection(2.71e-4);
+	wzh_m125_8TeV.setSpecificWeights("manual");
+
+	Sample wzh_m125_8TeV_prtRegBDT(wzh_m125_8TeV);
+	wzh_m125_8TeV_prtRegBDT.setDisplayName("WZH (125 GeV) (Reg)");
+//	wzh_m125_8TeV_prtRegBDT.setStackGroup("Regression (BDT)");
+	wzh_m125_8TeV_prtRegBDT.setStyle(kViolet-2, 3, 0, "");
+	wzh_m125_8TeV_prtRegBDT.setUseAlternativeVariable(true);
+
 	sample_list.push_back(radion);
 	sample_list.push_back(radion_prtRegBDT);
+//	sample_list.push_back(radion_500);
+//	sample_list.push_back(radion_500_prtRegBDT);
+//	sample_list.push_back(wzh_m125_8TeV);
+//	sample_list.push_back(wzh_m125_8TeV_prtRegBDT);
 
 	sample_list_v2.push_back(radion_prtRegMLP);
 
@@ -85,16 +119,20 @@ int main()
 	}
 
 	TCanvas *canvas = new TCanvas();
-//	double integratedLumi = 19620.0;
-	double integratedLumi = -1.0;
+	double integratedLumi = 19620.0;
+//	double integratedLumi = -1.0;
 
 	cout << "##### DRAW #####" << endl;
-	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", "50 < jj_mass && jj_mass < 200", "all_cat", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", true);
-	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(50, 200, 400)", "100 < ggjj_mass && ggjj_mass < 400", "all_cat", "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", true);
-	DrawMCPlot(chain_sample, sample_list, "jet1_pt", "jet1_pt", "(35, 25, 200)", "1", "all_cat", "p_{T} [GeV]", 0, canvas, integratedLumi, "regjet1_pt");
-	DrawMCPlot(chain_sample, sample_list, "jet2_pt", "jet2_pt", "(35, 25, 200)", "1", "all_cat", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjet2_pt");
-	DrawMCPlot(chain_sample_v2, sample_list_v2, "jet1_MLPweight", "jet1_MLPweight", "(50, -1., 1.)", "1.0", "all_cat", "jet_{1} MLP output", 0, canvas, integratedLumi);
-	DrawMCPlot(chain_sample_v2, sample_list_v2, "jet2_MLPweight", "jet2_MLPweight", "(50, -1., 1.)", "1.0", "all_cat", "jet_{2} MLP output", 0, canvas, integratedLumi);
+	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", "1", "all_cat", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", true);
+//	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", "1", "all_cat_v2", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", false);
+//	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", "1", "all_cat_v3", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", false);
+	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(50, 200, 400)", "1", "all_cat", "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", true);
+//	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(50, 400, 600)", "400 < ggjj_mass && ggjj_mass < 600", "all_cat", "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", true);
+//	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(100, 200, 600)", "1", "all_cat", "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", false);
+//	DrawMCPlot(chain_sample, sample_list, "jet1_pt", "jet1_pt", "(35, 25, 200)", "1", "all_cat", "p_{T} [GeV]", 0, canvas, integratedLumi, "regjet1_pt");
+//	DrawMCPlot(chain_sample, sample_list, "jet2_pt", "jet2_pt", "(35, 25, 200)", "1", "all_cat", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjet2_pt");
+//	DrawMCPlot(chain_sample_v2, sample_list_v2, "jet1_MLPweight", "jet1_MLPweight", "(50, -1., 1.)", "1.0", "all_cat", "jet_{1} MLP output", 0, canvas, integratedLumi);
+//	DrawMCPlot(chain_sample_v2, sample_list_v2, "jet2_MLPweight", "jet2_MLPweight", "(50, -1., 1.)", "1.0", "all_cat", "jet_{2} MLP output", 0, canvas, integratedLumi);
 
 
 	delete canvas;
