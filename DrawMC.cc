@@ -122,18 +122,63 @@ int main()
 	double integratedLumi = 19620.0;
 //	double integratedLumi = -1.0;
 
+	vector <string> cutflow;
+	vector <string> cutflowname;
+	cutflow.push_back("1");
+	cutflowname.push_back("all_cat");
+	cutflow.push_back("njets_kLooseID_and_CSVM == 1");
+	cutflowname.push_back("1bjet");
+	cutflow.push_back("njets_kLooseID_and_CSVM > 1");
+	cutflowname.push_back("2bjet");
+	cutflow.push_back("njets_kLooseID_and_CSVM == 1 && jj_DR < 1.5");
+	cutflowname.push_back("1bjet_DRjj_LT_1p5");
+	cutflow.push_back("njets_kLooseID_and_CSVM > 1 && jj_DR < 1.5");
+	cutflowname.push_back("2bjet_DRjj_LT_1p5");
+	cutflow.push_back("njets_kLooseID_and_CSVM == 1 && jj_DR > 1.5");
+	cutflowname.push_back("1bjet_DRjj_GT_1p5");
+	cutflow.push_back("njets_kLooseID_and_CSVM > 1 && jj_DR > 1.5");
+	cutflowname.push_back("2bjet_DRjj_GT_1p5");
+	cutflow.push_back("njets_kLooseID_and_CSVM == 1 && jj_DR < 2.0");
+	cutflowname.push_back("1bjet_DRjj_LT_2.0");
+	cutflow.push_back("njets_kLooseID_and_CSVM > 1 && jj_DR < 2.0");
+	cutflowname.push_back("2bjet_DRjj_LT_2.0");
+	cutflow.push_back("njets_kLooseID_and_CSVM == 1 && jj_DR > 2.0");
+	cutflowname.push_back("1bjet_DRjj_GT_2.0");
+	cutflow.push_back("njets_kLooseID_and_CSVM > 1 && jj_DR > 2.0");
+	cutflowname.push_back("2bjet_DRjj_GT_2.0");
+	cutflow.push_back("njets_kLooseID_and_CSVM == 1 && jj_DR < 3.0");
+	cutflowname.push_back("1bjet_DRjj_LT_3.0");
+	cutflow.push_back("njets_kLooseID_and_CSVM > 1 && jj_DR < 3.0");
+	cutflowname.push_back("2bjet_DRjj_LT_3.0");
+	cutflow.push_back("njets_kLooseID_and_CSVM == 1 && jj_DR > 3.0");
+	cutflowname.push_back("1bjet_DRjj_GT_3.0");
+	cutflow.push_back("njets_kLooseID_and_CSVM > 1 && jj_DR > 3.0");
+	cutflowname.push_back("2bjet_DRjj_GT_3.0");
+/*	cutflow.push_back("njets_kLooseID_and_CSVM == 1");
+	cutflowname.push_back("1bjet");
+	cutflow.push_back("njets_kLooseID_and_CSVM > 1");
+	cutflowname.push_back("2bjet");
+*//*
+	cutflow.push_back("njets_kRadionID_and_CSVM == 1");
+	cutflowname.push_back("1bjet_new");
+	cutflow.push_back("njets_kRadionID_and_CSVM > 1");
+	cutflowname.push_back("2bjet_new");
+*/
 	cout << "##### DRAW #####" << endl;
-	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", "1", "all_cat", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", true);
+for(int icut = 0 ; icut < (int)cutflow.size() ; icut++)
+{
+	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", cutflow[icut], cutflowname[icut], "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", false);
+	DrawMCPlot(chain_sample, sample_list, "jj_DR", "jj_DR", "(30, 0, 6)", cutflow[icut], cutflowname[icut], "#Delta R (j,j)", 0, canvas, integratedLumi, "regjj_DR", false);
 //	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", "1", "all_cat_v2", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", false);
 //	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", "1", "all_cat_v3", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", false);
-	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(50, 200, 400)", "1", "all_cat", "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", true);
+//	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(50, 200, 400)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", false);
 //	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(50, 400, 600)", "400 < ggjj_mass && ggjj_mass < 600", "all_cat", "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", true);
 //	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(100, 200, 600)", "1", "all_cat", "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", false);
 //	DrawMCPlot(chain_sample, sample_list, "jet1_pt", "jet1_pt", "(35, 25, 200)", "1", "all_cat", "p_{T} [GeV]", 0, canvas, integratedLumi, "regjet1_pt");
 //	DrawMCPlot(chain_sample, sample_list, "jet2_pt", "jet2_pt", "(35, 25, 200)", "1", "all_cat", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjet2_pt");
 //	DrawMCPlot(chain_sample_v2, sample_list_v2, "jet1_MLPweight", "jet1_MLPweight", "(50, -1., 1.)", "1.0", "all_cat", "jet_{1} MLP output", 0, canvas, integratedLumi);
 //	DrawMCPlot(chain_sample_v2, sample_list_v2, "jet2_MLPweight", "jet2_MLPweight", "(50, -1., 1.)", "1.0", "all_cat", "jet_{2} MLP output", 0, canvas, integratedLumi);
-
+}
 
 	delete canvas;
 	canvas = 0;
