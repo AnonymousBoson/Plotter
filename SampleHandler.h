@@ -23,7 +23,7 @@ class Sample
 		string specificWeights;
 		string stackGroup;
 		string superStackGroup;
-		bool useAlternativeVariable;
+		int useAlternativeVariable;
 	public:
 		Sample(string name_, string displayName_, int type_, double xSection_, double initialNumberOfEvents_, double kFactor_);
 		Sample(const Sample &);
@@ -58,8 +58,8 @@ class Sample
 		void setStackGroup(string stackGroup_);
 		string getSuperStackGroup() const;
 		void setSuperStackGroup(string superStackGroup_);
-		bool getUseAlternativeVariable() const;
-		void setUseAlternativeVariable(bool useAlternativeVariable_);
+		int getUseAlternativeVariable() const;
+		void setUseAlternativeVariable(int useAlternativeVariable_);
 		void setStyle(Color_t color_, int lineWidth_, int fillStyle_, string drawStyle_);
 
 		void print() const;
@@ -83,7 +83,7 @@ Sample::Sample(string name_, string displayName_, int type_ = 0, double xSection
 	specificWeights = "1.0";
 	stackGroup = "";
 	superStackGroup = "";
-	useAlternativeVariable = false;
+	useAlternativeVariable = 0;
 }
 
 Sample::Sample(const Sample & s)
@@ -136,8 +136,8 @@ string Sample::getStackGroup() const{ return stackGroup; }
 void Sample::setStackGroup(string stackGroup_){ stackGroup = stackGroup_; }
 string Sample::getSuperStackGroup() const{ return superStackGroup; }
 void Sample::setSuperStackGroup(string superStackGroup_){ superStackGroup = superStackGroup_; }
-bool Sample::getUseAlternativeVariable() const{ return useAlternativeVariable; }
-void Sample::setUseAlternativeVariable(bool useAlternativeVariable_){ useAlternativeVariable = useAlternativeVariable_; }
+int Sample::getUseAlternativeVariable() const{ return useAlternativeVariable; }
+void Sample::setUseAlternativeVariable(int useAlternativeVariable_){ useAlternativeVariable = useAlternativeVariable_; }
 void Sample::setStyle(Color_t color_, int lineWidth_, int fillStyle_, string drawStyle_)
 {
 	color = color_;
