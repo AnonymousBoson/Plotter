@@ -37,91 +37,177 @@ int main()
 	gErrorIgnoreLevel = kWarning;
 	gROOT->ProcessLine(".x setTDRStyle.C");
 	TGaxis::SetMaxDigits(3);
-	vector<Sample> sample_list;
-	vector<Sample> sample_list_v2;
-
+//	string file = "../BJetRegression/Radion_mALL_8TeV_nm_StandardFullSelection.root";
+//	string file = "../BJetRegression/Radion_mALL_8TeV_nm_StandardFullSelection_oneRegressionPerMass.root";
+//	string file = "../BJetRegression/Radion_mALL_8TeV_nm_StandardFullSelection_SimultaneousRegressionEqualWeightPerMass.root";
+	string file = "../BJetRegression/Radion_mALL_8TeV_nm_StandardFullSelection_SimultaneousRegressionXSweight.root";
 
 // 300 GeV Radion
-	Sample radion("Radion_m300_8TeV_nm", "Radion (300 GeV)", -1, 1.0);
-//	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm_parton.root");
-	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm_StandardFullSelection.root");
-//	radion.setStackGroup("Default jet energy");
-	radion.setStyle(kGreen+3, 3, 3004, "");
-	radion.setInitialNumberOfEvents(20000);
-	radion.setXSection(2.71e-4);
-	radion.setSpecificWeights("manual");
+	Sample radion_m300("Radion_m300_8TeV_nm", "Radion (300 GeV)", -1, 1.0);
+	radion_m300.setFiles(file);
+	radion_m300.setStyle(kGreen+3, 3, 3004, "");
+	radion_m300.setInitialNumberOfEvents(20000);
+	radion_m300.setXSection(2.71e-4);
+	radion_m300.setSpecificWeights("manual");
 
-	Sample radion_prtRegBDT(radion);
-//	radion_prtRegBDT.setDisplayName("Regression (BDT)");
-//	radion_prtRegBDT.setFiles("simple_reg_genjet_globeinputs.root");
-	radion_prtRegBDT.setDisplayName("Radion (300 GeV) (Reg)");
-//	radion_prtRegBDT.setStackGroup("Regression (BDT)");
-	radion_prtRegBDT.setStyle(kRed+2, 3, 3005, "");
-	radion_prtRegBDT.setUseAlternativeVariable(1);
+	Sample radion_m300_reg(radion_m300);
+	radion_m300_reg.setDisplayName("Radion (300 GeV) (Reg)");
+	radion_m300_reg.setStyle(kRed+2, 3, 3005, "");
+	radion_m300_reg.setUseAlternativeVariable(1);
 
-	Sample radion_prtRegMLP(radion);
-//	radion_prtRegMLP.setFiles("simple_regMLP_genjet_globeinputs.root");
-	radion_prtRegMLP.setDisplayName("Radion (300 GeV) (Reg+Kin)");
-//	radion_prtRegMLP.setStackGroup("Regression (MLP)");
-	radion_prtRegMLP.setStyle(kBlue, 3, 3002, "");
-	radion_prtRegMLP.setUseAlternativeVariable(2);
-//	radion_prtRegMLP.setSpecificWeights("jet1_MLPweight * jet2_MLPweight");
+	Sample radion_m300_regkin(radion_m300);
+	radion_m300_regkin.setDisplayName("Radion (300 GeV) (Reg+Kin)");
+	radion_m300_regkin.setStyle(kBlue, 3, 3003, "");
+	radion_m300_regkin.setUseAlternativeVariable(2);
+
+	vector<Sample> sample_list_m300;
+	sample_list_m300.push_back(radion_m300);
+	sample_list_m300.push_back(radion_m300_reg);
+	sample_list_m300.push_back(radion_m300_regkin);
+
+	vector<Sample> sample_list_nokin_m300;
+	sample_list_nokin_m300.push_back(radion_m300);
+	sample_list_nokin_m300.push_back(radion_m300_reg);
 
 // 500 GeV Radion
-	Sample radion_500("Radion_m500_8TeV_nm", "Radion (500 GeV)", -1, 1.0);
-	radion_500.setFiles("../BJetRegression/Radion_m500_8TeV_nm_genjet.root");
-//	radion_500.setStackGroup("Default jet energy");
-	radion_500.setStyle(kBlue+2, 3, 3004, "");
-	radion_500.setInitialNumberOfEvents(19998);
-	radion_500.setXSection(2.71e-4);
-//	radion_500.setXSection(4.71e-5);
-	radion_500.setSpecificWeights("manual");
+	Sample radion_m500("Radion_m500_8TeV_nm", "Radion (500 GeV)", -1, 1.0);
+	radion_m500.setFiles(file);
+	radion_m500.setStyle(kGreen+3, 3, 3004, "");
+	radion_m500.setInitialNumberOfEvents(19998);
+	radion_m500.setXSection(4.71e-05);
+	radion_m500.setSpecificWeights("manual");
 
-	Sample radion_500_prtRegBDT(radion_500);
-	radion_500_prtRegBDT.setDisplayName("Radion (500 GeV) (Reg)");
-//	radion_500_prtRegBDT.setStackGroup("Regression (BDT)");
-	radion_500_prtRegBDT.setStyle(kMagenta+2, 3, 3005, "");
-	radion_500_prtRegBDT.setUseAlternativeVariable(1);
+	Sample radion_m500_reg(radion_m500);
+	radion_m500_reg.setDisplayName("Radion (500 GeV) (Reg)");
+	radion_m500_reg.setStyle(kRed+2, 3, 3005, "");
+	radion_m500_reg.setUseAlternativeVariable(1);
 
-// WZH
-	Sample wzh_m125_8TeV("wzh_m125_8TeV", "WZH (125 GeV)", -1, 1.0);
-	wzh_m125_8TeV.setFiles("../BJetRegression/wzh_m125_8TeV_genjet.root");
-//	wzh_m125_8TeV.setStackGroup("Default jet energy");
-	wzh_m125_8TeV.setStyle(kAzure-3, 3, 3003, "");
-	wzh_m125_8TeV.setInitialNumberOfEvents(100320);
-	wzh_m125_8TeV.setXSection(2.71e-4);
-	wzh_m125_8TeV.setSpecificWeights("manual");
+	Sample radion_m500_regkin(radion_m500);
+	radion_m500_regkin.setDisplayName("Radion (500 GeV) (Reg+Kin)");
+	radion_m500_regkin.setStyle(kBlue, 3, 3003, "");
+	radion_m500_regkin.setUseAlternativeVariable(2);
 
-	Sample wzh_m125_8TeV_prtRegBDT(wzh_m125_8TeV);
-	wzh_m125_8TeV_prtRegBDT.setDisplayName("WZH (125 GeV) (Reg)");
-//	wzh_m125_8TeV_prtRegBDT.setStackGroup("Regression (BDT)");
-	wzh_m125_8TeV_prtRegBDT.setStyle(kViolet-2, 3, 0, "");
-	wzh_m125_8TeV_prtRegBDT.setUseAlternativeVariable(1);
+	vector<Sample> sample_list_m500;
+	sample_list_m500.push_back(radion_m500);
+	sample_list_m500.push_back(radion_m500_reg);
+	sample_list_m500.push_back(radion_m500_regkin);
 
-	sample_list.push_back(radion);
-	sample_list.push_back(radion_prtRegBDT);
-	sample_list.push_back(radion_prtRegMLP);
-//	sample_list.push_back(radion_500);
-//	sample_list.push_back(radion_500_prtRegBDT);
-//	sample_list.push_back(wzh_m125_8TeV);
-//	sample_list.push_back(wzh_m125_8TeV_prtRegBDT);
+	vector<Sample> sample_list_nokin_m500;
+	sample_list_nokin_m500.push_back(radion_m500);
+	sample_list_nokin_m500.push_back(radion_m500_reg);
 
-//	sample_list_v2.push_back(radion_prtRegMLP);
+// 700 GeV Radion
+	Sample radion_m700("Radion_m700_8TeV_nm", "Radion (700 GeV)", -1, 1.0);
+	radion_m700.setFiles(file);
+	radion_m700.setStyle(kGreen+3, 3, 3004, "");
+	radion_m700.setInitialNumberOfEvents(19998);
+	radion_m700.setXSection(1.58E-05);
+	radion_m700.setSpecificWeights("manual");
 
-	TClonesArray * chain_sample = new TClonesArray("TChain", sample_list.size() - 1);
-	for(unsigned int isample = 0; isample < sample_list.size() ; isample++)
+	Sample radion_m700_reg(radion_m700);
+	radion_m700_reg.setDisplayName("Radion (700 GeV) (Reg)");
+	radion_m700_reg.setStyle(kRed+2, 3, 3005, "");
+	radion_m700_reg.setUseAlternativeVariable(1);
+
+	Sample radion_m700_regkin(radion_m700);
+	radion_m700_regkin.setDisplayName("Radion (700 GeV) (Reg+Kin)");
+	radion_m700_regkin.setStyle(kBlue, 3, 3003, "");
+	radion_m700_regkin.setUseAlternativeVariable(2);
+
+	vector<Sample> sample_list_m700;
+	sample_list_m700.push_back(radion_m700);
+	sample_list_m700.push_back(radion_m700_reg);
+	sample_list_m700.push_back(radion_m700_regkin);
+
+	vector<Sample> sample_list_nokin_m700;
+	sample_list_nokin_m700.push_back(radion_m700);
+	sample_list_nokin_m700.push_back(radion_m700_reg);
+
+// 1000 GeV Radion
+	Sample radion_m1000("Radion_m1000_8TeV_nm", "Radion (1000 GeV)", -1, 1.0);
+	radion_m1000.setFiles(file);
+	radion_m1000.setStyle(kGreen+3, 3, 3004, "");
+	radion_m1000.setInitialNumberOfEvents(19996);
+	radion_m1000.setXSection(2.63E-06);
+	radion_m1000.setSpecificWeights("manual");
+
+	Sample radion_m1000_reg(radion_m1000);
+	radion_m1000_reg.setDisplayName("Radion (1000 GeV) (Reg)");
+	radion_m1000_reg.setStyle(kRed+2, 3, 3005, "");
+	radion_m1000_reg.setUseAlternativeVariable(1);
+
+	Sample radion_m1000_regkin(radion_m1000);
+	radion_m1000_regkin.setDisplayName("Radion (1000 GeV) (Reg+Kin)");
+	radion_m1000_regkin.setStyle(kBlue, 3, 3003, "");
+	radion_m1000_regkin.setUseAlternativeVariable(2);
+
+	vector<Sample> sample_list_m1000;
+	sample_list_m1000.push_back(radion_m1000);
+	sample_list_m1000.push_back(radion_m1000_reg);
+	sample_list_m1000.push_back(radion_m1000_regkin);
+
+	vector<Sample> sample_list_nokin_m1000;
+	sample_list_nokin_m1000.push_back(radion_m1000);
+	sample_list_nokin_m1000.push_back(radion_m1000_reg);
+
+
+	TClonesArray * chain_sample_m300 = new TClonesArray("TChain", sample_list_m300.size() - 1);
+	for(unsigned int isample = 0; isample < sample_list_m300.size() ; isample++)
 	{
-		new ((*chain_sample)[isample])	TChain(sample_list[isample].getName().c_str());
-		((TChain*)chain_sample->At(isample))->Add(sample_list[isample].getFiles().c_str());
+		new ((*chain_sample_m300)[isample])	TChain(sample_list_m300[isample].getName().c_str());
+		((TChain*)chain_sample_m300->At(isample))->Add(sample_list_m300[isample].getFiles().c_str());
 	}
-/*
-	TClonesArray * chain_sample_v2 = new TClonesArray("TChain", sample_list_v2.size() - 1);
-	for(unsigned int isample = 0; isample < sample_list_v2.size() ; isample++)
+
+	TClonesArray * chain_sample_m500 = new TClonesArray("TChain", sample_list_m500.size() - 1);
+	for(unsigned int isample = 0; isample < sample_list_m500.size() ; isample++)
 	{
-		new ((*chain_sample_v2)[isample])	TChain(sample_list_v2[isample].getName().c_str());
-		((TChain*)chain_sample_v2->At(isample))->Add(sample_list_v2[isample].getFiles().c_str());
+		new ((*chain_sample_m500)[isample])	TChain(sample_list_m500[isample].getName().c_str());
+		((TChain*)chain_sample_m500->At(isample))->Add(sample_list_m500[isample].getFiles().c_str());
 	}
-*/
+
+	TClonesArray * chain_sample_m700 = new TClonesArray("TChain", sample_list_m700.size() - 1);
+	for(unsigned int isample = 0; isample < sample_list_m700.size() ; isample++)
+	{
+		new ((*chain_sample_m700)[isample])	TChain(sample_list_m700[isample].getName().c_str());
+		((TChain*)chain_sample_m700->At(isample))->Add(sample_list_m700[isample].getFiles().c_str());
+	}
+
+	TClonesArray * chain_sample_m1000 = new TClonesArray("TChain", sample_list_m1000.size() - 1);
+	for(unsigned int isample = 0; isample < sample_list_m1000.size() ; isample++)
+	{
+		new ((*chain_sample_m1000)[isample])	TChain(sample_list_m1000[isample].getName().c_str());
+		((TChain*)chain_sample_m1000->At(isample))->Add(sample_list_m1000[isample].getFiles().c_str());
+	}
+
+// no kin
+	TClonesArray * chain_sample_nokin_m300 = new TClonesArray("TChain", sample_list_nokin_m300.size() - 1);
+	for(unsigned int isample = 0; isample < sample_list_nokin_m300.size() ; isample++)
+	{
+		new ((*chain_sample_nokin_m300)[isample])	TChain(sample_list_nokin_m300[isample].getName().c_str());
+		((TChain*)chain_sample_nokin_m300->At(isample))->Add(sample_list_nokin_m300[isample].getFiles().c_str());
+	}
+
+	TClonesArray * chain_sample_nokin_m500 = new TClonesArray("TChain", sample_list_nokin_m500.size() - 1);
+	for(unsigned int isample = 0; isample < sample_list_nokin_m500.size() ; isample++)
+	{
+		new ((*chain_sample_nokin_m500)[isample])	TChain(sample_list_nokin_m500[isample].getName().c_str());
+		((TChain*)chain_sample_nokin_m500->At(isample))->Add(sample_list_nokin_m500[isample].getFiles().c_str());
+	}
+
+	TClonesArray * chain_sample_nokin_m700 = new TClonesArray("TChain", sample_list_nokin_m700.size() - 1);
+	for(unsigned int isample = 0; isample < sample_list_nokin_m700.size() ; isample++)
+	{
+		new ((*chain_sample_nokin_m700)[isample])	TChain(sample_list_nokin_m700[isample].getName().c_str());
+		((TChain*)chain_sample_nokin_m700->At(isample))->Add(sample_list_nokin_m700[isample].getFiles().c_str());
+	}
+
+	TClonesArray * chain_sample_nokin_m1000 = new TClonesArray("TChain", sample_list_nokin_m1000.size() - 1);
+	for(unsigned int isample = 0; isample < sample_list_nokin_m1000.size() ; isample++)
+	{
+		new ((*chain_sample_nokin_m1000)[isample])	TChain(sample_list_nokin_m1000[isample].getName().c_str());
+		((TChain*)chain_sample_nokin_m1000->At(isample))->Add(sample_list_nokin_m1000[isample].getFiles().c_str());
+	}
+
 	TCanvas *canvas = new TCanvas();
 //	double integratedLumi = 19620.0;
 	double integratedLumi = 19788.0;
@@ -135,14 +221,14 @@ int main()
 	cutflowname.push_back("1bjet");
 	cutflow.push_back("njets_kRadionID_and_CSVM > 1");
 	cutflowname.push_back("2bjet");
-
+/*
 	cutflow.push_back("gg_mass < 135 && gg_mass > 115");
 	cutflowname.push_back("mggCut-115-135_all_cat");
 	cutflow.push_back("njets_kRadionID_and_CSVM == 1 && gg_mass < 135 && gg_mass > 115");
 	cutflowname.push_back("mggCut-115-135_1bjet");
 	cutflow.push_back("njets_kRadionID_and_CSVM > 1 && gg_mass < 135 && gg_mass > 115");
 	cutflowname.push_back("mggCut-115-135_2bjet");
-
+*/
 	cout << "##### DRAW #####" << endl;
 	vector<string> altvarsjj;
 		altvarsjj.push_back("regjj_mass");
@@ -153,30 +239,61 @@ int main()
 		
 for(int icut = 0 ; icut < (int)cutflow.size() ; icut++)
 {
-	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(30, 50, 300)", cutflow[icut], cutflowname[icut], "m_{jj} [GeV]", 0, canvas, integratedLumi, altvarsjj, false);
-//	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(25, 50, 300)", cutflow[icut], cutflowname[icut], "m_{jj} [GeV]", 0, canvas, -1., altvarsjj, false);
-//	DrawMCPlot(chain_sample, sample_list, "jj_DR", "jj_DR", "(30, 0, 6)", cutflow[icut], cutflowname[icut], "#Delta R (j,j)", 0, canvas, integratedLumi, "regjj_DR", false);
-//	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", "1", "all_cat_v2", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", false);
-//	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", "1", "all_cat_v3", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", false);
-	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(60, 100, 700)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, altvarsggjj, false);
-//	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(30, 100, 700)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, -1., altvarsggjj, false);
-//	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(50, 400, 600)", "400 < ggjj_mass && ggjj_mass < 600", "all_cat", "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", true);
-//	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(100, 200, 600)", "1", "all_cat", "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", false);
-//	DrawMCPlot(chain_sample, sample_list, "jet1_pt", "jet1_pt", "(35, 25, 200)", "1", "all_cat", "p_{T} [GeV]", 0, canvas, integratedLumi, "regjet1_pt");
-//	DrawMCPlot(chain_sample, sample_list, "jet2_pt", "jet2_pt", "(35, 25, 200)", "1", "all_cat", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjet2_pt");
-//	DrawMCPlot(chain_sample_v2, sample_list_v2, "jet1_MLPweight", "jet1_MLPweight", "(50, -1., 1.)", "1.0", "all_cat", "jet_{1} MLP output", 0, canvas, integratedLumi);
-//	DrawMCPlot(chain_sample_v2, sample_list_v2, "jet2_MLPweight", "jet2_MLPweight", "(50, -1., 1.)", "1.0", "all_cat", "jet_{2} MLP output", 0, canvas, integratedLumi);
+// m300
+	DrawMCPlot(chain_sample_nokin_m300, sample_list_nokin_m300, "jj_mass", "jj_mass_nokin_m300", "(45, 70, 250)", cutflow[icut], cutflowname[icut], "m_{jj} [GeV]", 0, canvas, integratedLumi, altvarsjj, false);
+	DrawMCPlot(chain_sample_m300, sample_list_m300, "ggjj_mass", "ggjj_mass_m300", "(50, 200, 400)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, altvarsggjj, false);
+	DrawMCPlot(chain_sample_nokin_m300, sample_list_nokin_m300, "ggjj_mass", "ggjj_mass_nokin_m300", "(50, 200, 400)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, altvarsggjj, false);
+// m500 
+	DrawMCPlot(chain_sample_nokin_m500, sample_list_nokin_m500, "jj_mass", "jj_mass_nokin_m500", "(45, 70, 250)", cutflow[icut], cutflowname[icut], "m_{jj} [GeV]", 0, canvas, integratedLumi, altvarsjj, false);
+	DrawMCPlot(chain_sample_m500, sample_list_m500, "ggjj_mass", "ggjj_mass_m500", "(50, 400, 600)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, altvarsggjj, false);
+	DrawMCPlot(chain_sample_nokin_m500, sample_list_nokin_m500, "ggjj_mass", "ggjj_mass_nokin_m500", "(50, 400, 600)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, altvarsggjj, false);
+// m700
+	DrawMCPlot(chain_sample_nokin_m700, sample_list_nokin_m700, "jj_mass", "jj_mass_nokin_m700", "(45, 70, 250)", cutflow[icut], cutflowname[icut], "m_{jj} [GeV]", 0, canvas, integratedLumi, altvarsjj, false);
+	DrawMCPlot(chain_sample_m700, sample_list_m700, "ggjj_mass", "ggjj_mass_m700", "(50, 500, 900)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, altvarsggjj, false);
+	DrawMCPlot(chain_sample_nokin_m700, sample_list_nokin_m700, "ggjj_mass", "ggjj_mass_nokin_m700", "(50, 500, 900)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, altvarsggjj, false);
+// m1000
+	DrawMCPlot(chain_sample_nokin_m1000, sample_list_nokin_m1000, "jj_mass", "jj_mass_nokin_m1000", "(45, 70, 250)", cutflow[icut], cutflowname[icut], "m_{jj} [GeV]", 0, canvas, integratedLumi, altvarsjj, false);
+	DrawMCPlot(chain_sample_m1000, sample_list_m1000, "ggjj_mass", "ggjj_mass_m1000", "(50, 700, 1200)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, altvarsggjj, false);
+	DrawMCPlot(chain_sample_nokin_m1000, sample_list_nokin_m1000, "ggjj_mass", "ggjj_mass_nokin_m1000", "(50, 700, 1200)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, altvarsggjj, false);
 }
 
 	delete canvas;
 	canvas = 0;
-	chain_sample->Delete();
-	sample_list.clear();
+	chain_sample_m300->Delete();
+	sample_list_m300.clear();
+	chain_sample_m500->Delete();
+	sample_list_m500.clear();
+	chain_sample_m700->Delete();
+	sample_list_m700.clear();
+	chain_sample_m1000->Delete();
+	sample_list_m1000.clear();
+
+	chain_sample_nokin_m300->Delete();
+	sample_list_nokin_m300.clear();
+	chain_sample_nokin_m500->Delete();
+	sample_list_nokin_m500.clear();
+	chain_sample_nokin_m700->Delete();
+	sample_list_nokin_m700.clear();
+	chain_sample_nokin_m1000->Delete();
+	sample_list_nokin_m1000.clear();
 
 	return 0;
 }
 
+
+
+
+
 // ***********************************************************************************************************************
+// ***********************************************************************************************************************
+// ***********************************************************************************************************************
+// ***********************************************************************************************************************
+// ***********************************************************************************************************************
+// ***********************************************************************************************************************
+
+
+
+
 void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string variable, string variableFileName, string range, string cuts, string cutsFileName, string xAxisTitle, bool inLogScale, TCanvas *canvas, double integratedLumi, vector<string> othervariable, bool computeEffSigma)
 {
 	string CMSPrivate = "CMS Private 2013     #sqrt{s} = 8 TeV";
