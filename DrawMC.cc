@@ -44,7 +44,7 @@ int main()
 // 300 GeV Radion
 	Sample radion("Radion_m300_8TeV_nm", "Radion (300 GeV)", -1, 1.0);
 //	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm_parton.root");
-	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm_genjet_globeinputs.root");
+	radion.setFiles("../BJetRegression/Radion_m300_8TeV_nm_StandardFullSelection.root");
 //	radion.setStackGroup("Default jet energy");
 	radion.setStyle(kGreen+3, 3, 3004, "");
 	radion.setInitialNumberOfEvents(20000);
@@ -61,7 +61,7 @@ int main()
 
 	Sample radion_prtRegMLP(radion);
 //	radion_prtRegMLP.setFiles("simple_regMLP_genjet_globeinputs.root");
-	radion_prtRegMLP.setDisplayName("Regression (MLP)");
+	radion_prtRegMLP.setDisplayName("Radion (300 GeV) (Reg+Kin)");
 //	radion_prtRegMLP.setStackGroup("Regression (MLP)");
 	radion_prtRegMLP.setStyle(kBlue, 3, 3002, "");
 	radion_prtRegMLP.setUseAlternativeVariable(2);
@@ -106,7 +106,7 @@ int main()
 //	sample_list.push_back(wzh_m125_8TeV);
 //	sample_list.push_back(wzh_m125_8TeV_prtRegBDT);
 
-	sample_list_v2.push_back(radion_prtRegMLP);
+//	sample_list_v2.push_back(radion_prtRegMLP);
 
 	TClonesArray * chain_sample = new TClonesArray("TChain", sample_list.size() - 1);
 	for(unsigned int isample = 0; isample < sample_list.size() ; isample++)
@@ -114,16 +114,17 @@ int main()
 		new ((*chain_sample)[isample])	TChain(sample_list[isample].getName().c_str());
 		((TChain*)chain_sample->At(isample))->Add(sample_list[isample].getFiles().c_str());
 	}
-
+/*
 	TClonesArray * chain_sample_v2 = new TClonesArray("TChain", sample_list_v2.size() - 1);
 	for(unsigned int isample = 0; isample < sample_list_v2.size() ; isample++)
 	{
 		new ((*chain_sample_v2)[isample])	TChain(sample_list_v2[isample].getName().c_str());
 		((TChain*)chain_sample_v2->At(isample))->Add(sample_list_v2[isample].getFiles().c_str());
 	}
-
+*/
 	TCanvas *canvas = new TCanvas();
-	double integratedLumi = 19620.0;
+//	double integratedLumi = 19620.0;
+	double integratedLumi = 19788.0;
 //	double integratedLumi = -1.0;
 
 	vector <string> cutflow;
@@ -134,55 +135,31 @@ int main()
 	cutflowname.push_back("1bjet");
 	cutflow.push_back("njets_kRadionID_and_CSVM > 1");
 	cutflowname.push_back("2bjet");
-/*	cutflow.push_back("njets_kLooseID_and_CSVM == 1 && jj_DR < 1.5");
-	cutflowname.push_back("1bjet_DRjj_LT_1p5");
-	cutflow.push_back("njets_kLooseID_and_CSVM > 1 && jj_DR < 1.5");
-	cutflowname.push_back("2bjet_DRjj_LT_1p5");
-	cutflow.push_back("njets_kLooseID_and_CSVM == 1 && jj_DR > 1.5");
-	cutflowname.push_back("1bjet_DRjj_GT_1p5");
-	cutflow.push_back("njets_kLooseID_and_CSVM > 1 && jj_DR > 1.5");
-	cutflowname.push_back("2bjet_DRjj_GT_1p5");
-	cutflow.push_back("njets_kLooseID_and_CSVM == 1 && jj_DR < 2.0");
-	cutflowname.push_back("1bjet_DRjj_LT_2.0");
-	cutflow.push_back("njets_kLooseID_and_CSVM > 1 && jj_DR < 2.0");
-	cutflowname.push_back("2bjet_DRjj_LT_2.0");
-	cutflow.push_back("njets_kLooseID_and_CSVM == 1 && jj_DR > 2.0");
-	cutflowname.push_back("1bjet_DRjj_GT_2.0");
-	cutflow.push_back("njets_kLooseID_and_CSVM > 1 && jj_DR > 2.0");
-	cutflowname.push_back("2bjet_DRjj_GT_2.0");
-	cutflow.push_back("njets_kLooseID_and_CSVM == 1 && jj_DR < 3.0");
-	cutflowname.push_back("1bjet_DRjj_LT_3.0");
-	cutflow.push_back("njets_kLooseID_and_CSVM > 1 && jj_DR < 3.0");
-	cutflowname.push_back("2bjet_DRjj_LT_3.0");
-	cutflow.push_back("njets_kLooseID_and_CSVM == 1 && jj_DR > 3.0");
-	cutflowname.push_back("1bjet_DRjj_GT_3.0");
-	cutflow.push_back("njets_kLooseID_and_CSVM > 1 && jj_DR > 3.0");
-	cutflowname.push_back("2bjet_DRjj_GT_3.0");
-*//*	cutflow.push_back("njets_kLooseID_and_CSVM == 1");
-	cutflowname.push_back("1bjet");
-	cutflow.push_back("njets_kLooseID_and_CSVM > 1");
-	cutflowname.push_back("2bjet");
-*//*
-	cutflow.push_back("njets_kRadionID_and_CSVM == 1");
-	cutflowname.push_back("1bjet_new");
-	cutflow.push_back("njets_kRadionID_and_CSVM > 1");
-	cutflowname.push_back("2bjet_new");
-*/
+
+	cutflow.push_back("gg_mass < 135 && gg_mass > 115");
+	cutflowname.push_back("mggCut-115-135_all_cat");
+	cutflow.push_back("njets_kRadionID_and_CSVM == 1 && gg_mass < 135 && gg_mass > 115");
+	cutflowname.push_back("mggCut-115-135_1bjet");
+	cutflow.push_back("njets_kRadionID_and_CSVM > 1 && gg_mass < 135 && gg_mass > 115");
+	cutflowname.push_back("mggCut-115-135_2bjet");
+
 	cout << "##### DRAW #####" << endl;
 	vector<string> altvarsjj;
 		altvarsjj.push_back("regjj_mass");
-		altvarsjj.push_back("regMLPjj_mass");
+		altvarsjj.push_back("regkinjj_mass");
 	vector<string> altvarsggjj;
 		altvarsggjj.push_back("regggjj_mass");
-		altvarsggjj.push_back("regMLPggjj_mass");
+		altvarsggjj.push_back("regkinggjj_mass");
 		
 for(int icut = 0 ; icut < (int)cutflow.size() ; icut++)
 {
-	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", cutflow[icut], cutflowname[icut], "m_{jj} [GeV]", 0, canvas, integratedLumi, altvarsjj, false);
+	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(30, 50, 300)", cutflow[icut], cutflowname[icut], "m_{jj} [GeV]", 0, canvas, integratedLumi, altvarsjj, false);
+//	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(25, 50, 300)", cutflow[icut], cutflowname[icut], "m_{jj} [GeV]", 0, canvas, -1., altvarsjj, false);
 //	DrawMCPlot(chain_sample, sample_list, "jj_DR", "jj_DR", "(30, 0, 6)", cutflow[icut], cutflowname[icut], "#Delta R (j,j)", 0, canvas, integratedLumi, "regjj_DR", false);
 //	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", "1", "all_cat_v2", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", false);
 //	DrawMCPlot(chain_sample, sample_list, "jj_mass", "jj_mass", "(50, 50, 200)", "1", "all_cat_v3", "m_{jj} [GeV]", 0, canvas, integratedLumi, "regjj_mass", false);
-	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(50, 200, 400)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, altvarsggjj, false);
+	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(60, 100, 700)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, altvarsggjj, false);
+//	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(30, 100, 700)", cutflow[icut], cutflowname[icut], "m_{#gamma#gamma jj} [GeV]", 0, canvas, -1., altvarsggjj, false);
 //	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(50, 400, 600)", "400 < ggjj_mass && ggjj_mass < 600", "all_cat", "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", true);
 //	DrawMCPlot(chain_sample, sample_list, "ggjj_mass", "ggjj_mass", "(100, 200, 600)", "1", "all_cat", "m_{#gamma#gamma jj} [GeV]", 0, canvas, integratedLumi, "regggjj_mass", false);
 //	DrawMCPlot(chain_sample, sample_list, "jet1_pt", "jet1_pt", "(35, 25, 200)", "1", "all_cat", "p_{T} [GeV]", 0, canvas, integratedLumi, "regjet1_pt");
@@ -504,7 +481,7 @@ void DrawMCPlot(TClonesArray* chain_sample, vector<Sample> sample_list, string v
 	canvas->SetTitle(canvas_name.c_str());
 
 	if(DEBUG) cout << "setup legend" << endl;
-	TLegend *legend = new TLegend(0.65, 0.82, 0.90, 0.93, "");
+	TLegend *legend = new TLegend(0.55, 0.82, 0.90, 0.93, "");
 	if( computeEffSigma )
 		legend->SetX1(0.45);
 	legend->SetTextSize(0.025);
