@@ -3,4 +3,4 @@ Plotter
 
 Generic plotter
 
-To compile: just run 'make' (be sure to have g++ and ROOT correctly setup)
+To run: just edit ```plotter.py``` and run it with ```python plotter.py```
