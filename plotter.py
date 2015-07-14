@@ -11,7 +11,8 @@ from ROOT import TFile, TTree, TLine, TChain, TCanvas, TH1D, TLatex, TLegend, TL
 ROOT.gROOT.Reset()
 ROOT.gROOT.SetBatch()
 ROOT.gROOT.ProcessLine(".x setTDRStyle.C")
-ROOT.TGaxis.SetMaxDigits(3);
+#ROOT.gROOT.ForceStyle(1)
+ROOT.TGaxis.SetMaxDigits(3)
 
 c1 = TCanvas()
 treedir = "/storage/data/cms/store/user/obondu/"
@@ -19,11 +20,39 @@ treedir = "/storage/data/cms/store/user/obondu/"
 intL = 19712.
 samples = []
 # samples.append([ name, typ, dirpath, subdir, file, tree, sample_cut, color, style, label , sigma , N])
-samples.append(["ggX0HH_M260", -2600, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-260_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-260_narrow_Asympt25ns/150709_143158/0000", "output_mc_*.root", "t", "1.", ROOT.kRed+2, 3002, "mR 260 GeV" , 1., 300000])
+samples.append(["ggX0HH_M260", -2600, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-260_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-260_narrow_Asympt25ns/150709_143158/0000", "output_mc_*.root", "t", "1.", ROOT.kRed+2, 0, "mR 260 GeV" , 1., 300000])
+samples.append(["ggX0HH_M270", -2700, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-270_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-270_narrow_Asympt25ns/150709_160619/0000/", "output_mc_*.root", "t", "1.", ROOT.kMagenta+2, 0, "mR 270 GeV" , 1., 298400])
+samples.append(["ggX0HH_M300", -3000, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-300_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-300_narrow_Asympt25ns/150709_160656/0000/", "output_mc_*.root", "t", "1.", ROOT.kBlue+2, 0, "mR 300 GeV" , 1., 299200])
+samples.append(["ggX0HH_M350", -3500, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-350_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-350_narrow_Asympt25ns/150709_161429/0000/", "output_mc_*.root", "t", "1.", ROOT.kCyan+2, 0, "mR 350 GeV" , 1., 299200])
+samples.append(["ggX0HH_M400", -4000, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-400_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-400_narrow_Asympt25ns/150709_161450/0000/", "output_mc_*.root", "t", "1.", ROOT.kGreen+2, 0, "mR 400 GeV" , 1., 300000])
+samples.append(["ggX0HH_M450", -4500, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-450_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-450_narrow_Asympt25ns/150709_161520/0000/", "output_mc_*.root", "t", "1.", ROOT.kYellow+2, 0, "mR 450 GeV" , 1., 300000])
+#samples.append(["ggX0HH_M500", -5000, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-500_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-500_narrow_Asympt25ns/150709_161544/0000/", "output_mc_*.root", "t", "1.", ROOT.kBlue+2, 0, "mR 500 GeV" , 1., 295600])
+samples.append(["TTbar", 1, '/home/fynu/obondu/Higgs/CMSSW_7_4_5/src/cp3_llbb/Framework/test', '', 'output_mc_TTbar.root', 't', '1.', ROOT.kSpring-6, 3001, "t#bar{t}", 1., 49483])
 
 #####plots.append([ name2, variable, plot_cut, norm, binning, title, additional_info, cutline, cutline2 ])
 plots = []
-plots.append(["jet1_pt_norm1", "jet_p4[0].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{jet1} (GeV)", "", "", ""])
+plots.append(["lepton1_pt_norm1", "electron_p4[0].Pt() > muon_p4[0].Pt() ? electron_p4[0].Pt() : muon_p4[0].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{lepton1} (GeV)", "", "", ""])
+plots.append(["lepton2_pt_norm1", "electron_p4[1].Pt() > muon_p4[0].Pt() ? electron_p4[1].Pt() : muon_p4[0].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{lepton1} (GeV)", "", "", ""])
+
+#plots.append(["jet1_pt_norm1", "jet_p4[0].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{jet1} (GeV)", "", "", ""])
+#plots.append(["jet2_pt_norm1", "jet_p4[1].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{jet2} (GeV)", "", "", ""])
+#plots.append(["jet1_pt_max100_norm1", "jet_p4[0].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{jet1} (GeV)", "", "", ""])
+#plots.append(["jet2_pt_max100_norm1", "jet_p4[1].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{jet2} (GeV)", "", "", ""])
+#
+#
+#plots.append(["electron1_pt_norm1", "electron_p4[0].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{electron1} (GeV)", "", "", ""])
+#plots.append(["electron2_pt_norm1", "electron_p4[1].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{electron2} (GeV)", "", "", ""])
+#plots.append(["electron1_pt_max100_norm1", "electron_p4[0].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{electron1} (GeV)", "", "", ""])
+#plots.append(["electron2_pt_max100_norm1", "electron_p4[1].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{electron2} (GeV)", "", "", ""])
+#
+#plots.append(["muon1_pt_norm1", "muon_p4[0].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{muon1} (GeV)", "", "", ""])
+#plots.append(["muon2_pt_norm1", "muon_p4[1].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{muon2} (GeV)", "", "", ""])
+#plots.append(["muon1_pt_max100_norm1", "muon_p4[0].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{muon1} (GeV)", "", "", ""])
+#plots.append(["muon2_pt_max100_norm1", "muon_p4[1].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{muon2} (GeV)", "", "", ""])
+#
+#plots.append(["met_pt_norm1", "met_p4[0].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{met} (GeV)", "", "", ""])
+#plots.append(["met_pt_max100_norm1", "met_p4[0].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{met} (GeV)", "", "", ""])
+
 
 
 for name2, variable, plot_cut, norm, binning, title, additional_info, cutline, cutline2 in plots:
@@ -66,6 +95,7 @@ for name2, variable, plot_cut, norm, binning, title, additional_info, cutline, c
         chain.Draw(variable + ">>h_tmp" + binning, total_cut, option)
         # Cosmetics
         h = ROOT.gDirectory.Get("h_tmp")
+#        h.UseCurrentStyle()
 #        print h.GetEntries()
         try:
             h.SetName(name + "_" + name2 + "_" + str(ifile))
@@ -78,6 +108,9 @@ for name2, variable, plot_cut, norm, binning, title, additional_info, cutline, c
         h.SetLineColor(color)
         h.SetFillColor(color)
         h.SetFillStyle(style)
+        h.SetMarkerColor(color)
+        h.SetMarkerSize(1)
+        h.SetMarkerStyle(1)
         h.GetXaxis().SetTitle( title )
         unit = ""
         if title.find("(") != -1:
@@ -103,9 +136,9 @@ for name2, variable, plot_cut, norm, binning, title, additional_info, cutline, c
             hist_signal[typ] = h
         del chain, h
 
-#        print hist_bkg
-#        print hist_signal
-#        print hist_data
+#        print "hist_bkg=", hist_bkg
+#        print "hist_signal=", hist_signal
+#        print "hist_data=", hist_data
 
     # Sum the backgrounds
 #    print ""
@@ -174,7 +207,9 @@ for name2, variable, plot_cut, norm, binning, title, additional_info, cutline, c
         ymax = max(ymax, hist_data[key].GetMaximum())
         ymin = min(ymin, hist_data[key].GetMinimum(0.0))
     for key in collections.OrderedDict(sorted(hist_signal.items())):
-        hist_signal[key].Draw("same")
+        hist_signal[key].Draw("histsame")
+        ROOT.gPad.Modified()
+        c1.Update()
         legend.AddEntry(hist_signal[key].GetName(), label_signal[key], "lf")
         ymax = max(ymax, hist_signal[key].GetMaximum())
         ymin = min(ymin, hist_signal[key].GetMinimum(0.0))
@@ -186,9 +221,15 @@ for name2, variable, plot_cut, norm, binning, title, additional_info, cutline, c
     ymin_log = pow(10., log10(ymin) - .03*yrange_log)
 
     latexLabel = TLatex()
-    latexLabel.SetTextSize(.03)
+    latexLabel.SetTextSize(0.75 * c1.GetTopMargin())
     latexLabel.SetNDC()
-    latexLabel.DrawLatex(.25, .96, "CMS Internal     L = 19.7 fb^{-1}     #sqrt{s} = 8 TeV")
+    latexLabel.SetTextFont(42) # helvetica
+    latexLabel.DrawLatex(0.84, 0.96, "(8 TeV)")
+    latexLabel.SetTextFont(61) # helvetica bold face
+    latexLabel.DrawLatex(0.17, 0.89, "CMS")
+    latexLabel.SetTextFont(52) # helvetica italics
+    latexLabel.DrawLatex(0.17, 0.85, "Internal")
+    latexLabel.SetTextSize(.03)
     latexLabel.DrawLatex(.20, .85, additional_info)
     ROOT.gPad.RedrawAxis()
     legend.Draw()
