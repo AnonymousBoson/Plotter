@@ -1,11 +1,8 @@
-*2013*
-*.exe
-datastore
+# Editors junk
+*.swp
+
+# Plots themselves
 pdf/*
 root/*
 gif/*
-*.swp
-.DS_Store
-*.pdf
-functions.cpp
-*.dSYM
+png/*
