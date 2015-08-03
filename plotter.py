@@ -16,49 +16,64 @@ ROOT.TGaxis.SetMaxDigits(3)
 
 c1 = TCanvas()
 treedir = "/storage/data/cms/store/user/obondu/"
+cmsswdir = "/home/fynu/obondu/Higgs/CMSSW_7_4_5/src/cp3_llbb/HHAnalysis"
 
-intL = 19712.
+intL = 5.590
 samples = []
 # samples.append([ name, typ, dirpath, subdir, file, tree, sample_cut, color, style, label , sigma , N])
-samples.append(["ggX0HH_M260", -2600, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-260_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-260_narrow_Asympt25ns/150709_143158/0000", "output_mc_*.root", "t", "1.", ROOT.kRed+2, 0, "mR 260 GeV" , 1., 300000])
-samples.append(["ggX0HH_M270", -2700, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-270_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-270_narrow_Asympt25ns/150709_160619/0000/", "output_mc_*.root", "t", "1.", ROOT.kMagenta+2, 0, "mR 270 GeV" , 1., 298400])
-samples.append(["ggX0HH_M300", -3000, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-300_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-300_narrow_Asympt25ns/150709_160656/0000/", "output_mc_*.root", "t", "1.", ROOT.kBlue+2, 0, "mR 300 GeV" , 1., 299200])
-samples.append(["ggX0HH_M350", -3500, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-350_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-350_narrow_Asympt25ns/150709_161429/0000/", "output_mc_*.root", "t", "1.", ROOT.kCyan+2, 0, "mR 350 GeV" , 1., 299200])
-samples.append(["ggX0HH_M400", -4000, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-400_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-400_narrow_Asympt25ns/150709_161450/0000/", "output_mc_*.root", "t", "1.", ROOT.kGreen+2, 0, "mR 400 GeV" , 1., 300000])
-samples.append(["ggX0HH_M450", -4500, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-450_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-450_narrow_Asympt25ns/150709_161520/0000/", "output_mc_*.root", "t", "1.", ROOT.kYellow+2, 0, "mR 450 GeV" , 1., 300000])
+#samples.append(["data", 0, treedir, "DoubleMuon/DoubleMuon_Run2015B-PromptReco-v1_2015-07-15/150715_183741/0000", "output_mc_*root", "t", "1.", ROOT.kBlack, 1, "data", 1, 84874])
+#samples.append(["ggX0HH_M260", -2600, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-260_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-260_narrow_Asympt25ns/150715_121230/0000", "output_mc_*.root", "t", "1.", ROOT.kRed+2, 0, "mR 260 GeV" , 1000., 300000])
+#samples.append(["ggX0HH_M270", -2700, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-270_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-270_narrow_Asympt25ns/150715_121450/0000/", "output_mc_*.root", "t", "1.", ROOT.kMagenta+2, 0, "mR 270 GeV" , 1000., 298400])
+#samples.append(["ggX0HH_M300", -3000, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-300_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-300_narrow_Asympt25ns/150715_123323/0000/", "output_mc_*.root", "t", "1.", ROOT.kBlue+2, 0, "mR 300 GeV" , 1000., 299200])
+samples.append(["ggX0HH_M300", -3000, cmsswdir, "", "output_mc.root", "t", "1.", ROOT.kBlue+2, 0, "mR 300 GeV" , 1000., 2000])
+#samples.append(["ggX0HH_M350", -3500, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-350_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-350_narrow_Asympt25ns/150715_124549/0000/", "output_mc_*.root", "t", "1.", ROOT.kCyan+2, 0, "mR 350 GeV" , 1000., 299200])
+#samples.append(["ggX0HH_M400", -4000, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-400_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-400_narrow_Asympt25ns/150715_125012/0000/", "output_mc_*.root", "t", "1.", ROOT.kGreen+2, 0, "mR 400 GeV" , 1000., 300000])
+#samples.append(["ggX0HH_M450", -4500, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-450_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-450_narrow_Asympt25ns/150715_125720/0000/", "output_mc_*.root", "t", "1.", ROOT.kYellow+2, 0, "mR 450 GeV" , 1000., 300000])
 #samples.append(["ggX0HH_M500", -5000, treedir, "GluGluToRadionToHHTo2B2VTo2L2Nu_M-500_narrow_13TeV-madgraph/GluGluToRadionToHHTo2B2VTo2L2Nu_M-500_narrow_Asympt25ns/150709_161544/0000/", "output_mc_*.root", "t", "1.", ROOT.kBlue+2, 0, "mR 500 GeV" , 1., 295600])
-samples.append(["TTbar", 1, '/home/fynu/obondu/Higgs/CMSSW_7_4_5/src/cp3_llbb/Framework/test', '', 'output_mc_TTbar.root', 't', '1.', ROOT.kSpring-6, 3001, "t#bar{t}", 1., 49483])
+#samples.append(["TTbar", 1, '/home/fynu/obondu/Higgs/CMSSW_7_4_5/src/cp3_llbb/HHAnalysis', '', 'output_mc_TTbar.root', 't', '1.', ROOT.kSpring-6, 1001, "t#bar{t}", 831.76, 49483])
+#samples.append(["DY", 2, '/home/fynu/obondu/Higgs/CMSSW_7_4_5/src/cp3_llbb/HHAnalysis', '', 'output_mc_DY.root', 't', '1.', ROOT.kOrange-6, 1001, "DY", 6025.2, 4537])
 
 #####plots.append([ name2, variable, plot_cut, norm, binning, title, additional_info, cutline, cutline2 ])
 plots = []
-plots.append(["lepton1_pt_norm1", "electron_p4[0].Pt() > muon_p4[0].Pt() ? electron_p4[0].Pt() : muon_p4[0].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{lepton1} (GeV)", "", "", ""])
-plots.append(["lepton2_pt_norm1", "electron_p4[1].Pt() > muon_p4[0].Pt() ? electron_p4[1].Pt() : muon_p4[0].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{lepton1} (GeV)", "", "", ""])
+# get on with matching
+plots.append(["mumu_muon1_has_matched_gen_particle", "muon_has_matched_gen_particle[0]", "mumu_category", 1, "(2, 0, 2)", "#mu1 has matched gen", "#mu#mu cat.", "", ""])
+plots.append(["mumu_muon2_has_matched_gen_particle", "muon_has_matched_gen_particle[1]", "mumu_category", 1, "(2, 0, 2)", "#mu2 has matched gen", "#mu#mu cat.", "", ""])
+plots.append(["mumu_gen_iL1", "(hh_gen_iL1 != -1)", "mumu_category", 1, "(2, 0, 2)", "genL1 found", "#mu#mu cat.", "", ""])
+plots.append(["mumu_gen_iL2", "(hh_gen_iL2 != -1)", "mumu_category", 1, "(2, 0, 2)", "genL2 found", "#mu#mu cat.", "", ""])
+plots.append(["mumu_gen_deltaR_muon1_L1", "hh_gen_deltaR_muon_L1[0]", "mumu_category && muon_has_matched_gen_particle[0] && (hh_gen_iL1 != -1)", 1, "(50, 0, 5)", "#Delta R(#mu1, genL1)", "#mu#mu cat.", "", ""])
+plots.append(["mumu_gen_deltaR_muon1_L2", "hh_gen_deltaR_muon_L2[0]", "mumu_category && muon_has_matched_gen_particle[0] && (hh_gen_iL2 != -1)", 1, "(50, 0, 5)", "#Delta R(#mu1, genL2)", "#mu#mu cat.", "", ""])
+plots.append(["mumu_gen_deltaR_muon2_L1", "hh_gen_deltaR_muon_L1[1]", "mumu_category && muon_has_matched_gen_particle[1] && (hh_gen_iL1 != -1)", 1, "(50, 0, 5)", "#Delta R(#mu2, genL1)", "#mu#mu cat.", "", ""])
+plots.append(["mumu_gen_deltaR_muon2_L2", "hh_gen_deltaR_muon_L2[1]", "mumu_category && muon_has_matched_gen_particle[1] && (hh_gen_iL2 != -1)", 1, "(50, 0, 5)", "#Delta R(#mu2, genL2)", "#mu#mu cat.", "", ""])
 
-#plots.append(["jet1_pt_norm1", "jet_p4[0].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{jet1} (GeV)", "", "", ""])
-#plots.append(["jet2_pt_norm1", "jet_p4[1].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{jet2} (GeV)", "", "", ""])
-#plots.append(["jet1_pt_max100_norm1", "jet_p4[0].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{jet1} (GeV)", "", "", ""])
-#plots.append(["jet2_pt_max100_norm1", "jet_p4[1].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{jet2} (GeV)", "", "", ""])
+# basic kinematics, no cut
+#plots.append(["mumu_jet1_pt", "jet_p4[0].Pt()", "mumu_category", 1, "(300, 0, 300)", "p_{T}^{jet1} (GeV)", "#mu#mu cat.", "", ""])
+#plots.append(["mumu_jet2_pt", "jet_p4[1].Pt()", "mumu_category", 1, "(300, 0, 300)", "p_{T}^{jet2} (GeV)", "#mu#mu cat.", "", ""])
+#plots.append(["mumu_muon1_pt", "muon_p4[0].Pt()", "mumu_category", 1, "(100, 0, 100)", "p_{T}^{muon1} (GeV)", "#mu#mu cat.", "", ""])
+#plots.append(["mumu_muon2_pt", "muon_p4[1].Pt()", "mumu_category", 1, "(100, 0, 100)", "p_{T}^{muon2} (GeV)", "#mu#mu cat.", "", ""])
+#plots.append(["mumu_met_pt", "met_p4[0].Pt()", "mumu_category", 1, "(100, 0, 500)", "p_{T}^{met} (GeV)", "#mu#mu cat.", "", ""])
 #
+#plots.append(["elel_jet1_pt", "jet_p4[0].Pt()", "elel_category", 1, "(300, 0, 300)", "p_{T}^{jet1} (GeV)", "ee cat.", "", ""])
+#plots.append(["elel_jet2_pt", "jet_p4[1].Pt()", "elel_category", 1, "(300, 0, 300)", "p_{T}^{jet2} (GeV)", "ee cat.", "", ""])
+#plots.append(["elel_electron1_pt", "electron_p4[0].Pt()", "elel_category", 1, "(100, 0, 100)", "p_{T}^{electron1} (GeV)", "ee cat.", "", ""])
+#plots.append(["elel_electron2_pt", "electron_p4[1].Pt()", "elel_category", 1, "(100, 0, 100)", "p_{T}^{electron2} (GeV)", "ee cat.", "", ""])
+#plots.append(["elel_met_pt", "met_p4[0].Pt()", "elel_category", 1, "(100, 0, 500)", "p_{T}^{met} (GeV)", "ee cat.", "", ""])
 #
-#plots.append(["electron1_pt_norm1", "electron_p4[0].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{electron1} (GeV)", "", "", ""])
-#plots.append(["electron2_pt_norm1", "electron_p4[1].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{electron2} (GeV)", "", "", ""])
-#plots.append(["electron1_pt_max100_norm1", "electron_p4[0].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{electron1} (GeV)", "", "", ""])
-#plots.append(["electron2_pt_max100_norm1", "electron_p4[1].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{electron2} (GeV)", "", "", ""])
+#plots.append(["muel_jet1_pt", "jet_p4[0].Pt()", "muel_category", 1, "(300, 0, 300)", "p_{T}^{jet1} (GeV)", "#mu e cat.", "", ""])
+#plots.append(["muel_jet2_pt", "jet_p4[1].Pt()", "muel_category", 1, "(300, 0, 300)", "p_{T}^{jet2} (GeV)", "#mu e cat.", "", ""])
+#plots.append(["muel_muon1_pt", "muon_p4[0].Pt()", "muel_category", 1, "(100, 0, 100)", "p_{T}^{muon1} (GeV)", "#mu e cat.", "", ""])
+#plots.append(["muel_electron2_pt", "electron_p4[1].Pt()", "muel_category", 1, "(100, 0, 100)", "p_{T}^{electron2} (GeV)", "#mu e cat.", "", ""])
+#plots.append(["muel_met_pt", "met_p4[0].Pt()", "muel_category", 1, "(100, 0, 500)", "p_{T}^{met} (GeV)", "#mu e cat.", "", ""])
 #
-#plots.append(["muon1_pt_norm1", "muon_p4[0].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{muon1} (GeV)", "", "", ""])
-#plots.append(["muon2_pt_norm1", "muon_p4[1].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{muon2} (GeV)", "", "", ""])
-#plots.append(["muon1_pt_max100_norm1", "muon_p4[0].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{muon1} (GeV)", "", "", ""])
-#plots.append(["muon2_pt_max100_norm1", "muon_p4[1].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{muon2} (GeV)", "", "", ""])
-#
-#plots.append(["met_pt_norm1", "met_p4[0].Pt()", "", 1, "(100, 0, 500)", "p_{T}^{met} (GeV)", "", "", ""])
-#plots.append(["met_pt_max100_norm1", "met_p4[0].Pt()", "", 1, "(100, 0, 100)", "p_{T}^{met} (GeV)", "", "", ""])
-
-
+#plots.append(["elmu_jet1_pt", "jet_p4[0].Pt()", "elmu_category", 1, "(300, 0, 300)", "p_{T}^{jet1} (GeV)", "e#mu cat.", "", ""])
+#plots.append(["elmu_jet2_pt", "jet_p4[1].Pt()", "elmu_category", 1, "(300, 0, 300)", "p_{T}^{jet2} (GeV)", "e#mu cat.", "", ""])
+#plots.append(["elmu_electron1_pt", "electron_p4[0].Pt()", "elmu_category", 1, "(100, 0, 100)", "p_{T}^{electron1} (GeV)", "e#mu cat.", "", ""])
+#plots.append(["elmu_muon2_pt", "muon_p4[1].Pt()", "elmu_category", 1, "(100, 0, 100)", "p_{T}^{muon2} (GeV)", "e#mu cat.", "", ""])
+#plots.append(["elmu_met_pt", "met_p4[0].Pt()", "elmu_category", 1, "(100, 0, 500)", "p_{T}^{met} (GeV)", "e#mu cat.", "", ""])
 
 for name2, variable, plot_cut, norm, binning, title, additional_info, cutline, cutline2 in plots:
     c1 = TCanvas()
     legend = TLegend(0.45, 0.82, 0.90, 0.93, "")
-    legend.SetTextSize(0.025)
+    legend.SetTextSize(0.015)
     legend.SetFillColor(ROOT.kWhite)
     legend.SetLineColor(ROOT.kWhite)
     legend.SetShadowColor(ROOT.kWhite)
@@ -113,8 +128,8 @@ for name2, variable, plot_cut, norm, binning, title, additional_info, cutline, c
         h.SetMarkerStyle(1)
         h.GetXaxis().SetTitle( title )
         unit = ""
-        if title.find("(") != -1:
-            unit = title[title.find("(")+1:title.find(")")]
+        if title.find("[") != -1:
+            unit = title[title.find("[")+1:title.find("]")]
         if norm == 1. or norm == 1:
             h.GetYaxis().SetTitle( "Norm. to unity / ( " + str(((xhigh - xlow) / xnbin)) + " " + unit + " )")
         elif norm == "data" or norm == "Data":
@@ -224,13 +239,19 @@ for name2, variable, plot_cut, norm, binning, title, additional_info, cutline, c
     latexLabel.SetTextSize(0.75 * c1.GetTopMargin())
     latexLabel.SetNDC()
     latexLabel.SetTextFont(42) # helvetica
-    latexLabel.DrawLatex(0.84, 0.96, "(8 TeV)")
+    if norm == 1.:
+        latexLabel.DrawLatex(0.80, 0.96, "(13 TeV)")
+    else:
+        if intL > 1000.:
+            latexLabel.DrawLatex(0.70, 0.96, str(intL) + "/fb (13 TeV)")
+        else:
+            latexLabel.DrawLatex(0.70, 0.96, str(intL) + "/pb (13 TeV)")
     latexLabel.SetTextFont(61) # helvetica bold face
     latexLabel.DrawLatex(0.17, 0.89, "CMS")
     latexLabel.SetTextFont(52) # helvetica italics
     latexLabel.DrawLatex(0.17, 0.85, "Internal")
-    latexLabel.SetTextSize(.03)
-    latexLabel.DrawLatex(.20, .85, additional_info)
+    latexLabel.SetTextSize(.04)
+    latexLabel.DrawLatex(.30, .85, additional_info)
     ROOT.gPad.RedrawAxis()
     legend.Draw()
     c1.Update()
