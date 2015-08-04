@@ -1,0 +1,193 @@
+{
+    "genL1_Pt": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iL1].Pt()",
+    "plot_cut": "(hh_gen_iL1 != -1)",
+    "norm": 1,
+    "binning": "(200, 0, 200)",
+    "xtitle": "genL1 p_{T}",
+    "unit": "GeV",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genL2_Pt": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iL2].Pt()",
+    "plot_cut": "(hh_gen_iL2 != -1)",
+    "norm": 1,
+    "binning": "(200, 0, 200)",
+    "xtitle": "genL2 p_{T}",
+    "unit": "GeV",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genL1_Eta": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iL1].Eta()",
+    "plot_cut": "(hh_gen_iL1 != -1)",
+    "norm": 1,
+    "binning": "(100, -5., 5.)",
+    "xtitle": "genL1 #eta",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genL2_Eta": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iL2].Eta()",
+    "plot_cut": "(hh_gen_iL2 != -1)",
+    "norm": 1,
+    "binning": "(100, -5., 5.)",
+    "xtitle": "genL2 #eta",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genL1_Phi": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iL1].Phi()",
+    "plot_cut": "(hh_gen_iL1 != -1)",
+    "norm": 1,
+    "binning": "(63, -3.15, 3.15)",
+    "xtitle": "genL1 #phi",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genL2_Phi": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iL2].Phi()",
+    "plot_cut": "(hh_gen_iL2 != -1)",
+    "norm": 1,
+    "binning": "(63, -3.15, 3.15)",
+    "xtitle": "genL2 #phi",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genL1_E": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iL1].E()",
+    "plot_cut": "(hh_gen_iL1 != -1)",
+    "norm": 1,
+    "binning": "(200, 0, 200)",
+    "xtitle": "genL1 E",
+    "unit": "GeV",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genL2_E": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iL2].E()",
+    "plot_cut": "(hh_gen_iL2 != -1)",
+    "norm": 1,
+    "binning": "(200, 0, 200)",
+    "xtitle": "genL2 E",
+    "unit": "GeV",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genB1_Pt": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iB1].Pt()",
+    "plot_cut": "(hh_gen_iB1 != -1)",
+    "norm": 1,
+    "binning": "(200, 0, 200)",
+    "xtitle": "genB1 p_{T}",
+    "unit": "GeV",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genB2_Pt": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iB2].Pt()",
+    "plot_cut": "(hh_gen_iB2 != -1)",
+    "norm": 1,
+    "binning": "(200, 0, 200)",
+    "xtitle": "genB2 p_{T}",
+    "unit": "GeV",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genB1_Eta": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iB1].Eta()",
+    "plot_cut": "(hh_gen_iB1 != -1)",
+    "norm": 1,
+    "binning": "(100, -5., 5.)",
+    "xtitle": "genB1 #eta",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genB2_Eta": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iB2].Eta()",
+    "plot_cut": "(hh_gen_iB2 != -1)",
+    "norm": 1,
+    "binning": "(100, -5., 5.)",
+    "xtitle": "genB2 #eta",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genB1_Phi": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iB1].Phi()",
+    "plot_cut": "(hh_gen_iB1 != -1)",
+    "norm": 1,
+    "binning": "(63, -3.15, 3.15)",
+    "xtitle": "genB1 #phi",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genB2_Phi": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iB2].Phi()",
+    "plot_cut": "(hh_gen_iB2 != -1)",
+    "norm": 1,
+    "binning": "(63, -3.15, 3.15)",
+    "xtitle": "genB2 #phi",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genB1_E": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iB1].E()",
+    "plot_cut": "(hh_gen_iB1 != -1)",
+    "norm": 1,
+    "binning": "(200, 0, 200)",
+    "xtitle": "genB1 E",
+    "unit": "GeV",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "genB2_E": {
+    "variable": "pruned_gen_particle_p4[hh_gen_iB2].E()",
+    "plot_cut": "(hh_gen_iB2 != -1)",
+    "norm": 1,
+    "binning": "(200, 0, 200)",
+    "xtitle": "genB2 E",
+    "unit": "GeV",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+}

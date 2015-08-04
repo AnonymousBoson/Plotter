@@ -1,0 +1,193 @@
+{
+    "mumu_muon1_has_matched_gen_particle": {
+    "variable": "muon_has_matched_gen_particle[0]",
+    "plot_cut": "mumu_category",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "#mu1 has matched gen",
+    "unit": "",
+    "additional_info": "#mu#mu cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_muon2_has_matched_gen_particle": {
+    "variable": "muon_has_matched_gen_particle[1]",
+    "plot_cut": "mumu_category",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "#mu2 has matched gen",
+    "unit": "",
+    "additional_info": "#mu#mu cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_iL1": {
+    "variable": "(hh_gen_iL1 != -1)",
+    "plot_cut": "mumu_category",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "genL1 found",
+    "unit": "",
+    "additional_info": "#mu#mu cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_iL2": {
+    "variable": "(hh_gen_iL2 != -1)",
+    "plot_cut": "mumu_category",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "genL2 found",
+    "unit": "",
+    "additional_info": "#mu#mu cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_deltaR_muon1_L1": {
+    "variable": "hh_gen_deltaR_muon_L1[0]",
+    "plot_cut": "mumu_category && muon_has_matched_gen_particle[0] && (hh_gen_iL1 != -1)",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen#mu1, genL1)",
+    "unit": "",
+    "additional_info": "#mu#mu cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_deltaR_muon1_L2": {
+    "variable": "hh_gen_deltaR_muon_L2[0]",
+    "plot_cut": "mumu_category && muon_has_matched_gen_particle[0] && (hh_gen_iL2 != -1)",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen#mu1, genL2)",
+    "unit": "",
+    "additional_info": "#mu#mu cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_deltaR_muon2_L1": {
+    "variable": "hh_gen_deltaR_muon_L1[1]",
+    "plot_cut": "mumu_category && muon_has_matched_gen_particle[1] && (hh_gen_iL1 != -1)",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen#mu2, genL1)",
+    "unit": "",
+    "additional_info": "#mu#mu cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_deltaR_muon2_L2": {
+    "variable": "hh_gen_deltaR_muon_L2[1]",
+    "plot_cut": "mumu_category && muon_has_matched_gen_particle[1] && (hh_gen_iL2 != -1)",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen#mu2, genL2)",
+    "unit": "",
+    "additional_info": "#mu#mu cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_deltaR_muon1_L1_excl": {
+    "variable": "hh_gen_deltaR_muon_L1[0]",
+    "plot_cut": "mumu_category && muon_has_matched_gen_particle[0] && (hh_gen_iL1 != -1) && (hh_gen_iL2 != -1) && hh_gen_deltaR_muon_L2[0] > .1",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen#mu1, genL1)",
+    "unit": "",
+    "additional_info": "#splitline{#mu#mu cat.}{#Delta R(#mu1, L2) > .1}",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_deltaR_muon1_L2_excl": {
+    "variable": "hh_gen_deltaR_muon_L2[0]",
+    "plot_cut": "mumu_category && muon_has_matched_gen_particle[0] && (hh_gen_iL2 != -1) && (hh_gen_iL1 != -1) && hh_gen_deltaR_muon_L1[0] > .1",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen#mu1, genL2)",
+    "unit": "",
+    "additional_info": "#splitline{#mu#mu cat.}{#Delta R(#mu1, L1) > .1}",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_deltaR_muon2_L1_excl": {
+    "variable": "hh_gen_deltaR_muon_L1[1]",
+    "plot_cut": "mumu_category && muon_has_matched_gen_particle[1] && (hh_gen_iL1 != -1) && (hh_gen_iL2 != -1) && hh_gen_deltaR_muon_L2[1] > .1",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen#mu2, genL1)",
+    "unit": "",
+    "additional_info": "#splitline{#mu#mu cat.}{#Delta R(#mu2, L2) > .1}",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_deltaR_muon2_L2_excl": {
+    "variable": "hh_gen_deltaR_muon_L2[1]",
+    "plot_cut": "mumu_category && muon_has_matched_gen_particle[1] && (hh_gen_iL2 != -1) && (hh_gen_iL1 != -1) && hh_gen_deltaR_muon_L1[1] > .1",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen#mu2, genL2)",
+    "unit": "",
+    "additional_info": "#splitline{#mu#mu cat.}{#Delta R(#mu2, L1) > .1}",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_muon1_matched_to_either_L1_or_L2": {
+    "variable": "muon_has_matched_gen_particle[0] && ((hh_gen_deltaR_muon_L1[0] < .1) || (hh_gen_deltaR_muon_L2[0] < .1))",
+    "plot_cut": "mumu_category && ((hh_gen_iL1 != -1) || (hh_gen_iL2 != -1))",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "is #mu1 matching L1 or L2",
+    "unit": "",
+    "additional_info": "#mu#mu cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_muon2_matched_to_either_L1_or_L2": {
+    "variable": "muon_has_matched_gen_particle[1] && ((hh_gen_deltaR_muon_L1[1] < .1) || (hh_gen_deltaR_muon_L2[1] < .1))",
+    "plot_cut": "mumu_category && ((hh_gen_iL1 != -1) || (hh_gen_iL2 != -1))",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "is #mu2 matching L1 or L2",
+    "unit": "",
+    "additional_info": "#mu#mu cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_muon1_matched_to_either_L1_or_L2_w_acceptance_cuts": {
+    "variable": "muon_has_matched_gen_particle[0] && ((hh_gen_deltaR_muon_L1[0] < .1) || (hh_gen_deltaR_muon_L2[0] < .1))",
+    "plot_cut": "mumu_category && ((hh_gen_iL1 != -1 && pruned_gen_particle_p4[hh_gen_iL1].Pt() > 10. && abs(pruned_gen_particle_p4[hh_gen_iL1].Eta()) < 2.6) || (hh_gen_iL2 != -1 && pruned_gen_particle_p4[hh_gen_iL2].Pt() > 10. && abs(pruned_gen_particle_p4[hh_gen_iL2].Eta()) < 2.6))",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "is #mu1 matching L1 or L2",
+    "unit": "",
+    "additional_info": "#mu#mu cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "mumu_gen_muon2_matched_to_either_L1_or_L2_w_acceptance_cuts": {
+    "variable": "muon_has_matched_gen_particle[1] && ((hh_gen_deltaR_muon_L1[1] < .1) || (hh_gen_deltaR_muon_L2[1] < .1))",
+    "plot_cut": "mumu_category && ((hh_gen_iL1 != -1 && pruned_gen_particle_p4[hh_gen_iL1].Pt() > 10. && abs(pruned_gen_particle_p4[hh_gen_iL1].Eta()) < 2.6) || (hh_gen_iL2 != -1 && pruned_gen_particle_p4[hh_gen_iL2].Pt() > 10. && abs(pruned_gen_particle_p4[hh_gen_iL2].Eta()) < 2.6))",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "is #mu2 matching L1 or L2",
+    "unit": "",
+    "additional_info": "#mu#mu cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+}

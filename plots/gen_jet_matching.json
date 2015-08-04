@@ -1,0 +1,133 @@
+{
+    "jet1_has_matched_gen_particle": {
+    "variable": "jet_has_matched_gen_particle[0]",
+    "plot_cut": "",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "jet1 has matched gen",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "jet2_has_matched_gen_particle": {
+    "variable": "jet_has_matched_gen_particle[1]",
+    "plot_cut": "",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "jet2 has matched gen",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "gen_iB1": {
+    "variable": "(hh_gen_iB1 != -1)",
+    "plot_cut": "",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "genB1 found",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "gen_iB2": {
+    "variable": "(hh_gen_iB2 != -1)",
+    "plot_cut": "",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "genB2 found",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "gen_deltaR_jet1_B1": {
+    "variable": "hh_gen_deltaR_jet_B1[0]",
+    "plot_cut": "jet_has_matched_gen_particle[0] && (hh_gen_iB1 != -1)",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen jet1, genB1)",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "gen_deltaR_jet1_B2": {
+    "variable": "hh_gen_deltaR_jet_B2[0]",
+    "plot_cut": "jet_has_matched_gen_particle[0] && (hh_gen_iB2 != -1)",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen jet1, genB2)",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "gen_deltaR_jet2_B1": {
+    "variable": "hh_gen_deltaR_jet_B1[1]",
+    "plot_cut": "jet_has_matched_gen_particle[1] && (hh_gen_iB1 != -1)",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen jet2, genB1)",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "gen_deltaR_jet2_B2": {
+    "variable": "hh_gen_deltaR_jet_B2[1]",
+    "plot_cut": "jet_has_matched_gen_particle[1] && (hh_gen_iB2 != -1)",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen jet2, genB2)",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "gen_jet1_matched_to_either_B1_or_B2": {
+    "variable": "jet_has_matched_gen_particle[0] && (hh_gen_iB1 != -1) && (hh_gen_iB2 != -1) && ((hh_gen_deltaR_jet_B1[0] < .1) || (hh_gen_deltaR_jet_B2[0] < .1))",
+    "plot_cut": "",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "is jet1 matching B1 or B2",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "gen_jet2_matched_to_either_B1_or_B2": {
+    "variable": "jet_has_matched_gen_particle[1] && (hh_gen_iB1 != -1) && (hh_gen_iB2 != -1) && ((hh_gen_deltaR_jet_B1[1] < .1) || (hh_gen_deltaR_jet_B2[1] < .1))",
+    "plot_cut": "",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "is jet2 matching B1 or B2",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "gen_first5jets_matched_to_either_B1_or_B2": {
+    "variable": "(hh_gen_iB1 != -1) && (hh_gen_iB2 != -1) && ((jet_has_matched_gen_particle[0] && ((hh_gen_deltaR_jet_B1[0] < .1) || (hh_gen_deltaR_jet_B2[0] < .1))) || (jet_has_matched_gen_particle[1] && ((hh_gen_deltaR_jet_B1[1] < .1) || (hh_gen_deltaR_jet_B2[1] < .1))) || (jet_has_matched_gen_particle[2] && ((hh_gen_deltaR_jet_B1[2] < .1) || (hh_gen_deltaR_jet_B2[2] < .1))) || (jet_has_matched_gen_particle[3] && ((hh_gen_deltaR_jet_B1[3] < .1) || (hh_gen_deltaR_jet_B2[3] < .1))) || (jet_has_matched_gen_particle[4] && ((hh_gen_deltaR_jet_B1[4] < .1) || (hh_gen_deltaR_jet_B2[4] < .1))))",
+    "plot_cut": "",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "is jet[1-5] matching B1 or B2",
+    "unit": "",
+    "additional_info": "",
+    "cutline": "",
+    "cutline2": ""
+    }
+}
