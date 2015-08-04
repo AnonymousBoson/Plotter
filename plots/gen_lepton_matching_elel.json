@@ -1,0 +1,169 @@
+{
+    "elel_electron1_has_matched_gen_particle": {
+    "variable": "electron_has_matched_gen_particle[0]",
+    "plot_cut": "elel_category",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "el1 has matched gen",
+    "unit": "",
+    "additional_info": "elel cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_electron2_has_matched_gen_particle": {
+    "variable": "electron_has_matched_gen_particle[1]",
+    "plot_cut": "elel_category",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "el2 has matched gen",
+    "unit": "",
+    "additional_info": "elel cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_gen_iL1": {
+    "variable": "(hh_gen_iL1 != -1)",
+    "plot_cut": "elel_category",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "genL1 found",
+    "unit": "",
+    "additional_info": "elel cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_gen_iL2": {
+    "variable": "(hh_gen_iL2 != -1)",
+    "plot_cut": "elel_category",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "genL2 found",
+    "unit": "",
+    "additional_info": "elel cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_gen_deltaR_electron1_L1": {
+    "variable": "hh_gen_deltaR_electron_L1[0]",
+    "plot_cut": "elel_category && electron_has_matched_gen_particle[0] && (hh_gen_iL1 != -1)",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen el1, genL1)",
+    "unit": "",
+    "additional_info": "elel cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_gen_deltaR_electron1_L2": {
+    "variable": "hh_gen_deltaR_electron_L2[0]",
+    "plot_cut": "elel_category && electron_has_matched_gen_particle[0] && (hh_gen_iL2 != -1)",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen el1, genL2)",
+    "unit": "",
+    "additional_info": "elel cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_gen_deltaR_electron2_L1": {
+    "variable": "hh_gen_deltaR_electron_L1[1]",
+    "plot_cut": "elel_category && electron_has_matched_gen_particle[1] && (hh_gen_iL1 != -1)",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen el2, genL1)",
+    "unit": "",
+    "additional_info": "elel cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_gen_deltaR_electron2_L2": {
+    "variable": "hh_gen_deltaR_electron_L2[1]",
+    "plot_cut": "elel_category && electron_has_matched_gen_particle[1] && (hh_gen_iL2 != -1)",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen el2, genL2)",
+    "unit": "",
+    "additional_info": "elel cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_gen_deltaR_electron1_L1_excl": {
+    "variable": "hh_gen_deltaR_electron_L1[0]",
+    "plot_cut": "elel_category && electron_has_matched_gen_particle[0] && (hh_gen_iL1 != -1) && hh_gen_deltaR_electron_L2[0] > .1",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen el1, genL1)",
+    "unit": "",
+    "additional_info": "#splitline{elel cat.}{#Delta R(el1, L2) > .1}",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_gen_deltaR_electron1_L2_excl": {
+    "variable": "hh_gen_deltaR_electron_L2[0]",
+    "plot_cut": "elel_category && electron_has_matched_gen_particle[0] && (hh_gen_iL2 != -1) && hh_gen_deltaR_electron_L1[0] > .1",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen el1, genL2)",
+    "unit": "",
+    "additional_info": "#splitline{elel cat.}{#Delta R(el1, L1) > .1}",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_gen_deltaR_electron2_L1_excl": {
+    "variable": "hh_gen_deltaR_electron_L1[1]",
+    "plot_cut": "elel_category && electron_has_matched_gen_particle[1] && (hh_gen_iL1 != -1) && hh_gen_deltaR_electron_L2[1] > .1",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen el2, genL1)",
+    "unit": "",
+    "additional_info": "#splitline{elel cat.}{#Delta R(el2, L2) > .1}",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_gen_deltaR_electron2_L2_excl": {
+    "variable": "hh_gen_deltaR_electron_L2[1]",
+    "plot_cut": "elel_category && electron_has_matched_gen_particle[1] && (hh_gen_iL2 != -1) && hh_gen_deltaR_electron_L1[1] > .1",
+    "norm": 1,
+    "binning": "(50, 0, 5)",
+    "xtitle": "#Delta R(gen el2, genL2)",
+    "unit": "",
+    "additional_info": "#splitline{elel cat.}{#Delta R(el2, L1) > .1}",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_gen_electron1_matched_to_either_L1_or_L2": {
+    "variable": "electron_has_matched_gen_particle[0] && (hh_gen_iL1 != -1) && (hh_gen_iL2 != -1) && ((hh_gen_deltaR_electron_L1[0] < .1) || (hh_gen_deltaR_electron_L2[0] < .1))",
+    "plot_cut": "elel_category",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "is el1 matching L1 or L2",
+    "unit": "",
+    "additional_info": "elel cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+    ,
+    "elel_gen_electron2_matched_to_either_L1_or_L2": {
+    "variable": "electron_has_matched_gen_particle[1] && (hh_gen_iL1 != -1) && (hh_gen_iL2 != -1) && ((hh_gen_deltaR_electron_L1[1] < .1) || (hh_gen_deltaR_electron_L2[1] < .1))",
+    "plot_cut": "elel_category",
+    "norm": 1,
+    "binning": "(2, 0, 2)",
+    "xtitle": "is el2 matching L1 or L2",
+    "unit": "",
+    "additional_info": "elel cat.",
+    "cutline": "",
+    "cutline2": ""
+    }
+}

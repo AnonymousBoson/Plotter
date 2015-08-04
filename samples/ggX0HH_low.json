@@ -1,0 +1,71 @@
+{
+    "ggX0HH_M260": {
+    "type": -2600,
+    "db_name": "GluGluToRadionToHHTo2B2VTo2L2Nu_M-260_narrow_Asympt25ns_d91900f_5930884",
+    "tree_name": "t",
+    "sample_cut": "1.",
+    "color": "kRed+2",
+    "style": 0,
+    "label": "mR 260 GeV"
+    }
+    ,
+    "ggX0HH_M270": {
+    "type": -2700,
+    "db_name": "GluGluToRadionToHHTo2B2VTo2L2Nu_M-270_narrow_Asympt25ns_d91900f_5930884",
+    "tree_name": "t",
+    "sample_cut": "1.",
+    "color": "kMagenta+2",
+    "style": 0,
+    "label": "mR 270 GeV"
+    }
+    ,
+    "ggX0HH_M300": {
+    "type": -3000,
+    "db_name": "GluGluToRadionToHHTo2B2VTo2L2Nu_M-300_narrow_Asympt25ns_d91900f_5930884",
+    "tree_name": "t",
+    "sample_cut": "1.",
+    "color": "kBlue+2",
+    "style": 0,
+    "label": "mR 300 GeV"
+    }
+    ,
+    "ggX0HH_M350": {
+    "type": -3500,
+    "db_name": "GluGluToRadionToHHTo2B2VTo2L2Nu_M-350_narrow_Asympt25ns_d91900f_5930884",
+    "tree_name": "t",
+    "sample_cut": "1.",
+    "color": "kCyan+2",
+    "style": 0,
+    "label": "mR 350 GeV"
+    }
+    ,
+    "ggX0HH_M400": {
+    "type": -4000,
+    "db_name": "GluGluToRadionToHHTo2B2VTo2L2Nu_M-400_narrow_Asympt25ns_d91900f_5930884",
+    "tree_name": "t",
+    "sample_cut": "1.",
+    "color": "kGreen+2",
+    "style": 0,
+    "label": "mR 400 GeV"
+    }
+    ,
+    "ggX0HH_M450": {
+    "type": -4500,
+    "db_name": "GluGluToRadionToHHTo2B2VTo2L2Nu_M-450_narrow_Asympt25ns_d91900f_5930884",
+    "tree_name": "t",
+    "sample_cut": "1.",
+    "color": "kYellow+2",
+    "style": 0,
+    "label": "mR 450 GeV"
+    }
+    ,
+    "ggX0HH_M500": {
+    "type": -5000,
+    "db_name": "GluGluToRadionToHHTo2B2VTo2L2Nu_M-500_narrow_Asympt25ns_d91900f_5930884",
+    "tree_name": "t",
+    "sample_cut": "1.",
+    "color": "kPink+2",
+    "style": 0,
+    "label": "mR 500 GeV"
+    }
+}
